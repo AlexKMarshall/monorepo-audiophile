@@ -65,13 +65,15 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-          <p className="text-center leading-relaxed opacity-50">
+          <p className="text-center font-medium leading-relaxed opacity-50">
             Audiophile is an all in one stop to fulfill your audio needs.
             We&apos;re a small team of music lovers and sound specialists who
             are devoted to helping you get the most out of personal audio. Come
             and visit our demo facility - we&apos;re open 7 days a week.
           </p>
-          <p className="opacity-50">Copyright 2021. All Rights Reserved</p>
+          <p className="font-bold opacity-50">
+            Copyright 2021. All Rights Reserved
+          </p>
           <ul className="flex items-center gap-4">
             <li>
               <Link href="/">
