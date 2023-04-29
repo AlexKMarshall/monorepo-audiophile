@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { Manrope } from 'next/font/google'
 
 import Link from 'next/link'
@@ -17,8 +18,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={manrope.className}>
-        <header>
+      <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
+        <header className="bg-black text-white">
           <Link href="/" className="text-blue-800 underline">
             audiophile
           </Link>
@@ -42,8 +43,8 @@ export default function RootLayout({
             Cart
           </Link>
         </header>
-        {children}
-        <footer>
+        <main className="flex-1">{children}</main>
+        <footer className="bg-gray-950 text-white">
           <Link href="/" className="text-blue-800 underline">
             audiophile
           </Link>
@@ -63,14 +64,14 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-          <p>
+          <p className="opacity-50">
             Audiophile is an all in one stop to fulfill your audio needs.
             We&apos;re a small team of music lovers and sound specialists who
             are devoted to helping you get the most out of personal audio. Come
             and visit our demo facility - we&apos;re open 7 days a week.
           </p>
+          <p className="opacity-50">Copyright 2021. All Rights Reserved</p>
           <div>Social links</div>
-          <p>Copyright 2021. All Rights Reserved</p>
         </footer>
         {modal}
       </body>
