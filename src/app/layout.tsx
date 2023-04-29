@@ -4,6 +4,12 @@ import { Manrope } from 'next/font/google'
 import Link from 'next/link'
 import { type ReactNode } from 'react'
 import '~/styles/globals.css'
+import {
+  CollapsibleRoot,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from './Collapsible'
+import { Dialog, DialogContent, DialogOverlay, DialogTrigger } from './Dialog'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -19,33 +25,53 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
-        <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
-          <nav className="lg:hidden">
-            <HamburgerIcon title="open navigation menu" className="w-4" />
-          </nav>
-          <Link href="/">
-            <AudiophileLogo className="w-36" />
-          </Link>
-          <nav className="hidden">
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/headphones">Headphones</Link>
-              </li>
-              <li>
-                <Link href="/speakers">Speakers</Link>
-              </li>
-              <li>
-                <Link href="/earphones">Earphones</Link>
-              </li>
-            </ul>
-          </nav>
-          <Link href="/cart">
-            <CartIcon title="cart" className="w-6" />
-          </Link>
-        </header>
+        <Dialog>
+          <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
+            <nav className="lg:hidden">
+              <DialogTrigger>
+                <HamburgerIcon title="open navigation menu" className="w-4" />
+              </DialogTrigger>
+            </nav>
+            <Link href="/">
+              <AudiophileLogo className="w-36" />
+            </Link>
+            <nav className="hidden lg:block">
+              <ul>
+                <li>
+                  <Link href="/">Home</Link>
+                </li>
+                <li>
+                  <Link href="/headphones">Headphones</Link>
+                </li>
+                <li>
+                  <Link href="/speakers">Speakers</Link>
+                </li>
+                <li>
+                  <Link href="/earphones">Earphones</Link>
+                </li>
+              </ul>
+            </nav>
+            <Link href="/cart">
+              <CartIcon title="cart" className="w-6" />
+            </Link>
+          </header>
+          <div className="relative">
+            <DialogOverlay className="absolute left-0 right-0 min-h-screen bg-black/40" />
+            <DialogContent className="absolute left-0 right-0 bg-white p-8 lg:hidden">
+              <ul>
+                <li>
+                  <Link href="/headphones">Headphones</Link>
+                </li>
+                <li>
+                  <Link href="/speakers">Speakers</Link>
+                </li>
+                <li>
+                  <Link href="/earphones">Earphones</Link>
+                </li>
+              </ul>
+            </DialogContent>
+          </div>
+        </Dialog>
         <main className="flex-1">{children}</main>
         <footer className="grid justify-items-center gap-12 bg-gray-950 px-6 pb-10 text-white before:h-1 before:w-24 before:bg-orange-500">
           <Link href="/">
@@ -111,7 +137,7 @@ function HamburgerIcon({
     <SVG viewBox="0 0 16 15" className={className} title={title}>
       <path
         fill="currentColor"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M0 0h16v3H0zm0 6h16v3H0zm0 6h16v3H0z"
       />
     </SVG>
