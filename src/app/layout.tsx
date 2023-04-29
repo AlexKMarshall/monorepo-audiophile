@@ -22,13 +22,13 @@ export default function RootLayout({
                 <Link href="/">Home</Link>
               </li>
               <li>
-                <Link href="/category/headphones">Headphones</Link>
+                <Link href="/headphones">Headphones</Link>
               </li>
               <li>
-                <Link href="/category/speakers">Speakers</Link>
+                <Link href="/speakers">Speakers</Link>
               </li>
               <li>
-                <Link href="/category/earphones">Earphones</Link>
+                <Link href="/earphones">Earphones</Link>
               </li>
             </ul>
           </nav>
