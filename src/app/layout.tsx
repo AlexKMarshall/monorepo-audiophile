@@ -1,6 +1,12 @@
+import { Manrope } from 'next/font/google'
+
 import Link from 'next/link'
 import { type ReactNode } from 'react'
 import '~/styles/globals.css'
+
+const manrope = Manrope({
+  subsets: ['latin'],
+})
 
 export default function RootLayout({
   children,
@@ -11,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>
+      <body className={manrope.className}>
         <header>
           <Link href="/" className="text-blue-800 underline">
             audiophile
