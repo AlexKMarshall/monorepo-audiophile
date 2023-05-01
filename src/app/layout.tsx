@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import { Manrope } from 'next/font/google'
+import Image from 'next/image'
 
 import Link from 'next/link'
 import { type ReactNode } from 'react'
@@ -11,6 +12,10 @@ import {
   MobileNavLink,
   MobileNavOverlay,
 } from './MobileNav'
+
+import headphonesThumbnail from '../../public/images/image-category-thumbnail-headphones.png'
+import speakersThumbnail from '../../public/images/image-category-thumbnail-speakers.png'
+import earphonesThumbnail from '../../public/images/image-category-thumbnail-earphones.png'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -26,19 +31,66 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
-        <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
+        <header className="isolate z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
           <MobileNav className="lg:hidden">
             <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-              <MobileNavContent className="bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
+              <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
                 <ul>
-                  <li>
-                    <MobileNavLink href="/headphones">Headphones</MobileNavLink>
+                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                    <Image
+                      src={headphonesThumbnail}
+                      alt=""
+                      className="max-h-[8rem] max-w-[8rem]"
+                    />
+                    <p
+                      id="headphones-link-description"
+                      className="mb-4 font-bold uppercase tracking-wider"
+                    >
+                      Headphones
+                    </p>
+                    <MobileNavLink
+                      href="/headphones"
+                      id="headphones-link"
+                      aria-labelledby="headphones-link headphones-link-description"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                    >
+                      Shop
+                      <ChevronRightIcon className="w-2 text-orange-500" />
+                    </MobileNavLink>
                   </li>
-                  <li>
-                    <MobileNavLink href="/speakers">Speakers</MobileNavLink>
+                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                    <Image
+                      src={speakersThumbnail}
+                      alt=""
+                      className="max-h-[8rem] max-w-[8rem]"
+                    />
+                    <p className="mb-4 font-bold uppercase tracking-wider">
+                      Speakers
+                    </p>
+                    <MobileNavLink
+                      href="/speakers"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                    >
+                      Shop
+                      <ChevronRightIcon className="w-2 text-orange-500" />
+                    </MobileNavLink>
                   </li>
-                  <li>
-                    <MobileNavLink href="/earphones">Earphones</MobileNavLink>
+                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                    <Image
+                      src={earphonesThumbnail}
+                      alt=""
+                      className="max-h-[8rem] max-w-[8rem]"
+                    />
+                    <p className="mb-4 font-bold uppercase tracking-wider">
+                      Earphones
+                    </p>
+                    <MobileNavLink
+                      href="/earphones"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                    >
+                      Shop
+                      <ChevronRightIcon className="w-2 text-orange-500" />
+                    </MobileNavLink>
                   </li>
                 </ul>
               </MobileNavContent>
@@ -121,19 +173,14 @@ export default function RootLayout({
   )
 }
 
-function HamburgerIcon({
-  className,
-  title,
-}: {
-  className?: string
-  title: string
-}) {
+function ChevronRightIcon({ className }: { className?: string }) {
   return (
-    <Svg viewBox="0 0 16 15" className={className} title={title}>
+    <Svg viewBox="0 0 8 12" className={className}>
       <path
-        fill="currentColor"
-        fillRule="evenodd"
-        d="M0 0h16v3H0zm0 6h16v3H0zm0 6h16v3H0z"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        d="m1.322 1 5 5-5 5"
       />
     </Svg>
   )

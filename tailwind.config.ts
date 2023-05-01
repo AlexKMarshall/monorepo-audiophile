@@ -15,7 +15,7 @@ export default {
       colors: {
         gray: {
           50: '#FAFAFA',
-          100: 'F1F1F1',
+          100: '#F1F1F1',
           950: '#101010',
         },
         orange: {

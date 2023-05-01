@@ -1,6 +1,5 @@
 'use client'
 
-import clsx from 'clsx'
 import Link from 'next/link'
 import {
   type ReactNode,
@@ -12,6 +11,7 @@ import {
   useRef,
   useEffect,
   type RefObject,
+  useLayoutEffect,
 } from 'react'
 import { Svg } from '~/components/Svg'
 
@@ -98,6 +98,20 @@ export function MobileNav({
     return () => document.removeEventListener('click', closeOnClickOutside)
   }, [toggle, isOpen])
 
+  useLayoutEffect(() => {
+    if (!isOpen) return
+    const paddingRight =
+      window.innerWidth - document.documentElement.clientWidth
+    document.documentElement.setAttribute(
+      'style',
+      `overflow: hidden; padding-right: ${paddingRight}px;`
+    )
+
+    return () => {
+      document.documentElement.removeAttribute('style')
+    }
+  }, [isOpen])
+
   return (
     <MobileNavContext.Provider
       value={{
@@ -117,16 +131,6 @@ export function MobileNav({
           <HamburgerIcon className="w-4" />
         </button>
         {children}
-        {/* <div
-          id={panelId}
-          className={clsx(
-            isOpen ? 'fixed inset-0 block bg-black/40' : 'hidden'
-          )}
-        >
-          <nav ref={navRef} className="bg-white p-8 text-gray-950">
-            {children}
-          </nav>
-        </div> */}
       </div>
     </MobileNavContext.Provider>
   )
@@ -141,14 +145,7 @@ export function MobileNavOverlay({
 }) {
   const { dataState } = useMobileNavContext()
   return (
-    <div
-      // id={panelId}
-      data-state={dataState}
-      className={className}
-      // className={clsx(
-      //   state.isOpen ? 'fixed inset-0 block bg-black/40' : 'hidden'
-      // )}
-    >
+    <div data-state={dataState} className={className}>
       {children}
     </div>
   )
@@ -163,13 +160,7 @@ export function MobileNavContent({
 }) {
   const { navRef, dataState, panelId } = useMobileNavContext()
   return (
-    <nav
-      id={panelId}
-      ref={navRef}
-      data-state={dataState}
-      className={className}
-      // className="bg-white p-8 text-gray-950">
-    >
+    <nav id={panelId} ref={navRef} data-state={dataState} className={className}>
       {children}
     </nav>
   )
