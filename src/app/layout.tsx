@@ -33,8 +33,8 @@ export default function RootLayout({
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
         <header className="isolate z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
           <MobileNav className="lg:hidden">
-            <MobileNavOverlay className="absolute bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-              <MobileNavContent className="overflow-auto rounded-b-lg bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
+            <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
+              <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
                 <ul>
                   <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                     <Image
