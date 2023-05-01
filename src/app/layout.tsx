@@ -23,19 +23,17 @@ export default function RootLayout({
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
         <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
           <MobileNav>
-            <nav>
-              <ul>
-                <li>
-                  <MobileNavLink href="/headphones">Headphones</MobileNavLink>
-                </li>
-                <li>
-                  <MobileNavLink href="/speakers">Speakers</MobileNavLink>
-                </li>
-                <li>
-                  <MobileNavLink href="/earphones">Earphones</MobileNavLink>
-                </li>
-              </ul>
-            </nav>
+            <ul>
+              <li>
+                <MobileNavLink href="/headphones">Headphones</MobileNavLink>
+              </li>
+              <li>
+                <MobileNavLink href="/speakers">Speakers</MobileNavLink>
+              </li>
+              <li>
+                <MobileNavLink href="/earphones">Earphones</MobileNavLink>
+              </li>
+            </ul>
           </MobileNav>
           <Link href="/" aria-label="Audiophile home">
             <AudiophileLogo className="w-36" />

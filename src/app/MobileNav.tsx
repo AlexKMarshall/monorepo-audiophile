@@ -44,10 +44,13 @@ function useMobileNavContext() {
 
 export function MobileNav({ children }: { children: ReactNode }) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const navRef = useRef<HTMLDivElement>(null)
   const [isOpen, toggle] = useToggle()
   const panelId = useId()
 
   useEffect(() => {
+    // We use the containerRef rather than the nav ref so we don't close
+    // the menu if the user focuses the trigger
     const closeOnFocusOutside = () => {
       if (!containerRef.current?.contains(document.activeElement)) {
         toggle('close')
@@ -69,6 +72,17 @@ export function MobileNav({ children }: { children: ReactNode }) {
     return () => document.removeEventListener('keydown', closeOnEscape)
   }, [toggle])
 
+  useEffect(() => {
+    const closeOnClickOutside = (event: MouseEvent) => {
+      if (isOpen && !navRef.current?.contains(event.target as Node)) {
+        toggle('close')
+      }
+    }
+
+    document.addEventListener('click', closeOnClickOutside)
+    return () => document.removeEventListener('click', closeOnClickOutside)
+  }, [toggle, isOpen])
+
   return (
     <MobileNavContext.Provider value={[isOpen, toggle]}>
       <div ref={containerRef}>
@@ -81,7 +95,7 @@ export function MobileNav({ children }: { children: ReactNode }) {
           <HamburgerIcon className="w-4" />
         </button>
         <div id={panelId} className={clsx(isOpen ? 'block' : 'hidden')}>
-          {children}
+          <nav ref={navRef}>{children}</nav>
         </div>
       </div>
     </MobileNavContext.Provider>
