@@ -120,15 +120,15 @@ export default function RootLayout({
           </Link>
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="grid justify-items-center gap-12 bg-gray-950 px-6 pb-10 text-center text-white before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left">
+        <footer className="grid justify-items-center gap-12 bg-gray-950 px-6 pb-10 text-center text-white [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
           <Link
             href="/"
             aria-label="Audiophile home"
-            className="col-span-full sm:mt-6"
+            className="[grid-area:logo]"
           >
             <AudiophileLogo className="w-36" />
           </Link>
-          <nav className="col-span-full">
+          <nav className="[grid-area:nav]">
             <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest sm:flex-row sm:items-baseline">
               <li>
                 <Link href="/">Home</Link>
@@ -144,16 +144,16 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-          <p className="col-span-full font-medium leading-relaxed opacity-50 sm:mb-12">
+          <p className="font-medium leading-relaxed opacity-50 [grid-area:copy] sm:mb-12 lg:mb-0">
             Audiophile is an all in one stop to fulfill your audio needs.
             We&apos;re a small team of music lovers and sound specialists who
             are devoted to helping you get the most out of personal audio. Come
             and visit our demo facility - we&apos;re open 7 days a week.
           </p>
-          <p className="font-bold opacity-50">
+          <p className="font-bold opacity-50 [grid-area:copyright] lg:mt-5">
             Copyright 2021. All Rights Reserved
           </p>
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center gap-4 [grid-area:socials] lg:self-end lg:justify-self-end">
             <li>
               <Link href="/">
                 <FacebookIcon className="w-6" />
