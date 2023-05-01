@@ -5,7 +5,12 @@ import Link from 'next/link'
 import { type ReactNode } from 'react'
 import { Svg } from '~/components/Svg'
 import '~/styles/globals.css'
-import { MobileNav, MobileNavLink } from './MobileNav'
+import {
+  MobileNav,
+  MobileNavContent,
+  MobileNavLink,
+  MobileNavOverlay,
+} from './MobileNav'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -22,18 +27,22 @@ export default function RootLayout({
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
         <header className="flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
-          <MobileNav>
-            <ul>
-              <li>
-                <MobileNavLink href="/headphones">Headphones</MobileNavLink>
-              </li>
-              <li>
-                <MobileNavLink href="/speakers">Speakers</MobileNavLink>
-              </li>
-              <li>
-                <MobileNavLink href="/earphones">Earphones</MobileNavLink>
-              </li>
-            </ul>
+          <MobileNav className="lg:hidden">
+            <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
+              <MobileNavContent className="bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
+                <ul>
+                  <li>
+                    <MobileNavLink href="/headphones">Headphones</MobileNavLink>
+                  </li>
+                  <li>
+                    <MobileNavLink href="/speakers">Speakers</MobileNavLink>
+                  </li>
+                  <li>
+                    <MobileNavLink href="/earphones">Earphones</MobileNavLink>
+                  </li>
+                </ul>
+              </MobileNavContent>
+            </MobileNavOverlay>
           </MobileNav>
           <Link href="/" aria-label="Audiophile home">
             <AudiophileLogo className="w-36" />

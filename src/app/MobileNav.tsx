@@ -11,16 +11,17 @@ import {
   useContext,
   useRef,
   useEffect,
+  type RefObject,
 } from 'react'
 import { Svg } from '~/components/Svg'
 
-function toggleReducer(state: boolean, action: 'toggle' | 'open' | 'close') {
+function toggleReducer(state: boolean, action: 'toggle' | 'open' | 'closed') {
   switch (action) {
     case 'toggle':
       return !state
     case 'open':
       return true
-    case 'close':
+    case 'closed':
       return false
   }
 }
@@ -29,7 +30,15 @@ function useToggle(initialState = false) {
   return useReducer(toggleReducer, initialState)
 }
 
-type MobileNavContext = ReturnType<typeof useToggle>
+type MobileNavContext = {
+  state: {
+    isOpen: boolean
+    toggle: (action: 'toggle' | 'open' | 'closed') => void
+  }
+  navRef: RefObject<HTMLDivElement>
+  panelId: string
+  dataState: 'open' | 'closed'
+}
 const MobileNavContext = createContext<MobileNavContext | null>(null)
 
 function useMobileNavContext() {
@@ -42,7 +51,13 @@ function useMobileNavContext() {
   return context
 }
 
-export function MobileNav({ children }: { children: ReactNode }) {
+export function MobileNav({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
   const containerRef = useRef<HTMLDivElement>(null)
   const navRef = useRef<HTMLDivElement>(null)
   const [isOpen, toggle] = useToggle()
@@ -53,7 +68,7 @@ export function MobileNav({ children }: { children: ReactNode }) {
     // the menu if the user focuses the trigger
     const closeOnFocusOutside = () => {
       if (!containerRef.current?.contains(document.activeElement)) {
-        toggle('close')
+        toggle('closed')
       }
     }
 
@@ -64,7 +79,7 @@ export function MobileNav({ children }: { children: ReactNode }) {
   useEffect(() => {
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        toggle('close')
+        toggle('closed')
       }
     }
 
@@ -75,7 +90,7 @@ export function MobileNav({ children }: { children: ReactNode }) {
   useEffect(() => {
     const closeOnClickOutside = (event: MouseEvent) => {
       if (isOpen && !navRef.current?.contains(event.target as Node)) {
-        toggle('close')
+        toggle('closed')
       }
     }
 
@@ -84,8 +99,15 @@ export function MobileNav({ children }: { children: ReactNode }) {
   }, [toggle, isOpen])
 
   return (
-    <MobileNavContext.Provider value={[isOpen, toggle]}>
-      <div ref={containerRef}>
+    <MobileNavContext.Provider
+      value={{
+        state: { isOpen, toggle },
+        navRef,
+        panelId,
+        dataState: isOpen ? 'open' : 'closed',
+      }}
+    >
+      <div ref={containerRef} className={className}>
         <button
           onClick={() => toggle('toggle')}
           aria-expanded={isOpen}
@@ -94,23 +116,74 @@ export function MobileNav({ children }: { children: ReactNode }) {
         >
           <HamburgerIcon className="w-4" />
         </button>
-        <div id={panelId} className={clsx(isOpen ? 'block' : 'hidden')}>
-          <nav ref={navRef}>{children}</nav>
-        </div>
+        {children}
+        {/* <div
+          id={panelId}
+          className={clsx(
+            isOpen ? 'fixed inset-0 block bg-black/40' : 'hidden'
+          )}
+        >
+          <nav ref={navRef} className="bg-white p-8 text-gray-950">
+            {children}
+          </nav>
+        </div> */}
       </div>
     </MobileNavContext.Provider>
   )
 }
 
+export function MobileNavOverlay({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
+  const { dataState } = useMobileNavContext()
+  return (
+    <div
+      // id={panelId}
+      data-state={dataState}
+      className={className}
+      // className={clsx(
+      //   state.isOpen ? 'fixed inset-0 block bg-black/40' : 'hidden'
+      // )}
+    >
+      {children}
+    </div>
+  )
+}
+
+export function MobileNavContent({
+  children,
+  className,
+}: {
+  children: ReactNode
+  className?: string
+}) {
+  const { navRef, dataState, panelId } = useMobileNavContext()
+  return (
+    <nav
+      id={panelId}
+      ref={navRef}
+      data-state={dataState}
+      className={className}
+      // className="bg-white p-8 text-gray-950">
+    >
+      {children}
+    </nav>
+  )
+}
+
 type MobileNavLinkProps = Omit<ComponentProps<typeof Link>, 'tabIndex'>
 export function MobileNavLink(props: MobileNavLinkProps) {
-  const [isOpen, toggle] = useMobileNavContext()
+  const { state } = useMobileNavContext()
 
   return (
     <Link
       {...props}
-      tabIndex={isOpen ? undefined : -1}
-      onClick={() => toggle('close')}
+      tabIndex={state.isOpen ? undefined : -1}
+      onClick={() => state.toggle('closed')}
     />
   )
 }
