@@ -42,12 +42,17 @@ export default function RootLayout({
                       alt=""
                       className="max-h-[8rem] max-w-[8rem]"
                     />
-                    <p className="mb-4 font-bold uppercase tracking-wider">
+                    <p
+                      id="headphones-link-description"
+                      className="mb-4 font-bold uppercase tracking-wider"
+                    >
                       Headphones
                     </p>
                     <MobileNavLink
                       href="/headphones"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50"
+                      id="headphones-link"
+                      aria-labelledby="headphones-link headphones-link-description"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
                     >
                       Shop
                       <ChevronRightIcon className="w-2 text-orange-500" />
@@ -63,8 +68,8 @@ export default function RootLayout({
                       Speakers
                     </p>
                     <MobileNavLink
-                      href="/headphones"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50"
+                      href="/speakers"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
                     >
                       Shop
                       <ChevronRightIcon className="w-2 text-orange-500" />
@@ -80,8 +85,8 @@ export default function RootLayout({
                       Earphones
                     </p>
                     <MobileNavLink
-                      href="/headphones"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50"
+                      href="/earphones"
+                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
                     >
                       Shop
                       <ChevronRightIcon className="w-2 text-orange-500" />
