@@ -31,12 +31,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
-        <header className="isolate z-10 flex items-center justify-between gap-4 border-b border-white/10 bg-black px-6 py-8 text-white">
+        <header className="isolate z-10 flex items-center justify-between gap-10 border-b border-white/10 bg-black px-6 py-8 text-white">
           <MobileNav className="lg:hidden">
             <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-              <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white p-8 text-black data-[state=open]:block data-[state=closed]:hidden">
-                <ul>
-                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+              <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14">
+                <ul className="flex flex-col sm:flex-row sm:gap-3">
+                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                     <Image
                       src={headphonesThumbnail}
                       alt=""
@@ -58,7 +58,7 @@ export default function RootLayout({
                       <ChevronRightIcon className="w-2 text-orange-500" />
                     </MobileNavLink>
                   </li>
-                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                     <Image
                       src={speakersThumbnail}
                       alt=""
@@ -75,7 +75,7 @@ export default function RootLayout({
                       <ChevronRightIcon className="w-2 text-orange-500" />
                     </MobileNavLink>
                   </li>
-                  <li className="relative isolate flex flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                     <Image
                       src={earphonesThumbnail}
                       alt=""
@@ -96,7 +96,7 @@ export default function RootLayout({
               </MobileNavContent>
             </MobileNavOverlay>
           </MobileNav>
-          <Link href="/" aria-label="Audiophile home">
+          <Link href="/" aria-label="Audiophile home" className="sm:mr-auto">
             <AudiophileLogo className="w-36" />
           </Link>
           <nav className="hidden lg:block">
@@ -120,12 +120,16 @@ export default function RootLayout({
           </Link>
         </header>
         <main className="flex-1">{children}</main>
-        <footer className="grid justify-items-center gap-12 bg-gray-950 px-6 pb-10 text-white before:h-1 before:w-24 before:bg-orange-500">
-          <Link href="/">
+        <footer className="grid justify-items-center gap-12 bg-gray-950 px-6 pb-10 text-center text-white before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left">
+          <Link
+            href="/"
+            aria-label="Audiophile home"
+            className="col-span-full sm:mt-6"
+          >
             <AudiophileLogo className="w-36" />
           </Link>
-          <nav>
-            <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest">
+          <nav className="col-span-full">
+            <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest sm:flex-row sm:items-baseline">
               <li>
                 <Link href="/">Home</Link>
               </li>
@@ -140,7 +144,7 @@ export default function RootLayout({
               </li>
             </ul>
           </nav>
-          <p className="text-center font-medium leading-relaxed opacity-50">
+          <p className="col-span-full font-medium leading-relaxed opacity-50 sm:mb-12">
             Audiophile is an all in one stop to fulfill your audio needs.
             We&apos;re a small team of music lovers and sound specialists who
             are devoted to helping you get the most out of personal audio. Come
