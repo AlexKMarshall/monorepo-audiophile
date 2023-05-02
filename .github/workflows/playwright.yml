@@ -53,8 +53,8 @@ jobs:
         run: pnpm exec playwright install --with-deps
         if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      # - uses: actions/cache@v3
-      #   name: Setup NextJs build cache
+      - uses: actions/cache@v3
+        name: Setup NextJs build cache
       #   with: |
       #     ${{ steps.pnpm-cache.outputs.STORE_PATH }}
       #     ${{ github.workspace }}/.next/cache
