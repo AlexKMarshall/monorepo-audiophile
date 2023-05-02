@@ -77,3 +77,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+
+      - name: run Lighthouse CI
+        run: |
+          pnpm add -g @lhci/cli
+          lhci autorun
