@@ -40,7 +40,8 @@ jobs:
 
       - name: Get Playwright version
         id: playwright-version
-        run: echo "PLAYWRIGHT_VERSION=$(pnpm exec playwright --version)" >> $GITHUB_OUTPUT
+        run: |
+          echo "PLAYWRIGHT_VERSION=$(node -e "process.stdout.write(require('@playwright/test/package.json').version)")" >> $GITHUB_OUTPUT
 
       - uses: actions/cache@v3
         name: Setup Playwright browser cache
