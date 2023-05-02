@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
         <header className="isolate z-10 border-b border-white/10 bg-black text-white">
           <CenterContent>
-            <header className="flex items-center justify-between gap-10 px-6 py-8 lg:grid lg:grid-cols-3">
+            <header className="flex items-center justify-between gap-10 py-8 lg:grid lg:grid-cols-3">
               <MobileNav className="lg:hidden">
                 <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
                   <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14">
@@ -127,10 +127,12 @@ export default function RootLayout({
             </header>
           </CenterContent>
         </header>
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <CenterContent>{children}</CenterContent>
+        </main>
         <footer className="bg-gray-950 text-white">
           <CenterContent>
-            <div className="grid justify-items-center gap-12 px-6 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
+            <div className="grid justify-items-center gap-12 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
               <Link
                 href="/"
                 aria-label="Audiophile home"
@@ -265,5 +267,9 @@ function InstagramIcon({ className }: { className?: string }) {
 }
 
 function CenterContent({ children }: { children: ReactNode }) {
-  return <div className="mx-auto max-w-6xl">{children}</div>
+  return (
+    <div className="mx-auto box-content max-w-6xl px-6 sm:px-10">
+      {children}
+    </div>
+  )
 }
