@@ -12,6 +12,7 @@ import {
   useEffect,
   type RefObject,
   useLayoutEffect,
+  type HTMLAttributes,
 } from 'react'
 import { Svg } from '~/components/Svg'
 
@@ -151,16 +152,14 @@ export function MobileNavOverlay({
   )
 }
 
+type MobileNavContentProps = Omit<HTMLAttributes<HTMLDivElement>, 'id'>
 export function MobileNavContent({
   children,
-  className,
-}: {
-  children: ReactNode
-  className?: string
-}) {
+  ...props
+}: MobileNavContentProps) {
   const { navRef, dataState, panelId } = useMobileNavContext()
   return (
-    <nav id={panelId} ref={navRef} data-state={dataState} className={className}>
+    <nav {...props} id={panelId} ref={navRef} data-state={dataState}>
       {children}
     </nav>
   )

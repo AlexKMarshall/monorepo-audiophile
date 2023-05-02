@@ -1,9 +1,19 @@
 import { type Config } from 'tailwindcss'
 import colors from 'tailwindcss/colors'
 
+export const screens = {
+  sm: 640,
+  lg: 1024,
+}
+
+const tailwindScreens = Object.fromEntries(
+  Object.entries(screens).map(([name, size]) => [name, `${size}px`])
+)
+
 export default {
   content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
+    screens: tailwindScreens,
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
