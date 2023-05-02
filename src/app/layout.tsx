@@ -31,98 +31,106 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
-        <header className="isolate z-10 flex items-center justify-between gap-10 border-b border-white/10 bg-black px-6 py-8 text-white">
-          <MobileNav className="lg:hidden">
-            <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-              <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14">
-                <ul className="flex flex-col sm:flex-row sm:gap-3">
-                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                    <Image
-                      src={headphonesThumbnail}
-                      alt=""
-                      className="max-h-[8rem] max-w-[8rem]"
-                    />
-                    <p
-                      id="headphones-link-description"
-                      className="mb-4 font-bold uppercase tracking-wider"
-                    >
-                      Headphones
-                    </p>
-                    <MobileNavLink
-                      href="/headphones"
-                      id="headphones-link"
-                      aria-labelledby="headphones-link headphones-link-description"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                    >
-                      Shop
-                      <ChevronRightIcon className="w-2 text-orange-500" />
-                    </MobileNavLink>
+        <header className="isolate z-10 border-b border-white/10 bg-black text-white">
+          <CenterContent>
+            <header className="flex items-center justify-between gap-10 px-6 py-8 lg:grid lg:grid-cols-3">
+              <MobileNav className="lg:hidden">
+                <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
+                  <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14">
+                    <ul className="flex flex-col sm:flex-row sm:gap-3">
+                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                        <Image
+                          src={headphonesThumbnail}
+                          alt=""
+                          className="max-h-[8rem] max-w-[8rem]"
+                        />
+                        <p
+                          id="headphones-link-description"
+                          className="mb-4 font-bold uppercase tracking-wider"
+                        >
+                          Headphones
+                        </p>
+                        <MobileNavLink
+                          href="/headphones"
+                          id="headphones-link"
+                          aria-labelledby="headphones-link headphones-link-description"
+                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                        >
+                          Shop
+                          <ChevronRightIcon className="w-2 text-orange-500" />
+                        </MobileNavLink>
+                      </li>
+                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                        <Image
+                          src={speakersThumbnail}
+                          alt=""
+                          className="max-h-[8rem] max-w-[8rem]"
+                        />
+                        <p className="mb-4 font-bold uppercase tracking-wider">
+                          Speakers
+                        </p>
+                        <MobileNavLink
+                          href="/speakers"
+                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                        >
+                          Shop
+                          <ChevronRightIcon className="w-2 text-orange-500" />
+                        </MobileNavLink>
+                      </li>
+                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                        <Image
+                          src={earphonesThumbnail}
+                          alt=""
+                          className="max-h-[8rem] max-w-[8rem]"
+                        />
+                        <p className="mb-4 font-bold uppercase tracking-wider">
+                          Earphones
+                        </p>
+                        <MobileNavLink
+                          href="/earphones"
+                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                        >
+                          Shop
+                          <ChevronRightIcon className="w-2 text-orange-500" />
+                        </MobileNavLink>
+                      </li>
+                    </ul>
+                  </MobileNavContent>
+                </MobileNavOverlay>
+              </MobileNav>
+              <Link
+                href="/"
+                aria-label="Audiophile home"
+                className="sm:mr-auto lg:mr-0"
+              >
+                <AudiophileLogo className="w-36" />
+              </Link>
+              <nav className="hidden lg:block">
+                <ul className="flex gap-8 text-sm font-bold uppercase tracking-widest">
+                  <li>
+                    <Link href="/">Home</Link>
                   </li>
-                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                    <Image
-                      src={speakersThumbnail}
-                      alt=""
-                      className="max-h-[8rem] max-w-[8rem]"
-                    />
-                    <p className="mb-4 font-bold uppercase tracking-wider">
-                      Speakers
-                    </p>
-                    <MobileNavLink
-                      href="/speakers"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                    >
-                      Shop
-                      <ChevronRightIcon className="w-2 text-orange-500" />
-                    </MobileNavLink>
+                  <li>
+                    <Link href="/headphones">Headphones</Link>
                   </li>
-                  <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                    <Image
-                      src={earphonesThumbnail}
-                      alt=""
-                      className="max-h-[8rem] max-w-[8rem]"
-                    />
-                    <p className="mb-4 font-bold uppercase tracking-wider">
-                      Earphones
-                    </p>
-                    <MobileNavLink
-                      href="/earphones"
-                      className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                    >
-                      Shop
-                      <ChevronRightIcon className="w-2 text-orange-500" />
-                    </MobileNavLink>
+                  <li>
+                    <Link href="/speakers">Speakers</Link>
+                  </li>
+                  <li>
+                    <Link href="/earphones">Earphones</Link>
                   </li>
                 </ul>
-              </MobileNavContent>
-            </MobileNavOverlay>
-          </MobileNav>
-          <Link href="/" aria-label="Audiophile home" className="sm:mr-auto">
-            <AudiophileLogo className="w-36" />
-          </Link>
-          <nav className="hidden lg:block">
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/headphones">Headphones</Link>
-              </li>
-              <li>
-                <Link href="/speakers">Speakers</Link>
-              </li>
-              <li>
-                <Link href="/earphones">Earphones</Link>
-              </li>
-            </ul>
-          </nav>
-          <Link href="/cart">
-            <CartIcon title="cart" className="w-6" />
-          </Link>
+              </nav>
+              <Link href="/cart" className="justify-self-end">
+                <CartIcon title="cart" className="w-6" />
+              </Link>
+            </header>
+          </CenterContent>
         </header>
         <main className="flex-1">{children}</main>
-        <div className="bg-gray-950 text-white">
+        <footer className="bg-gray-950 text-white">
           <CenterContent>
-            <footer className="grid justify-items-center gap-12 px-6 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
+            <div className="grid justify-items-center gap-12 px-6 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:px-10 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
               <Link
                 href="/"
                 aria-label="Audiophile home"
@@ -173,9 +181,9 @@ export default function RootLayout({
                   </Link>
                 </li>
               </ul>
-            </footer>
+            </div>
           </CenterContent>
-        </div>
+        </footer>
         {modal}
       </body>
     </html>
