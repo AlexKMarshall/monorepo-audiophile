@@ -69,11 +69,16 @@ export default function RootLayout({
                           alt=""
                           className="max-h-[8rem] max-w-[8rem]"
                         />
-                        <p className="mb-4 font-bold uppercase tracking-wider">
+                        <p
+                          id="speakers-link-description"
+                          className="mb-4 font-bold uppercase tracking-wider"
+                        >
                           Speakers
                         </p>
                         <MobileNavLink
                           href="/speakers"
+                          id="speakers-link"
+                          aria-labelledby="speakers-link speakers-link-description"
                           className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
                         >
                           Shop
@@ -86,11 +91,16 @@ export default function RootLayout({
                           alt=""
                           className="max-h-[8rem] max-w-[8rem]"
                         />
-                        <p className="mb-4 font-bold uppercase tracking-wider">
+                        <p
+                          id="earphones-link-description"
+                          className="mb-4 font-bold uppercase tracking-wider"
+                        >
                           Earphones
                         </p>
                         <MobileNavLink
                           href="/earphones"
+                          id="earphones-link"
+                          aria-labelledby="earphones-link earphones-link-description"
                           className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
                         >
                           Shop
