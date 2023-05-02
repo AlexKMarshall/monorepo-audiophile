@@ -5,7 +5,7 @@ export default function CategoryPage({
 }) {
   return (
     <div>
-      <h1>Category Page {params.categoryName} </h1>
+      <h1>{params.categoryName}</h1>
     </div>
   )
 }

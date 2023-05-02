@@ -36,7 +36,10 @@ export default function RootLayout({
             <header className="flex items-center justify-between gap-10 py-8 lg:grid lg:grid-cols-3">
               <MobileNav className="lg:hidden">
                 <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-                  <MobileNavContent className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14">
+                  <MobileNavContent
+                    aria-label="primary"
+                    className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14"
+                  >
                     <ul className="flex flex-col sm:flex-row sm:gap-3">
                       <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                         <Image
@@ -105,7 +108,7 @@ export default function RootLayout({
               >
                 <AudiophileLogo className="w-36" />
               </Link>
-              <nav className="hidden lg:block">
+              <nav aria-label="primary" className="hidden lg:block">
                 <ul className="flex gap-8 text-sm font-bold uppercase tracking-widest">
                   <li>
                     <Link href="/">Home</Link>
@@ -140,7 +143,7 @@ export default function RootLayout({
               >
                 <AudiophileLogo className="w-36" />
               </Link>
-              <nav className="[grid-area:nav]">
+              <nav aria-label="secondary" className="[grid-area:nav]">
                 <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest sm:flex-row sm:items-baseline">
                   <li>
                     <Link href="/">Home</Link>
