@@ -13,9 +13,9 @@ import {
   MobileNavOverlay,
 } from './MobileNav'
 
-import headphonesThumbnail from '../../public/images/image-category-thumbnail-headphones.png'
-import speakersThumbnail from '../../public/images/image-category-thumbnail-speakers.png'
-import earphonesThumbnail from '../../public/images/image-category-thumbnail-earphones.png'
+import headphonesThumbnail from '../../../public/images/image-category-thumbnail-headphones.png'
+import speakersThumbnail from '../../../public/images/image-category-thumbnail-speakers.png'
+import earphonesThumbnail from '../../../public/images/image-category-thumbnail-earphones.png'
 import { CenterContent } from '~/components/CenterContent'
 
 const manrope = Manrope({

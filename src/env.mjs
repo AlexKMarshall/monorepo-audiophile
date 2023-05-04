@@ -1,5 +1,5 @@
-import { z } from "zod";
-import { createEnv } from "@t3-oss/env-nextjs";
+import { z } from 'zod'
+import { createEnv } from '@t3-oss/env-nextjs'
 
 export const env = createEnv({
   /**
@@ -7,7 +7,9 @@ export const env = createEnv({
    * isn't built with invalid env vars.
    */
   server: {
-    NODE_ENV: z.enum(["development", "test", "production"]),
+    NODE_ENV: z.enum(['development', 'test', 'production']),
+    SANITY_PROJECT_ID: z.string().min(1),
+    SANITY_DATASET: z.string().min(1),
   },
 
   /**
@@ -25,6 +27,8 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
+    SANITY_PROJECT_ID: process.env.SANITY_PROJECT_ID,
+    SANITY_DATASET: process.env.SANITY_DATASET,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
-});
+})

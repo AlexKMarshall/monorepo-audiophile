@@ -1,20 +1,30 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
+import { sanityClient } from '~/sanityClient'
+
 import xx99MarkTwoPreviewMobile from './xx99-mk2-image-category-page-preview-mobile.jpg'
 import xx99MarkTwoPreviewTablet from './xx99-mk2-image-category-page-preview-tablet.jpg'
 import xx99MarkTwoPreviewDesktop from './xx99-mk2-image-category-page-preview-desktop.jpg'
 
-export default function CategoryPage({
+export default async function CategoryPage({
   params,
 }: {
-  params: { categoryName: string }
+  params: { category: string }
 }) {
+  const productCategory: { title: string } | null = await sanityClient.fetch(
+    `*[_type == "productCategory" && slug.current == "${params.category}"]{title}[0]`
+  )
+
+  if (!productCategory) {
+    throw new Error(`404 - Category not found: ${params.category}`)
+  }
+
   return (
     <div>
       <div className="bg-black py-8 text-white sm:py-24">
         <h1 className="text-center text-3xl font-bold uppercase tracking-widest">
-          {params.categoryName}
+          {productCategory.title}
         </h1>
       </div>
       <CenterContent>
@@ -67,4 +77,12 @@ export default function CategoryPage({
       </CenterContent>
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  const slugs: string[] = await sanityClient.fetch(
+    `*[_type == "productCategory"] | order(order asc)[].slug.current`
+  )
+
+  return slugs.map((slug) => ({ category: slug }))
 }

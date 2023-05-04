@@ -4,6 +4,8 @@ on:
 
 env:
   LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+  SANITY_PROJECT_ID: ${{ secrets.SANITY_PROJECT_ID }}
+  SANITY_DATASET: ${{ secrets.SANITY_DATASET }}
 
 jobs:
   test:
