@@ -1,6 +1,18 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
   "extends": [
-    "config:base"
+    "config:base",
+    "config:js-app",
+    ":automergeMinor",
+    ":automergePatch",
+    ":automergeTypes",
+    ":automergeLinters"
+  ],
+  "packageRules": [
+    {
+      "matchDatasources": ["npm"],
+      "stabilityDays": 7
+    }
   ]
 }
