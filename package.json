@@ -2,6 +2,10 @@
   "name": "audiophile",
   "version": "0.0.0",
   "description": "",
+  "workspaces": [
+    "apps/*",
+    "tests/*"
+  ],
   "scripts": {
     "ci": "turbo build test"
   },
