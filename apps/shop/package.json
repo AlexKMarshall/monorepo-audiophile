@@ -6,7 +6,8 @@
     "build": "next build",
     "dev": "next dev",
     "lint": "next lint",
-    "start": "next start"
+    "start": "next start",
+    "lighthouse": "lhci autorun"
   },
   "dependencies": {
     "@sanity/client": "^6.0.1",
@@ -20,6 +21,7 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
+    "@lhci/cli": "^0.12.0",
     "@playwright/test": "^1.33.0",
     "@types/eslint": "^8.21.3",
     "@types/node": "^18.15.5",
