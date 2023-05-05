@@ -2,6 +2,8 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
 import { sanityClient } from '~/sanityClient'
+import { z } from 'zod'
+import { productCategoryZod } from '@audiophile/content-schema'
 
 import xx99MarkTwoPreviewMobile from './xx99-mk2-image-category-page-preview-mobile.jpg'
 import xx99MarkTwoPreviewTablet from './xx99-mk2-image-category-page-preview-tablet.jpg'
@@ -12,13 +14,11 @@ export default async function CategoryPage({
 }: {
   params: { category: string }
 }) {
-  const productCategory: { title: string } | null = await sanityClient.fetch(
-    `*[_type == "productCategory" && slug.current == "${params.category}"]{title}[0]`
-  )
-
-  if (!productCategory) {
-    throw new Error(`404 - Category not found: ${params.category}`)
-  }
+  const productCategory = await sanityClient
+    .fetch(
+      `*[_type == "productCategory" && slug.current == "${params.category}"]{title}[0]`
+    )
+    .then((result) => productCategoryZod.pick({ title: true }).parse(result))
 
   return (
     <div>
@@ -80,9 +80,11 @@ export default async function CategoryPage({
 }
 
 export async function generateStaticParams() {
-  const slugs: string[] = await sanityClient.fetch(
-    `*[_type == "productCategory"] | order(order asc)[].slug.current`
-  )
+  const slugs = await sanityClient
+    .fetch(`*[_type == "productCategory"] | order(order asc)[].slug.current`)
+    .then((result) =>
+      z.array(productCategoryZod.shape.slug.shape.current).parse(result)
+    )
 
   return slugs.map((slug) => ({ category: slug }))
 }

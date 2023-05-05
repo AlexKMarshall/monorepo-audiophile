@@ -13,6 +13,9 @@ importers:
 
   apps/content:
     dependencies:
+      '@audiophile/content-schema':
+        specifier: workspace:*
+        version: link:../../packages/content-schema
       '@sanity/vision':
         specifier: 3.10.0
         version: 3.10.0(@babel/runtime@7.21.5)(@codemirror/lint@6.2.1)(@codemirror/state@6.2.0)(@codemirror/theme-one-dark@6.1.2)(@lezer/common@1.0.2)(codemirror@6.0.1)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)(styled-components@5.3.10)
@@ -28,6 +31,9 @@ importers:
       sanity:
         specifier: 3.10.0
         version: 3.10.0(@types/node@20.0.0)(@types/react@18.2.5)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.10)
+      sanity-typed-schema-builder:
+        specifier: ^2.2.3
+        version: 2.2.3(sanity@3.10.0)
       styled-components:
         specifier: 5.3.10
         version: 5.3.10(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
@@ -53,6 +59,9 @@ importers:
 
   apps/shop:
     dependencies:
+      '@audiophile/content-schema':
+        specifier: workspace:*
+        version: link:../../packages/content-schema
       '@sanity/client':
         specifier: 6.0.1
         version: 6.0.1
@@ -74,6 +83,9 @@ importers:
       react-dom:
         specifier: 18.2.0
         version: 18.2.0(react@18.2.0)
+      sanity-typed-schema-builder:
+        specifier: ^2.2.3
+        version: 2.2.3(sanity@3.10.0)
       sharp:
         specifier: 0.32.1
         version: 0.32.1
@@ -126,6 +138,19 @@ importers:
       tailwindcss:
         specifier: 3.3.2
         version: 3.3.2
+      typescript:
+        specifier: 5.0.4
+        version: 5.0.4
+
+  packages/content-schema:
+    dependencies:
+      sanity-typed-schema-builder:
+        specifier: ^2.2.3
+        version: 2.2.3(sanity@3.10.0)
+      zod:
+        specifier: 3.21.4
+        version: 3.21.4
+    devDependencies:
       typescript:
         specifier: 5.0.4
         version: 5.0.4
@@ -2884,6 +2909,10 @@ packages:
   /@types/json5@0.0.29:
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
     dev: true
+
+  /@types/lodash@4.14.182:
+    resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
+    dev: false
 
   /@types/lodash@4.14.194:
     resolution: {integrity: sha512-r22s9tAS7imvBt2lyHC9B8AGwWnXaYb1tY09oyLkXDs4vArpYJzw09nj8MLx5VfciBPGIb+ZwG0ssYnEPJxn/g==}
@@ -7742,6 +7771,20 @@ packages:
       diff-match-patch: 1.0.5
     dev: false
 
+  /sanity-typed-schema-builder@2.2.3(sanity@3.10.0):
+    resolution: {integrity: sha512-8NyPKvoiZlb7lxqc2G43TGQazwe44r28qM8bJLaNjXeD8J2VkWfGuSlabTjiYF2PR3iZqq5ROCBXJP9dr8RB1Q==}
+    engines: {node: ^18.12.1}
+    peerDependencies:
+      sanity: ^3.2.0
+    dependencies:
+      '@portabletext/types': 1.0.3
+      '@types/lodash': 4.14.182
+      lodash: 4.17.21
+      sanity: 3.10.0(@types/node@20.0.0)(@types/react@18.2.5)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.10)
+      type-fest: 2.19.0
+      zod: 3.21.4
+    dev: false
+
   /sanity@3.10.0(@types/node@20.0.0)(@types/react@18.2.5)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.10):
     resolution: {integrity: sha512-wNwm4dzULW66PNoJPNf7CPoohD9nJQg2fILlC4MlYsA6DMmLjLxAjeaKzkQh1Xwk5MXg7UiezXiBRMlTXZ0cZg==}
     engines: {node: '>=14.18.0'}
@@ -8644,6 +8687,11 @@ packages:
   /type-fest@0.8.1:
     resolution: {integrity: sha512-4dbzIzqvjtgiM5rw1k5rEHtBANKmdudhGyBEajN01fEyhaAIhsoKNy6y7+IN93IfpFtwY9iqi7kD+xwKhQsNJA==}
     engines: {node: '>=8'}
+    dev: false
+
+  /type-fest@2.19.0:
+    resolution: {integrity: sha512-RAH822pAdBgcNMAfWnCBU3CFZcfZ/i1eZjwFU/dsLKumyuuP3niueg2UAukXYF0E2AAoc82ZSSf9J0WQBinzHA==}
+    engines: {node: '>=12.20'}
     dev: false
 
   /type-is@1.6.18:

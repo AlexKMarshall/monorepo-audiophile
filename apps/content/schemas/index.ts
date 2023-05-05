@@ -1,3 +1,3 @@
-import productCategory from './ProductCategory'
+import { productCategory } from '@audiophile/content-schema'
 
-export const schemaTypes = [productCategory]
+export const schemaTypes = [productCategory.schema()]
