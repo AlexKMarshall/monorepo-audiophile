@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "scripts": {
     "start:server": "pnpm --filter shop start",
-    "test": "playwright test"
+    "test": "playwright test",
+    "playwright:install": "pnpm exec playwright install --with-deps"
   },
   "dependencies": {
     "shop": "workspace:*"

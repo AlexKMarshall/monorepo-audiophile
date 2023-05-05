@@ -52,11 +52,9 @@ jobs:
       #     path: ~/.cache/ms-playwright
       #     key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+        run: pnpm dlx playwright install --with-deps
         # if: steps.playwright-cache.outputs.cache-hit != 'true'
 
-      - name: Install Playwright deps
-        run: npx playwright install-deps
         # if: steps.playwright-cache.outputs.cache-hit != 'true'
 
       # - uses: actions/cache@v3
