@@ -1,0 +1,15 @@
+{
+  "name": "audiophile",
+  "version": "0.0.0",
+  "description": "",
+  "scripts": {
+    "ci": "turbo build test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "prettier": "^2.8.6",
+    "turbo": "^1.9.3"
+  }
+}
