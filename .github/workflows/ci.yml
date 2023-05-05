@@ -43,37 +43,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      # - name: Get Playwright version
-      #   id: playwright-version
-      #   run: |
-      #     echo "PLAYWRIGHT_VERSION=$(node -e "process.stdout.write(require('@playwright/test/package.json').version)")" >> $GITHUB_OUTPUT
-      # - uses: actions/cache@v3
-      #   name: Setup Playwright browser cache
-      #   id: playwright-cache
-      #   with:
-      #     path: ~/.cache/ms-playwright
-      #     key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.PLAYWRIGHT_VERSION }}
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
-        # if: steps.playwright-cache.outputs.cache-hit != 'true'
-
-        # if: steps.playwright-cache.outputs.cache-hit != 'true'
-
-      # - uses: actions/cache@v3
-      #   name: Setup NextJs build cache
-      #   with:
-      #     path: |
-      #       ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-      #       ${{ github.workspace }}/.next/cache
-      #     key: ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-      #     # If source files changed but packages didn't, rebuild from a prior cache.
-      #     restore-keys: |
-      #       ${{ runner.os }}-nextjs-${{ hashFiles('**/pnpm-lock.yaml') }}-
-
-      # - name: Run build
-      #   run: pnpm build
-      # - name: Run Playwright tests
-      #   run: pnpm exec playwright test
 
       - name: Run Turbo CI
         run: pnpm run ci
