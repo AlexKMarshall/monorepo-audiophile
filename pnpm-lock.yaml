@@ -130,7 +130,7 @@ importers:
         specifier: 5.0.4
         version: 5.0.4
 
-  tests/shop-test:
+  packages/shop-test:
     dependencies:
       shop:
         specifier: workspace:*
@@ -2858,7 +2858,7 @@ packages:
     resolution: {integrity: sha512-ZUxbzKl0IfJILTS6t7ip5fQQM/J3TJYubDm3nMbgubNNYS62eXeUpoLUC8/7fJNiFYHTrGPQn7hspDUzIHX3UA==}
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 20.0.0
+      '@types/node': 18.16.4
     dev: false
 
   /@types/hast@2.3.4:
@@ -2895,7 +2895,6 @@ packages:
 
   /@types/node@18.16.4:
     resolution: {integrity: sha512-LUhvPmAKAbgm+p/K11IWszLZVoZDlMF4NRmqbhEzDz/CnCuehPkZXwZbBCKGJsgjnuVejotBwM7B3Scrq4EqDw==}
-    dev: true
 
   /@types/node@20.0.0:
     resolution: {integrity: sha512-cD2uPTDnQQCVpmRefonO98/PPijuOnnEy5oytWJFPY1N9aJCz2wJ5kSGWO+zJoed2cY2JxQh6yBuUq4vIn61hw==}
