@@ -1,4 +1,5 @@
 import { s } from 'sanity-typed-schema-builder'
+import { z } from 'zod'
 
 export const productCategory = s.document({
   name: 'productCategory',
@@ -24,4 +25,12 @@ export const productCategory = s.document({
       }),
     },
   ],
+})
+
+export const productCategoryZod = z.object({
+  title: z.string(),
+  order: z.number(),
+  slug: z.object({
+    current: z.string(),
+  }),
 })
