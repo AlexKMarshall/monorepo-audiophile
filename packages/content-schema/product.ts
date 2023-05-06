@@ -2,6 +2,7 @@ import { s } from 'sanity-typed-schema-builder'
 import { slugZodSchema } from './slug'
 import { z } from 'zod'
 import { sanityImageSourceZodSchema } from './image'
+import { productCategory } from './productCategory'
 
 export const product = s.document({
   name: 'product',
@@ -16,6 +17,13 @@ export const product = s.document({
       name: 'slug',
       title: 'Slug',
       type: s.slug({ options: { source: 'title' } }),
+    },
+    {
+      name: 'category',
+      title: 'Category',
+      type: s.reference({
+        to: [productCategory],
+      }),
     },
     { name: 'description', title: 'Description', type: s.string() },
     { name: 'isNew', title: 'Is new?', type: s.boolean(), optional: true },
