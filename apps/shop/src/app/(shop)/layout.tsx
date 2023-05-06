@@ -13,11 +13,8 @@ import {
   MobileNavOverlay,
 } from './MobileNav'
 
-import headphonesThumbnail from '../../../public/images/image-category-thumbnail-headphones.png'
-import speakersThumbnail from '../../../public/images/image-category-thumbnail-speakers.png'
-import earphonesThumbnail from '../../../public/images/image-category-thumbnail-earphones.png'
 import { CenterContent } from '~/components/CenterContent'
-import { sanityClient } from '~/sanityClient'
+import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { productCategoryZod } from '@audiophile/content-schema'
 
@@ -34,12 +31,12 @@ export default async function RootLayout({
 }) {
   const productCategories = await sanityClient
     .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current}`
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
     )
     .then((result) =>
       z
         .array(
-          productCategoryZod.pick({ title: true }).extend({
+          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
             slug: productCategoryZod.shape.slug.shape.current,
           })
         )
@@ -59,7 +56,44 @@ export default async function RootLayout({
                     className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14"
                   >
                     <ul className="flex flex-col sm:flex-row sm:gap-3">
-                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
+                      {productCategories.map(({ slug, title, thumbnail }) => (
+                        <li
+                          key={slug}
+                          className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
+                        >
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            srcSet={`${urlFor(thumbnail.mobile)
+                              .width(128)
+                              .url()}, 
+                            ${urlFor(thumbnail.mobile).width(256).url()} 2x,
+                            `}
+                            src={urlFor(thumbnail.mobile).width(128).url()}
+                            alt=""
+                            width={438}
+                            height={438}
+                            className="aspect-square max-w-[8rem] object-contain object-bottom"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                          <p
+                            id={`${slug}-link-description`}
+                            className="mb-4 font-bold uppercase tracking-wider"
+                          >
+                            {title}
+                          </p>
+                          <MobileNavLink
+                            href={slug}
+                            id={`${slug}-link`}
+                            aria-labelledby={`${slug}-link ${slug}-link-description`}
+                            className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                          >
+                            Shop
+                            <ChevronRightIcon className="w-2 text-orange-500" />
+                          </MobileNavLink>
+                        </li>
+                      ))}
+                      {/* <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
                         <Image
                           src={headphonesThumbnail}
                           alt=""
@@ -124,7 +158,7 @@ export default async function RootLayout({
                           Shop
                           <ChevronRightIcon className="w-2 text-orange-500" />
                         </MobileNavLink>
-                      </li>
+                      </li> */}
                     </ul>
                   </MobileNavContent>
                 </MobileNavOverlay>
