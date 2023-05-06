@@ -5,7 +5,7 @@ import { sanityImageSourceZodSchema } from './image'
 import { productCategory } from './productCategory'
 import { price, priceZodSchema } from './price'
 
-export const product = s.document({
+const baseProduct = {
   name: 'product',
   title: 'Product',
   fields: [
@@ -86,12 +86,27 @@ export const product = s.document({
       type: s.number(),
     },
   ],
+} satisfies Parameters<typeof s.document>[0]
+
+export const product = s.document({
+  ...baseProduct,
+  fields: [
+    ...baseProduct.fields,
+    {
+      name: 'relatedProducts',
+      title: 'Related products',
+      type: s.array({
+        of: [
+          s.reference({
+            to: [s.document(baseProduct)],
+          }),
+        ],
+      }),
+    },
+  ],
 })
 
-type Product = s.infer<typeof product>
-type rich = Product['features'][number]['children'][number]
-
-export const productZod = z.object({
+const baseProductZod = z.object({
   title: z.string(),
   slug: slugZodSchema,
   description: z.string(),
@@ -126,4 +141,8 @@ export const productZod = z.object({
       quantity: z.number(),
     })
   ),
+})
+
+export const productZod = baseProductZod.extend({
+  relatedProducts: z.array(baseProductZod),
 })

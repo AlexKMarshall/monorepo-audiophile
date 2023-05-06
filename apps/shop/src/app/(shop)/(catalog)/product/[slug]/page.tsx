@@ -3,6 +3,7 @@ import { BackButton } from '~/components/BackButton'
 import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { PortableText } from '@portabletext/react'
+import Link from 'next/link'
 
 export default async function ProductPage({
   params,
@@ -19,7 +20,8 @@ export default async function ProductPage({
         'currencyCode' : price.currency->isoCode
       },
       features,
-      boxIncludes
+      boxIncludes,
+      relatedProducts[]->{title, 'slug': slug.current}
   }[0]`
     )
     .then((result) =>
@@ -35,6 +37,16 @@ export default async function ProductPage({
             amount: productZod.shape.price.shape.amount,
             currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
           }),
+          relatedProducts: z.array(
+            productZod.shape.relatedProducts.element
+              .pick({
+                title: true,
+              })
+              .extend({
+                slug: productZod.shape.relatedProducts.element.shape.slug.shape
+                  .current,
+              })
+          ),
         })
         .parse(result)
     )
@@ -62,6 +74,14 @@ export default async function ProductPage({
         {product.boxIncludes.map(({ _key, item, quantity }) => (
           <li key={_key}>
             <span>{quantity}x</span> <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+      <h2>You may also like</h2>
+      <ul>
+        {product.relatedProducts.map(({ slug, title }) => (
+          <li key={slug}>
+            <Link href={`/product/${slug}`}>{title}</Link>
           </li>
         ))}
       </ul>
