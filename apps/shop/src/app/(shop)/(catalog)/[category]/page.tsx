@@ -62,10 +62,14 @@ export default async function CategoryPage({
                     <source
                       media={`(min-width: ${screens.lg}px)`}
                       srcSet={`${urlFor(product.previewImage.desktop)
-                        .width(510)
+                        .width(540)
+                        .height(560)
                         .url()}, ${urlFor(product.previewImage.desktop)
-                        .width(1020)
+                        .width(1080)
+                        .height(1120)
                         .url()} 2x`}
+                      width={1080}
+                      height={1120}
                     />
                   )}
                   {product.previewImage.tablet && (
@@ -73,21 +77,32 @@ export default async function CategoryPage({
                       media={`(min-width: ${screens.sm}px)`}
                       srcSet={`${urlFor(product.previewImage.tablet)
                         .width(689)
+                        .height(352)
                         .url()}, ${urlFor(product.previewImage.tablet)
                         .width(1378)
+                        .height(704)
                         .url()} 2x`}
+                      width={1378}
+                      height={704}
                     />
                   )}
                   <img
                     srcSet={`${urlFor(product.previewImage.mobile)
                       .width(327)
+                      .height(352)
                       .url()}, ${urlFor(product.previewImage.mobile)
                       .width(654)
+                      .height(704)
                       .url()} 2x`}
-                    src={urlFor(product.previewImage.mobile).width(327).url()}
+                    src={urlFor(product.previewImage.mobile)
+                      .width(327)
+                      .height(352)
+                      .url()}
                     alt={product.previewImage.alt}
                     loading={index === 0 ? 'eager' : 'lazy'}
                     decoding={index === 0 ? 'sync' : 'async'}
+                    width={654}
+                    height={704}
                   />
                 </picture>
               </div>
