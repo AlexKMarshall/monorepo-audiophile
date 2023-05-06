@@ -17,18 +17,35 @@ import headphonesThumbnail from '../../../public/images/image-category-thumbnail
 import speakersThumbnail from '../../../public/images/image-category-thumbnail-speakers.png'
 import earphonesThumbnail from '../../../public/images/image-category-thumbnail-earphones.png'
 import { CenterContent } from '~/components/CenterContent'
+import { sanityClient } from '~/sanityClient'
+import { z } from 'zod'
+import { productCategoryZod } from '@audiophile/content-schema'
 
 const manrope = Manrope({
   subsets: ['latin'],
 })
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
   modal,
 }: {
   children: ReactNode
   modal: ReactNode
 }) {
+  const productCategories = await sanityClient
+    .fetch(
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current}`
+    )
+    .then((result) =>
+      z
+        .array(
+          productCategoryZod.pick({ title: true }).extend({
+            slug: productCategoryZod.shape.slug.shape.current,
+          })
+        )
+        .parse(result)
+    )
+
   return (
     <html lang="en">
       <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
@@ -124,15 +141,11 @@ export default function RootLayout({
                   <li>
                     <Link href="/">Home</Link>
                   </li>
-                  <li>
-                    <Link href="/headphones">Headphones</Link>
-                  </li>
-                  <li>
-                    <Link href="/speakers">Speakers</Link>
-                  </li>
-                  <li>
-                    <Link href="/earphones">Earphones</Link>
-                  </li>
+                  {productCategories.map(({ title, slug }) => (
+                    <li key={slug}>
+                      <Link href={`/${slug}`}>{title}</Link>
+                    </li>
+                  ))}
                 </ul>
               </nav>
               <Link href="/cart" className="justify-self-end">
@@ -157,15 +170,11 @@ export default function RootLayout({
                   <li>
                     <Link href="/">Home</Link>
                   </li>
-                  <li>
-                    <Link href="/headphones">Headphones</Link>
-                  </li>
-                  <li>
-                    <Link href="/speakers">Speakers</Link>
-                  </li>
-                  <li>
-                    <Link href="/earphones">Earphones</Link>
-                  </li>
+                  {productCategories.map(({ title, slug }) => (
+                    <li key={slug}>
+                      <Link href={`/${slug}`}>{title}</Link>
+                    </li>
+                  ))}
                 </ul>
               </nav>
               <p className="font-medium leading-relaxed opacity-50 [grid-area:copy] sm:mb-12 lg:mb-0">

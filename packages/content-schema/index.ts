@@ -24,6 +24,31 @@ export const productCategory = s.document({
         },
       }),
     },
+    {
+      name: 'thumbnail',
+      title: 'Thumbnail images',
+      type: s.object({
+        fields: [
+          {
+            name: 'mobile',
+            title: 'Mobile',
+            type: s.image(),
+          },
+          {
+            name: 'tablet',
+            title: 'Tablet',
+            type: s.image(),
+            optional: true,
+          },
+          {
+            name: 'desktop',
+            title: 'Desktop',
+            type: s.image(),
+            optional: true,
+          },
+        ],
+      }),
+    },
   ],
 })
 
@@ -33,4 +58,5 @@ export const productCategoryZod = z.object({
   slug: z.object({
     current: z.string(),
   }),
+  thumbnail: z.string(),
 })
