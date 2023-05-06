@@ -1,24 +1,66 @@
-import Image from 'next/image'
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
-import { sanityClient } from '~/sanityClient'
+import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
-import { productCategoryZod } from '@audiophile/content-schema'
+import { productCategoryZod, productZod } from '@audiophile/content-schema'
 
-import xx99MarkTwoPreviewMobile from './xx99-mk2-image-category-page-preview-mobile.jpg'
-import xx99MarkTwoPreviewTablet from './xx99-mk2-image-category-page-preview-tablet.jpg'
-import xx99MarkTwoPreviewDesktop from './xx99-mk2-image-category-page-preview-desktop.jpg'
+import { screens } from 'tailwind.config'
+import { ChevronRightIcon } from '~/components/icons'
 
 export default async function CategoryPage({
   params,
 }: {
   params: { category: string }
 }) {
-  const productCategory = await sanityClient
+  const productCategoryPromise = sanityClient
     .fetch(
-      `*[_type == "productCategory" && slug.current == "${params.category}"]{title}[0]`
+      `*[_type == "productCategory" && slug.current == "${params.category}"]{
+        title,
+        "products": *[_type == "product" && references(^._id)] | order(order asc)[] {
+          title,
+          description,
+          isNew,
+          "slug": slug.current,
+          previewImage
+        }
+      }[0]`
     )
-    .then((result) => productCategoryZod.pick({ title: true }).parse(result))
+    .then((result) =>
+      productCategoryZod
+        .pick({ title: true })
+        .extend({
+          products: z.array(
+            productZod
+              .pick({
+                title: true,
+                isNew: true,
+                description: true,
+                previewImage: true,
+              })
+              .extend({ slug: productZod.shape.slug.shape.current })
+          ),
+        })
+        .parse(result)
+    )
+
+  const productCategoriesPromise = sanityClient
+    .fetch(
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
+    )
+    .then((result) =>
+      z
+        .array(
+          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
+            slug: productCategoryZod.shape.slug.shape.current,
+          })
+        )
+        .parse(result)
+    )
+
+  const [productCategory, productCategories] = await Promise.all([
+    productCategoryPromise,
+    productCategoriesPromise,
+  ])
 
   return (
     <div>
@@ -29,50 +71,124 @@ export default async function CategoryPage({
       </div>
       <CenterContent>
         <div className="flex flex-col gap-32 py-16 sm:py-32">
-          <div className="flex flex-col items-center gap-8 sm:gap-14 lg:flex-row lg:gap-32">
-            <div className="overflow-hidden rounded-lg">
-              <Image
-                src={xx99MarkTwoPreviewDesktop}
-                alt="Black over ear headphones with gloss finish"
-                className="hidden lg:block"
-              />
-              <Image
-                src={xx99MarkTwoPreviewTablet}
-                alt="Black over ear headphones with gloss finish"
-                className="hidden sm:block lg:hidden"
-              />
-              <Image
-                src={xx99MarkTwoPreviewMobile}
-                alt="Black over ear headphones with gloss finish"
-                className="sm:hidden"
-              />
+          {productCategory.products.map((product, index) => (
+            <div
+              key={product.slug}
+              className="flex flex-col items-center gap-8 sm:gap-14 lg:gap-32 odd:lg:flex-row even:lg:flex-row-reverse"
+            >
+              <div className="overflow-hidden rounded-lg lg:basis-1/2">
+                <picture>
+                  {product.previewImage.desktop && (
+                    <source
+                      media={`(min-width: ${screens.lg}px)`}
+                      srcSet={`${urlFor(product.previewImage.desktop)
+                        .width(540)
+                        .height(560)
+                        .url()}, ${urlFor(product.previewImage.desktop)
+                        .width(1080)
+                        .height(1120)
+                        .url()} 2x`}
+                      width={1080}
+                      height={1120}
+                    />
+                  )}
+                  {product.previewImage.tablet && (
+                    <source
+                      media={`(min-width: ${screens.sm}px)`}
+                      srcSet={`${urlFor(product.previewImage.tablet)
+                        .width(689)
+                        .height(352)
+                        .url()}, ${urlFor(product.previewImage.tablet)
+                        .width(1378)
+                        .height(704)
+                        .url()} 2x`}
+                      width={1378}
+                      height={704}
+                    />
+                  )}
+                  <img
+                    srcSet={`${urlFor(product.previewImage.mobile)
+                      .width(327)
+                      .height(352)
+                      .url()}, ${urlFor(product.previewImage.mobile)
+                      .width(654)
+                      .height(704)
+                      .url()} 2x`}
+                    src={urlFor(product.previewImage.mobile)
+                      .width(327)
+                      .height(352)
+                      .url()}
+                    alt={product.previewImage.alt}
+                    loading={index === 0 ? 'eager' : 'lazy'}
+                    decoding={index === 0 ? 'sync' : 'async'}
+                    width={654}
+                    height={704}
+                  />
+                </picture>
+              </div>
+              <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:basis-1/2 lg:items-start lg:text-left">
+                {product.isNew && (
+                  <p className="text-sm uppercase tracking-[0.7em] text-orange-500 sm:mb-4">
+                    New product
+                  </p>
+                )}
+                <h2
+                  id={product.slug}
+                  className="text-3xl font-bold uppercase tracking-[0.03em] sm:mb-8 sm:text-4xl"
+                >
+                  {product.title}
+                </h2>
+                <p className="font-medium leading-relaxed text-black/50 sm:mb-6 lg:mb-10">
+                  {product.description}
+                </p>
+                <Link
+                  id={`${product.slug}-link`}
+                  href={`/product/${product.slug}`}
+                  aria-labelledby={`${product.slug}-link ${product.slug}`}
+                  className="bg-orange-500 px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] text-white"
+                >
+                  See product
+                </Link>
+              </div>
             </div>
-            <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:items-start lg:text-left">
-              <p className="text-sm uppercase tracking-[0.7em] text-orange-500 sm:mb-4">
-                New product
-              </p>
-              <h2
-                id="xx99-mark-two-headphones"
-                className="text-3xl font-bold uppercase tracking-[0.03em] sm:mb-8 sm:text-4xl"
+          ))}
+          <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
+            {productCategories.map(({ slug, title, thumbnail }) => (
+              <li
+                key={slug}
+                className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
-                XX99 Mark II Headphones
-              </h2>
-              <p className="font-medium leading-relaxed text-black/50 sm:mb-6 lg:mb-10">
-                The new XX99 Mark II headphones is the pinnacle of pristine
-                audio. It redefines your premium headphone experience by
-                reproducing the balanced depth and precision of studio-quality
-                sound.
-              </p>
-              <Link
-                id="xx99-mark-two-headphones-link"
-                href="/product/xx99-mark-two-headphones"
-                aria-labelledby="xx99-mark-two-headphones-link xx99-mark-two-headphones"
-                className="bg-orange-500 px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] text-white"
-              >
-                See product
-              </Link>
-            </div>
-          </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  srcSet={`${urlFor(thumbnail.mobile).width(128).url()}, 
+                            ${urlFor(thumbnail.mobile).width(256).url()} 2x,
+                            `}
+                  src={urlFor(thumbnail.mobile).width(128).url()}
+                  alt=""
+                  width={438}
+                  height={438}
+                  className="aspect-square max-w-[8rem] object-contain object-bottom"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <p
+                  id={`${slug}-main-link-description`}
+                  className="mb-4 font-bold uppercase tracking-wider"
+                >
+                  {title}
+                </p>
+                <Link
+                  href={slug}
+                  id={`${slug}-main-link`}
+                  aria-labelledby={`${slug}-main-link ${slug}-main-link-description`}
+                  className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                >
+                  Shop
+                  <ChevronRightIcon className="w-2 text-orange-500" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </CenterContent>
     </div>

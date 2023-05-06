@@ -16,6 +16,7 @@ import { CenterContent } from '~/components/CenterContent'
 import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { productCategoryZod } from '@audiophile/content-schema'
+import { ChevronRightIcon } from '~/components/icons'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -92,72 +93,6 @@ export default async function RootLayout({
                           </MobileNavLink>
                         </li>
                       ))}
-                      {/* <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                        <Image
-                          src={headphonesThumbnail}
-                          alt=""
-                          className="max-h-[8rem] max-w-[8rem]"
-                        />
-                        <p
-                          id="headphones-link-description"
-                          className="mb-4 font-bold uppercase tracking-wider"
-                        >
-                          Headphones
-                        </p>
-                        <MobileNavLink
-                          href="/headphones"
-                          id="headphones-link"
-                          aria-labelledby="headphones-link headphones-link-description"
-                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                        >
-                          Shop
-                          <ChevronRightIcon className="w-2 text-orange-500" />
-                        </MobileNavLink>
-                      </li>
-                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                        <Image
-                          src={speakersThumbnail}
-                          alt=""
-                          className="max-h-[8rem] max-w-[8rem]"
-                        />
-                        <p
-                          id="speakers-link-description"
-                          className="mb-4 font-bold uppercase tracking-wider"
-                        >
-                          Speakers
-                        </p>
-                        <MobileNavLink
-                          href="/speakers"
-                          id="speakers-link"
-                          aria-labelledby="speakers-link speakers-link-description"
-                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                        >
-                          Shop
-                          <ChevronRightIcon className="w-2 text-orange-500" />
-                        </MobileNavLink>
-                      </li>
-                      <li className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100">
-                        <Image
-                          src={earphonesThumbnail}
-                          alt=""
-                          className="max-h-[8rem] max-w-[8rem]"
-                        />
-                        <p
-                          id="earphones-link-description"
-                          className="mb-4 font-bold uppercase tracking-wider"
-                        >
-                          Earphones
-                        </p>
-                        <MobileNavLink
-                          href="/earphones"
-                          id="earphones-link"
-                          aria-labelledby="earphones-link earphones-link-description"
-                          className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                        >
-                          Shop
-                          <ChevronRightIcon className="w-2 text-orange-500" />
-                        </MobileNavLink>
-                      </li> */}
                     </ul>
                   </MobileNavContent>
                 </MobileNavOverlay>
@@ -243,19 +178,6 @@ export default async function RootLayout({
         {modal}
       </body>
     </html>
-  )
-}
-
-function ChevronRightIcon({ className }: { className?: string }) {
-  return (
-    <Svg viewBox="0 0 8 12" className={className}>
-      <path
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-        d="m1.322 1 5 5-5 5"
-      />
-    </Svg>
   )
 }
 
