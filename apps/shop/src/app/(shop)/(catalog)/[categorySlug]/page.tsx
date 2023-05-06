@@ -10,11 +10,11 @@ import { ChevronRightIcon } from '~/components/icons'
 export default async function CategoryPage({
   params,
 }: {
-  params: { category: string }
+  params: { categorySlug: string }
 }) {
   const productCategoryPromise = sanityClient
     .fetch(
-      `*[_type == "productCategory" && slug.current == "${params.category}"]{
+      `*[_type == "productCategory" && slug.current == "${params.categorySlug}"]{
         title,
         "products": *[_type == "product" && references(^._id)] | order(order asc)[] {
           title,

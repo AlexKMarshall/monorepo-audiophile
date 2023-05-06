@@ -41,6 +41,24 @@ export const product = s.document({
       }),
     },
     {
+      name: 'boxIncludes',
+      title: 'Box includes',
+      type: s.array({
+        of: [
+          s.object({
+            fields: [
+              { name: 'item', title: 'Item', type: s.string() },
+              {
+                name: 'quantity',
+                title: 'Quantity',
+                type: s.number({ min: 1 }),
+              },
+            ],
+          }),
+        ],
+      }),
+    },
+    {
       name: 'previewImage',
       title: 'Preview image',
       type: s.object({
