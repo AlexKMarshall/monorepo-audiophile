@@ -37,6 +37,7 @@ export const product = s.document({
             title: 'Mobile',
             type: s.image(),
           },
+          { name: 'alt', title: 'Alt', type: s.string() },
           {
             name: 'tablet',
             title: 'Tablet',
@@ -67,6 +68,7 @@ export const productZod = z.object({
   isNew: z.boolean().optional(),
   previewImage: z.object({
     mobile: sanityImageSourceZodSchema,
+    alt: z.string(),
     tablet: sanityImageSourceZodSchema.optional(),
     desktop: sanityImageSourceZodSchema.optional(),
   }),
