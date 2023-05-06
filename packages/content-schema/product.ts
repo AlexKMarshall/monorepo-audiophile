@@ -33,11 +33,7 @@ export const product = s.document({
       name: 'features',
       title: 'Features',
       type: s.array({
-        of: [
-          s.block({
-            styles: [{ title: 'Normal', value: 'normal' }],
-          }),
-        ],
+        of: [s.block({})],
       }),
     },
     {
@@ -92,6 +88,9 @@ export const product = s.document({
   ],
 })
 
+type Product = s.infer<typeof product>
+type rich = Product['features'][number]['children'][number]
+
 export const productZod = z.object({
   title: z.string(),
   slug: slugZodSchema,
@@ -105,4 +104,19 @@ export const productZod = z.object({
     desktop: sanityImageSourceZodSchema.optional(),
   }),
   order: z.number(),
+  features: z.array(
+    z.object({
+      _type: z.string(),
+      style: z.string().optional(),
+      _key: z.string(),
+      children: z.array(
+        z.object({
+          _type: z.string(),
+          _key: z.string(),
+          marks: z.array(z.string()).optional(),
+          text: z.string(),
+        })
+      ),
+    })
+  ),
 })

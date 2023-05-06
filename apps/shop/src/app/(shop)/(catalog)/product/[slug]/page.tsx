@@ -2,6 +2,7 @@ import { productZod } from '@audiophile/content-schema'
 import { BackButton } from '~/components/BackButton'
 import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
+import { PortableText } from '@portabletext/react'
 
 export default async function ProductPage({
   params,
@@ -16,12 +17,13 @@ export default async function ProductPage({
       'price': {
         'amount': price.amount,
         'currencyCode' : price.currency->isoCode
-      }
+      },
+      features
   }[0]`
     )
     .then((result) =>
       productZod
-        .pick({ title: true, description: true })
+        .pick({ title: true, description: true, features: true })
         .extend({
           price: z.object({
             amount: productZod.shape.price.shape.amount,
@@ -48,6 +50,7 @@ export default async function ProductPage({
         <button type="submit">Add to Cart</button>
       </form>
       <h2>Features</h2>
+      <PortableText value={product.features} />
     </div>
   )
 }
