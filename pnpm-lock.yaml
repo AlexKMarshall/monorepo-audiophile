@@ -66,7 +66,7 @@ importers:
         specifier: 6.0.1
         version: 6.0.1
       '@sanity/image-url':
-        specifier: ^1.0.2
+        specifier: 1.0.2
         version: 1.0.2
       '@t3-oss/env-nextjs':
         specifier: 0.2.2
