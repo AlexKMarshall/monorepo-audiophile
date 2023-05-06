@@ -1,6 +1,5 @@
 import clsx from 'clsx'
 import { Manrope } from 'next/font/google'
-import Image from 'next/image'
 
 import Link from 'next/link'
 import { type ReactNode } from 'react'

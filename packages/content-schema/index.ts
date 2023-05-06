@@ -1,3 +1,4 @@
+import { sanityImageSourceZodSchema } from './image'
 import { s } from 'sanity-typed-schema-builder'
 import { z } from 'zod'
 
@@ -58,5 +59,9 @@ export const productCategoryZod = z.object({
   slug: z.object({
     current: z.string(),
   }),
-  thumbnail: z.string(),
+  thumbnail: z.object({
+    mobile: sanityImageSourceZodSchema,
+    tablet: sanityImageSourceZodSchema.optional(),
+    desktop: sanityImageSourceZodSchema.optional(),
+  }),
 })
