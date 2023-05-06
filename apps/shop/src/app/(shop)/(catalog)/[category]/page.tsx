@@ -5,13 +5,14 @@ import { z } from 'zod'
 import { productCategoryZod, productZod } from '@audiophile/content-schema'
 
 import { screens } from 'tailwind.config'
+import { ChevronRightIcon } from '~/components/icons'
 
 export default async function CategoryPage({
   params,
 }: {
   params: { category: string }
 }) {
-  const productCategory = await sanityClient
+  const productCategoryPromise = sanityClient
     .fetch(
       `*[_type == "productCategory" && slug.current == "${params.category}"]{
         title,
@@ -41,6 +42,25 @@ export default async function CategoryPage({
         })
         .parse(result)
     )
+
+  const productCategoriesPromise = sanityClient
+    .fetch(
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
+    )
+    .then((result) =>
+      z
+        .array(
+          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
+            slug: productCategoryZod.shape.slug.shape.current,
+          })
+        )
+        .parse(result)
+    )
+
+  const [productCategory, productCategories] = await Promise.all([
+    productCategoryPromise,
+    productCategoriesPromise,
+  ])
 
   return (
     <div>
@@ -132,6 +152,43 @@ export default async function CategoryPage({
               </div>
             </div>
           ))}
+          <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
+            {productCategories.map(({ slug, title, thumbnail }) => (
+              <li
+                key={slug}
+                className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
+              >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  srcSet={`${urlFor(thumbnail.mobile).width(128).url()}, 
+                            ${urlFor(thumbnail.mobile).width(256).url()} 2x,
+                            `}
+                  src={urlFor(thumbnail.mobile).width(128).url()}
+                  alt=""
+                  width={438}
+                  height={438}
+                  className="aspect-square max-w-[8rem] object-contain object-bottom"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <p
+                  id={`${slug}-main-link-description`}
+                  className="mb-4 font-bold uppercase tracking-wider"
+                >
+                  {title}
+                </p>
+                <Link
+                  href={slug}
+                  id={`${slug}-main-link`}
+                  aria-labelledby={`${slug}-main-link ${slug}-main-link-description`}
+                  className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                >
+                  Shop
+                  <ChevronRightIcon className="w-2 text-orange-500" />
+                </Link>
+              </li>
+            ))}
+          </ul>
         </div>
       </CenterContent>
     </div>
