@@ -55,6 +55,32 @@ const baseProduct = {
       }),
     },
     {
+      name: 'mainImage',
+      title: 'Main image',
+      type: s.object({
+        fields: [
+          {
+            name: 'mobile',
+            title: 'Mobile',
+            type: s.image(),
+          },
+          { name: 'alt', title: 'Alt', type: s.string() },
+          {
+            name: 'tablet',
+            title: 'Tablet',
+            type: s.image(),
+            optional: true,
+          },
+          {
+            name: 'desktop',
+            title: 'Desktop',
+            type: s.image(),
+            optional: true,
+          },
+        ],
+      }),
+    },
+    {
       name: 'previewImage',
       title: 'Preview image',
       type: s.object({
@@ -112,6 +138,12 @@ const baseProductZod = z.object({
   description: z.string(),
   isNew: z.boolean().optional(),
   price: priceZodSchema,
+  mainImage: z.object({
+    mobile: sanityImageSourceZodSchema,
+    alt: z.string(),
+    tablet: sanityImageSourceZodSchema.optional(),
+    desktop: sanityImageSourceZodSchema.optional(),
+  }),
   previewImage: z.object({
     mobile: sanityImageSourceZodSchema,
     alt: z.string(),
