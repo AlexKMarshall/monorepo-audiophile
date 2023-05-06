@@ -54,9 +54,9 @@ export default async function CategoryPage({
           {productCategory.products.map((product, index) => (
             <div
               key={product.slug}
-              className="flex flex-col items-center gap-8 sm:gap-14 lg:flex-row lg:gap-32"
+              className="flex flex-col items-center gap-8 sm:gap-14 lg:gap-32 odd:lg:flex-row even:lg:flex-row-reverse"
             >
-              <div className="aspect-square overflow-hidden rounded-lg object-contain sm:aspect-[1378/704] lg:aspect-square">
+              <div className="overflow-hidden rounded-lg lg:basis-1/2">
                 <picture>
                   {product.previewImage.desktop && (
                     <source
@@ -91,7 +91,7 @@ export default async function CategoryPage({
                   />
                 </picture>
               </div>
-              <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:items-start lg:text-left">
+              <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:basis-1/2 lg:items-start lg:text-left">
                 {product.isNew && (
                   <p className="text-sm uppercase tracking-[0.7em] text-orange-500 sm:mb-4">
                     New product
