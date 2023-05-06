@@ -3,6 +3,7 @@ import { slugZodSchema } from './slug'
 import { z } from 'zod'
 import { sanityImageSourceZodSchema } from './image'
 import { productCategory } from './productCategory'
+import { price, priceZodSchema } from './price'
 
 export const product = s.document({
   name: 'product',
@@ -25,8 +26,20 @@ export const product = s.document({
         to: [productCategory],
       }),
     },
-    { name: 'description', title: 'Description', type: s.string() },
+    { name: 'description', title: 'Description', type: s.text() },
     { name: 'isNew', title: 'Is new?', type: s.boolean(), optional: true },
+    { name: 'price', title: 'Price', type: price },
+    {
+      name: 'features',
+      title: 'Features',
+      type: s.array({
+        of: [
+          s.block({
+            styles: [{ title: 'Normal', value: 'normal' }],
+          }),
+        ],
+      }),
+    },
     {
       name: 'previewImage',
       title: 'Preview image',
@@ -66,6 +79,7 @@ export const productZod = z.object({
   slug: slugZodSchema,
   description: z.string(),
   isNew: z.boolean().optional(),
+  price: priceZodSchema,
   previewImage: z.object({
     mobile: sanityImageSourceZodSchema,
     alt: z.string(),

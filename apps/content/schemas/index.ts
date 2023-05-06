@@ -1,3 +1,7 @@
-import { product, productCategory } from '@audiophile/content-schema'
+import { currency, product, productCategory } from '@audiophile/content-schema'
 
-export const schemaTypes = [productCategory.schema(), product.schema()]
+export const schemaTypes = [
+  productCategory.schema(),
+  product.schema(),
+  currency.schema(),
+]
