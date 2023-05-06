@@ -119,4 +119,11 @@ export const productZod = z.object({
       ),
     })
   ),
+  boxIncludes: z.array(
+    z.object({
+      _key: z.string(),
+      item: z.string(),
+      quantity: z.number(),
+    })
+  ),
 })

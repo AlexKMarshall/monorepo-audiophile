@@ -18,12 +18,18 @@ export default async function ProductPage({
         'amount': price.amount,
         'currencyCode' : price.currency->isoCode
       },
-      features
+      features,
+      boxIncludes
   }[0]`
     )
     .then((result) =>
       productZod
-        .pick({ title: true, description: true, features: true })
+        .pick({
+          title: true,
+          description: true,
+          features: true,
+          boxIncludes: true,
+        })
         .extend({
           price: z.object({
             amount: productZod.shape.price.shape.amount,
@@ -51,6 +57,14 @@ export default async function ProductPage({
       </form>
       <h2>Features</h2>
       <PortableText value={product.features} />
+      <h2>In the box</h2>
+      <ul>
+        {product.boxIncludes.map(({ _key, item, quantity }) => (
+          <li key={_key}>
+            <span>{quantity}x</span> <span>{item}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
