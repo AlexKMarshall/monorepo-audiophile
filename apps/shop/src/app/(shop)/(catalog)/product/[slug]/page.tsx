@@ -218,7 +218,7 @@ export default async function ProductPage({
                 </ul>
               </div>
             </div>
-            <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)]">
+            <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)] lg:grid-cols-[2fr_3fr] lg:grid-rows-[repeat(2,20vw)]">
               {product.gallery.map((image, index) => (
                 <div
                   key={index}
@@ -227,6 +227,22 @@ export default async function ProductPage({
                   })}
                 >
                   <picture className="h-full w-full object-cover">
+                    {image.desktop && (
+                      <source
+                        media={`(min-width: ${screens.lg}px)`}
+                        srcSet={`
+                        ${urlFor(image.desktop)
+                          .width(index === 2 ? 317 : 223)
+                          .height(index === 2 ? 296 : 140)
+                          .url()}, 
+                        ${urlFor(image.desktop)
+                          .width(index === 2 ? 635 : 445)
+                          .height(index === 2 ? 592 : 280)
+                          .url()} 2x`}
+                        width={index === 2 ? 635 : 445}
+                        height={index === 2 ? 592 : 280}
+                      />
+                    )}
                     {image.tablet && (
                       <source
                         media={`(min-width: ${screens.sm}px)`}
