@@ -10,7 +10,7 @@ export default function CatalogLayout({ children }: { children: ReactNode }) {
     <div>
       {children}
       <CenterContent>
-        <div className="mb-32 flex flex-col items-center gap-10 sm:gap-16 lg:flex-row-reverse lg:gap-32">
+        <div className="mb-32 flex flex-col items-center gap-10 sm:gap-16 lg:mb-40 lg:flex-row-reverse lg:gap-32">
           <div className="overflow-hidden rounded-lg lg:basis-1/2">
             <Image
               src={bestGearDesktop}

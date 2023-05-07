@@ -83,18 +83,34 @@ export default async function ProductPage({
   ])
 
   return (
-    <div className="mb-32">
+    <div className="mb-32 lg:mb-40">
       <CenterContent>
-        <div className="pb-6 pt-4 sm:pt-8">
+        <div className="pb-6 pt-4 sm:pt-8 lg:pb-14 lg:pt-20">
           <BackButton className="font-medium leading-relaxed text-black/50">
             Go Back
           </BackButton>
         </div>
-        <div className="flex flex-col gap-32">
+        <div className="flex flex-col gap-32 lg:gap-40">
           <div className="flex flex-col gap-20">
-            <div className="grid gap-8 sm:grid-cols-[2fr_3fr] sm:items-center sm:gap-16">
+            <div className="grid gap-8 sm:grid-cols-[2fr_3fr] sm:items-center sm:gap-16 lg:grid-cols-2 lg:gap-32">
               <div className="overflow-hidden rounded-lg">
                 <picture>
+                  {product.mainImage.desktop && (
+                    <source
+                      media={`(min-width: ${screens.lg}px)`}
+                      srcSet={`
+                        ${urlFor(product.mainImage.desktop)
+                          .width(540)
+                          .height(560)
+                          .url()},
+                        ${urlFor(product.mainImage.desktop)
+                          .width(1080)
+                          .height(1120)
+                          .url()} 2x`}
+                      width={1080}
+                      height={1120}
+                    />
+                  )}
                   {product.mainImage.tablet && (
                     <source
                       media={`(min-width: ${screens.sm}px)`}
@@ -127,19 +143,21 @@ export default async function ProductPage({
                   />
                 </picture>
               </div>
-              <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-6 sm:gap-8">
+              <div className="flex flex-col gap-8 lg:gap-12">
+                <div className="flex max-w-md flex-col gap-6 sm:gap-8">
                   <hgroup className="flex flex-col gap-6 sm:gap-4">
                     {product.isNew && (
                       <p className="text-sm uppercase tracking-[0.7em] text-orange-500">
                         New product
                       </p>
                     )}
-                    <h1 className="text-2xl font-bold uppercase leading-snug tracking-wider sm:text-3xl">
+                    <h1 className="text-2xl font-bold uppercase leading-snug tracking-wider sm:text-3xl lg:text-[2.5rem] lg:leading-[1.1]">
                       {product.title}
                     </h1>
                   </hgroup>
-                  <p>{product.description}</p>
+                  <p className="text-medium leading-relaxed text-black/50">
+                    {product.description}
+                  </p>
                   {/* TODO: put a space between the symbol and the amount */}
                   <p className="text-lg font-bold tracking-wider">
                     {new Intl.NumberFormat('en-GB', {
@@ -164,39 +182,41 @@ export default async function ProductPage({
                 </form>
               </div>
             </div>
-            <div className="flex flex-col gap-6 sm:gap-8">
-              <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
-                Features
-              </h2>
-              <div className="flex flex-col gap-6">
-                <PortableText
-                  value={product.features}
-                  components={{
-                    block: {
-                      normal: ({ children }) => (
-                        <p className="leading-relaxed text-black/50">
-                          {children}
-                        </p>
-                      ),
-                    },
-                  }}
-                />
+            <div className="lg:flex lg:items-start lg:gap-32">
+              <div className="flex flex-col gap-6 sm:gap-8 lg:flex-1 lg:basis-1/2">
+                <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
+                  Features
+                </h2>
+                <div className="flex flex-col gap-6">
+                  <PortableText
+                    value={product.features}
+                    components={{
+                      block: {
+                        normal: ({ children }) => (
+                          <p className="leading-relaxed text-black/50">
+                            {children}
+                          </p>
+                        ),
+                      },
+                    }}
+                  />
+                </div>
               </div>
-            </div>
-            <div className="grid gap-6 sm:grid-cols-2">
-              <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
-                In the box
-              </h2>
-              <ul className="flex flex-col gap-2">
-                {product.boxIncludes.map(({ _key, item, quantity }) => (
-                  <li key={_key} className="flex leading-relaxed">
-                    <span className="basis-10 font-bold text-orange-500">
-                      {quantity}x
-                    </span>
-                    <span className="font-medium text-black/50">{item}</span>
-                  </li>
-                ))}
-              </ul>
+              <div className="grid gap-6 sm:grid-cols-2 lg:flex-1 lg:basis-80 lg:grid-cols-1 lg:gap-8">
+                <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
+                  In the box
+                </h2>
+                <ul className="flex flex-col gap-2">
+                  {product.boxIncludes.map(({ _key, item, quantity }) => (
+                    <li key={_key} className="flex leading-relaxed">
+                      <span className="basis-10 font-bold text-orange-500">
+                        {quantity}x
+                      </span>
+                      <span className="font-medium text-black/50">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
             <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)]">
               {product.gallery.map((image, index) => (
