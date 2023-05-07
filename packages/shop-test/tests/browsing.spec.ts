@@ -24,8 +24,17 @@ const getPageObjectModel = ({
       .getByRole('link', { name })
   }
 
+  const getProductLink = (name: string | RegExp) => {
+    const linkName = new RegExp(
+      `see product ${name instanceof RegExp ? name.source : name}`,
+      'i'
+    )
+    return page.getByRole('link', { name: linkName })
+  }
+
   return {
     getPrimaryNavLink,
+    getProductLink,
   }
 }
 
@@ -63,5 +72,17 @@ test('main navigation', async ({ page, viewport }) => {
 
   await expect(
     page.getByRole('heading', { name: /audiophile homepage/i, level: 1 })
+  ).toBeVisible()
+})
+
+test('product navigation', async ({ page, viewport }) => {
+  await page.goto('/headphones')
+
+  const pageObjectModel = getPageObjectModel({ page, viewport })
+
+  await (await pageObjectModel.getProductLink(/xx99 mark ii/i)).click()
+
+  await expect(
+    page.getByRole('heading', { name: /xx99 mark ii/i, level: 1 })
   ).toBeVisible()
 })

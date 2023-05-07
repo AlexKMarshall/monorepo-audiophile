@@ -1,3 +1,7 @@
 @tailwind base;
+
+picture {
+  @apply block h-auto max-w-full;
+}
 @tailwind components;
 @tailwind utilities;
