@@ -15,6 +15,12 @@ const baseProduct = {
       type: s.string(),
     },
     {
+      name: 'shortTitle',
+      title: 'Short title',
+      type: s.string(),
+      optional: true,
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: s.slug({ options: { source: 'title' } }),
@@ -107,6 +113,33 @@ const baseProduct = {
       }),
     },
     {
+      name: 'thumbnailImage',
+      title: 'Thumbnail image',
+      optional: true,
+      type: s.object({
+        fields: [
+          {
+            name: 'mobile',
+            title: 'Mobile',
+            type: s.image(),
+          },
+          { name: 'alt', title: 'Alt', type: s.string() },
+          {
+            name: 'tablet',
+            title: 'Tablet',
+            type: s.image(),
+            optional: true,
+          },
+          {
+            name: 'desktop',
+            title: 'Desktop',
+            type: s.image(),
+            optional: true,
+          },
+        ],
+      }),
+    },
+    {
       name: 'order',
       title: 'Order',
       type: s.number(),
@@ -134,6 +167,7 @@ export const product = s.document({
 
 const baseProductZod = z.object({
   title: z.string(),
+  shortTitle: z.string().nullable(),
   slug: slugZodSchema,
   description: z.string(),
   isNew: z.boolean().optional(),
@@ -150,6 +184,14 @@ const baseProductZod = z.object({
     tablet: sanityImageSourceZodSchema.optional(),
     desktop: sanityImageSourceZodSchema.optional(),
   }),
+  thumbnailImage: z
+    .object({
+      mobile: sanityImageSourceZodSchema,
+      alt: z.string(),
+      tablet: sanityImageSourceZodSchema.optional(),
+      desktop: sanityImageSourceZodSchema.optional(),
+    })
+    .nullish(),
   order: z.number(),
   features: z.array(
     z.object({

@@ -25,7 +25,7 @@ export default async function ProductPage({
       },
       features,
       boxIncludes,
-      relatedProducts[]->{title, 'slug': slug.current}
+      relatedProducts[]->{title, 'slug': slug.current, shortTitle, thumbnailImage}
   }[0]`
     )
     .then((result) =>
@@ -47,6 +47,8 @@ export default async function ProductPage({
             productZod.shape.relatedProducts.element
               .pick({
                 title: true,
+                shortTitle: true,
+                thumbnailImage: true,
               })
               .extend({
                 slug: productZod.shape.relatedProducts.element.shape.slug.shape
@@ -173,14 +175,53 @@ export default async function ProductPage({
               </ul>
             </div>
           </div>
-          <div>
-            <h2>You may also like</h2>
-            <ul>
-              {product.relatedProducts.map(({ slug, title }) => (
-                <li key={slug}>
-                  <Link href={`/product/${slug}`}>{title}</Link>
-                </li>
-              ))}
+          <div className="flex flex-col gap-10">
+            <h2 className="text-center text-2xl font-bold uppercase leading-normal">
+              You may also like
+            </h2>
+            <ul className="flex flex-col gap-14">
+              {product.relatedProducts.map(
+                ({ slug, title, shortTitle, thumbnailImage }) => (
+                  <li key={slug} className="flex flex-col items-center gap-8">
+                    {thumbnailImage && (
+                      <picture>
+                        <img
+                          srcSet={`${urlFor(thumbnailImage.mobile)
+                            .width(357)
+                            .height(120)
+                            .url()}, ${urlFor(thumbnailImage.mobile)
+                            .width(654)
+                            .height(240)
+                            .url()} 2x`}
+                          src={urlFor(thumbnailImage.mobile)
+                            .width(654)
+                            .height(240)
+                            .url()}
+                          alt={thumbnailImage.alt}
+                          width={654}
+                          height={240}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </picture>
+                    )}
+                    <p
+                      className="text-2xl font-bold tracking-[0.07em]"
+                      id={slug}
+                    >
+                      {shortTitle ?? title}
+                    </p>
+                    <Link
+                      href={`/product/${slug}`}
+                      id={`${slug}-link`}
+                      aria-labelledby={`${slug}-link ${slug}`}
+                      className="whitespace-nowrap bg-orange-500 px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] text-white"
+                    >
+                      See product
+                    </Link>
+                  </li>
+                )
+              )}
             </ul>
           </div>
           <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
