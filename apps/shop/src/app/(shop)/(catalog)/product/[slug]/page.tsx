@@ -296,6 +296,21 @@ export default async function ProductPage({
                   >
                     {thumbnailImage && (
                       <picture>
+                        {thumbnailImage.desktop && (
+                          <source
+                            media={`(min-width: ${screens.lg}px)`}
+                            srcSet={`${urlFor(thumbnailImage.desktop)
+                              .width(350)
+                              .height(318)
+                              .url()}, 
+                            ${urlFor(thumbnailImage.desktop)
+                              .width(700)
+                              .height(636)
+                              .url()} 2x}`}
+                            width={700}
+                            height={636}
+                          />
+                        )}
                         {thumbnailImage.tablet && (
                           <source
                             media={`(min-width: ${screens.sm}px)`}
