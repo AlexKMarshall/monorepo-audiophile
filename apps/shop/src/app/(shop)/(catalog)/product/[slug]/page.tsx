@@ -6,6 +6,8 @@ import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
 import { ChevronRightIcon } from '~/components/icons'
+import { screens } from 'tailwind.config'
+import clsx from 'clsx'
 
 export default async function ProductPage({
   params,
@@ -83,16 +85,32 @@ export default async function ProductPage({
   return (
     <div className="mb-32">
       <CenterContent>
-        <div className="pb-6 pt-4">
+        <div className="pb-6 pt-4 sm:pt-8">
           <BackButton className="font-medium leading-relaxed text-black/50">
             Go Back
           </BackButton>
         </div>
         <div className="flex flex-col gap-32">
           <div className="flex flex-col gap-20">
-            <div className="flex flex-col gap-8">
+            <div className="grid gap-8 sm:grid-cols-[2fr_3fr] sm:items-center sm:gap-16">
               <div className="overflow-hidden rounded-lg">
                 <picture>
+                  {product.mainImage.tablet && (
+                    <source
+                      media={`(min-width: ${screens.sm}px)`}
+                      srcSet={`
+                        ${urlFor(product.mainImage.tablet)
+                          .width(281)
+                          .height(480)
+                          .url()},
+                      , ${urlFor(product.mainImage.tablet)
+                        .width(562)
+                        .height(960)
+                        .url()} 2x`}
+                      width={562}
+                      height={960}
+                    />
+                  )}
                   <img
                     srcSet={`${urlFor(product.mainImage.mobile)
                       .width(327)
@@ -110,15 +128,17 @@ export default async function ProductPage({
                 </picture>
               </div>
               <div className="flex flex-col gap-8">
-                <div className="flex flex-col gap-6">
-                  {product.isNew && (
-                    <p className="text-sm uppercase tracking-[0.7em] text-orange-500">
-                      New product
-                    </p>
-                  )}
-                  <h1 className="text-2xl font-bold uppercase leading-snug tracking-wider">
-                    {product.title}
-                  </h1>
+                <div className="flex flex-col gap-6 sm:gap-8">
+                  <hgroup className="flex flex-col gap-6 sm:gap-4">
+                    {product.isNew && (
+                      <p className="text-sm uppercase tracking-[0.7em] text-orange-500">
+                        New product
+                      </p>
+                    )}
+                    <h1 className="text-2xl font-bold uppercase leading-snug tracking-wider sm:text-3xl">
+                      {product.title}
+                    </h1>
+                  </hgroup>
                   <p>{product.description}</p>
                   {/* TODO: put a space between the symbol and the amount */}
                   <p className="text-lg font-bold tracking-wider">
@@ -144,25 +164,27 @@ export default async function ProductPage({
                 </form>
               </div>
             </div>
-            <div className="flex flex-col gap-6">
-              <h2 className="text-2xl font-bold uppercase tracking-wide">
+            <div className="flex flex-col gap-6 sm:gap-8">
+              <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
                 Features
               </h2>
-              <PortableText
-                value={product.features}
-                components={{
-                  block: {
-                    normal: ({ children }) => (
-                      <p className="leading-relaxed text-black/50">
-                        {children}
-                      </p>
-                    ),
-                  },
-                }}
-              />
+              <div className="flex flex-col gap-6">
+                <PortableText
+                  value={product.features}
+                  components={{
+                    block: {
+                      normal: ({ children }) => (
+                        <p className="leading-relaxed text-black/50">
+                          {children}
+                        </p>
+                      ),
+                    },
+                  }}
+                />
+              </div>
             </div>
-            <div className="flex flex-col gap-6">
-              <h2 className="text-2xl font-bold uppercase tracking-wide">
+            <div className="grid gap-6 sm:grid-cols-2">
+              <h2 className="text-2xl font-bold uppercase tracking-wide sm:text-3xl">
                 In the box
               </h2>
               <ul className="flex flex-col gap-2">
@@ -176,10 +198,15 @@ export default async function ProductPage({
                 ))}
               </ul>
             </div>
-            <div className="flex flex-col gap-5">
+            <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)]">
               {product.gallery.map((image, index) => (
-                <div key={index} className="overflow-hidden rounded-lg">
-                  <picture>
+                <div
+                  key={index}
+                  className={clsx('overflow-hidden rounded-lg', {
+                    'sm:row-span-2': index === 2,
+                  })}
+                >
+                  <picture className="h-full w-full object-cover">
                     <img
                       srcSet={`${urlFor(image.mobile)
                         .width(327)
@@ -197,6 +224,7 @@ export default async function ProductPage({
                       height={index === 2 ? 736 : 348}
                       loading="lazy"
                       decoding="async"
+                      className="h-full w-full object-cover"
                     />
                   </picture>
                 </div>
