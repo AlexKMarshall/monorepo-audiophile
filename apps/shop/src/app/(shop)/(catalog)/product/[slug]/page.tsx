@@ -207,6 +207,22 @@ export default async function ProductPage({
                   })}
                 >
                   <picture className="h-full w-full object-cover">
+                    {image.tablet && (
+                      <source
+                        media={`(min-width: ${screens.sm}px)`}
+                        srcSet={`
+                        ${urlFor(image.tablet)
+                          .width(index === 2 ? 395 : 277)
+                          .height(index === 2 ? 368 : 172)
+                          .url()}, 
+                        ${urlFor(image.tablet)
+                          .width(index === 2 ? 790 : 554)
+                          .height(index === 2 ? 736 : 348)
+                          .url()} 2x`}
+                        width={index === 2 ? 790 : 554}
+                        height={index === 2 ? 736 : 348}
+                      />
+                    )}
                     <img
                       srcSet={`${urlFor(image.mobile)
                         .width(327)
@@ -231,16 +247,34 @@ export default async function ProductPage({
               ))}
             </div>
           </div>
-          <div className="flex flex-col gap-10">
-            <h2 className="text-center text-2xl font-bold uppercase leading-normal">
+          <div className="flex flex-col gap-10 sm:gap-14">
+            <h2 className="text-center text-2xl font-bold uppercase tracking-wide sm:text-3xl">
               You may also like
             </h2>
-            <ul className="flex flex-col gap-14">
+            <ul className="flex flex-col gap-14 sm:flex-row sm:gap-3">
               {product.relatedProducts.map(
                 ({ slug, title, shortTitle, thumbnailImage }) => (
-                  <li key={slug} className="flex flex-col items-center gap-8">
+                  <li
+                    key={slug}
+                    className="flex flex-1 flex-col items-center gap-8"
+                  >
                     {thumbnailImage && (
                       <picture>
+                        {thumbnailImage.tablet && (
+                          <source
+                            media={`(min-width: ${screens.sm}px)`}
+                            srcSet={`${urlFor(thumbnailImage.tablet)
+                              .width(223)
+                              .height(318)
+                              .url()}, 
+                            ${urlFor(thumbnailImage.tablet)
+                              .width(446)
+                              .height(636)
+                              .url()} 2x}`}
+                            width={446}
+                            height={636}
+                          />
+                        )}
                         <img
                           srcSet={`${urlFor(thumbnailImage.mobile)
                             .width(357)
@@ -258,6 +292,7 @@ export default async function ProductPage({
                           height={240}
                           loading="lazy"
                           decoding="async"
+                          className="rounded-lg"
                         />
                       </picture>
                     )}
