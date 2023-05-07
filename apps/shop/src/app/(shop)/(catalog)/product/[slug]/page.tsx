@@ -25,6 +25,7 @@ export default async function ProductPage({
       },
       features,
       boxIncludes,
+      gallery[0..2],
       relatedProducts[]->{title, 'slug': slug.current, shortTitle, thumbnailImage}
   }[0]`
     )
@@ -37,6 +38,7 @@ export default async function ProductPage({
           description: true,
           features: true,
           boxIncludes: true,
+          gallery: true,
         })
         .extend({
           price: z.object({
@@ -173,6 +175,32 @@ export default async function ProductPage({
                   </li>
                 ))}
               </ul>
+            </div>
+            <div className="flex flex-col gap-5">
+              {product.gallery.map((image, index) => (
+                <div key={index} className="overflow-hidden rounded-lg">
+                  <picture>
+                    <img
+                      srcSet={`${urlFor(image.mobile)
+                        .width(327)
+                        .height(index === 2 ? 368 : 174)
+                        .url()}, ${urlFor(image.mobile)
+                        .width(654)
+                        .height(index === 2 ? 736 : 358)
+                        .url()} 2x`}
+                      src={urlFor(image.mobile)
+                        .width(654)
+                        .height(index === 2 ? 736 : 348)
+                        .url()}
+                      alt={image.alt}
+                      width={654}
+                      height={index === 2 ? 736 : 348}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
+                </div>
+              ))}
             </div>
           </div>
           <div className="flex flex-col gap-10">

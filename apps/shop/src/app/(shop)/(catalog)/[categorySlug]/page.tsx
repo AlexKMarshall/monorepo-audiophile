@@ -21,7 +21,7 @@ export default async function CategoryPage({
           description,
           isNew,
           "slug": slug.current,
-          previewImage
+          previewImage,
         }
       }[0]`
     )
