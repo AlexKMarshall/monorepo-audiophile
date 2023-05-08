@@ -10,14 +10,14 @@ const sanityAssetZodSchema = z.object({
   _assetId: z.string().optional(),
   _extension: z.string().optional(),
 })
-const sanityImageCropZodSchema = z.object({
+export const sanityImageCropZodSchema = z.object({
   _type: z.string().optional(),
   left: z.number(),
   bottom: z.number(),
   right: z.number(),
   top: z.number(),
 })
-const SanityImageHotspotZodSchema = z.object({
+export const sanityImageHotspotZodSchema = z.object({
   _type: z.string().optional(),
   width: z.number(),
   height: z.number(),
@@ -27,7 +27,7 @@ const SanityImageHotspotZodSchema = z.object({
 const sanityImageObjectZodSchema = z.object({
   asset: z.union([sanityReferenceZodSchema, sanityAssetZodSchema]),
   crop: sanityImageCropZodSchema.optional(),
-  hotspot: SanityImageHotspotZodSchema.optional(),
+  hotspot: sanityImageHotspotZodSchema.optional(),
 })
 const sanityImageWithAssetStubSchema = z.object({
   asset: z.object({

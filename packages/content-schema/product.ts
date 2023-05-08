@@ -101,6 +101,17 @@ const baseProduct = {
       }),
     },
     {
+      name: 'galleryNew',
+      title: 'Gallery',
+      type: s.array({
+        of: [
+          s.image({
+            hotspot: true,
+          }),
+        ],
+      }),
+    },
+    {
       name: 'gallery',
       title: 'Gallery',
       type: s.array({

@@ -8,6 +8,11 @@ import { CenterContent } from '~/components/CenterContent'
 import { ChevronRightIcon } from '~/components/icons'
 import { screens } from 'tailwind.config'
 import clsx from 'clsx'
+import {
+  sanityImageCropZodSchema,
+  sanityImageHotspotZodSchema,
+  sanityImageSourceZodSchema,
+} from '@audiophile/content-schema/image'
 
 export default async function ProductPage({
   params,
@@ -27,7 +32,8 @@ export default async function ProductPage({
       },
       features,
       boxIncludes,
-      gallery[0..2],
+      gallery,
+      'galleryNew': galleryNew[0...3]{..., 'altText': asset->altText},   
       relatedProducts[]->{title, 
         'slug': slug.current, 
         shortTitle, 
@@ -48,6 +54,13 @@ export default async function ProductPage({
           mainImageNew: productZod.shape.mainImageNew.extend({
             altText: z.string().nullable(),
           }),
+          galleryNew: z.array(
+            sanityImageSourceZodSchema.extend({
+              hotspot: sanityImageHotspotZodSchema,
+              crop: sanityImageCropZodSchema,
+              altText: z.string().nullable(),
+            })
+          ),
           price: z.object({
             amount: productZod.shape.price.shape.amount,
             currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
@@ -208,7 +221,7 @@ export default async function ProductPage({
               </div>
             </div>
             <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)] lg:grid-cols-[2fr_3fr] lg:grid-rows-[repeat(2,20vw)]">
-              {product.gallery.map((image, index) => (
+              {product.galleryNew.map((image, index) => (
                 <div
                   key={index}
                   className={clsx('overflow-hidden rounded-lg', {
@@ -216,51 +229,47 @@ export default async function ProductPage({
                   })}
                 >
                   <picture className="h-full w-full object-cover">
-                    {image.desktop && (
-                      <source
-                        media={`(min-width: ${screens.lg}px)`}
-                        srcSet={`
-                        ${urlFor(image.desktop)
+                    <source
+                      media={`(min-width: ${screens.lg}px)`}
+                      srcSet={`
+                        ${urlFor(image)
                           .width(index === 2 ? 317 : 223)
                           .height(index === 2 ? 296 : 140)
                           .url()}, 
-                        ${urlFor(image.desktop)
+                        ${urlFor(image)
                           .width(index === 2 ? 635 : 445)
                           .height(index === 2 ? 592 : 280)
                           .url()} 2x`}
-                        width={index === 2 ? 635 : 445}
-                        height={index === 2 ? 592 : 280}
-                      />
-                    )}
-                    {image.tablet && (
-                      <source
-                        media={`(min-width: ${screens.sm}px)`}
-                        srcSet={`
-                        ${urlFor(image.tablet)
+                      width={index === 2 ? 635 : 445}
+                      height={index === 2 ? 592 : 280}
+                    />
+                    <source
+                      media={`(min-width: ${screens.sm}px)`}
+                      srcSet={`
+                        ${urlFor(image)
                           .width(index === 2 ? 395 : 277)
                           .height(index === 2 ? 368 : 172)
                           .url()}, 
-                        ${urlFor(image.tablet)
+                        ${urlFor(image)
                           .width(index === 2 ? 790 : 554)
                           .height(index === 2 ? 736 : 348)
                           .url()} 2x`}
-                        width={index === 2 ? 790 : 554}
-                        height={index === 2 ? 736 : 348}
-                      />
-                    )}
+                      width={index === 2 ? 790 : 554}
+                      height={index === 2 ? 736 : 348}
+                    />
                     <img
-                      srcSet={`${urlFor(image.mobile)
+                      srcSet={`${urlFor(image)
                         .width(327)
                         .height(index === 2 ? 368 : 174)
-                        .url()}, ${urlFor(image.mobile)
+                        .url()}, ${urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 358)
                         .url()} 2x`}
-                      src={urlFor(image.mobile)
+                      src={urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 348)
                         .url()}
-                      alt={image.alt}
+                      alt={image.altText ?? ''}
                       width={654}
                       height={index === 2 ? 736 : 348}
                       loading="lazy"
@@ -305,7 +314,7 @@ export default async function ProductPage({
                           .ignoreImageParams()
                           .auto('format')
                           .url()}
-                        alt={thumbnailImageNew.altText}
+                        alt={thumbnailImageNew.altText ?? ''}
                         loading="lazy"
                         decoding="async"
                         className="max-w-[90%]"
