@@ -32,7 +32,7 @@ importers:
         specifier: 3.10.0
         version: 3.10.0(@types/node@20.0.0)(@types/react@18.2.5)(react-dom@18.2.0)(react@18.2.0)(styled-components@5.3.10)
       sanity-plugin-media:
-        specifier: ^2.0.5
+        specifier: 2.0.5
         version: 2.0.5(@sanity/color@2.2.5)(@sanity/icons@2.3.1)(@types/react@18.2.5)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)(sanity@3.10.0)(styled-components@5.3.10)
       sanity-typed-schema-builder:
         specifier: 2.2.3
@@ -1603,17 +1603,13 @@ packages:
   /@emotion/is-prop-valid@1.2.0:
     resolution: {integrity: sha512-3aDpDprjM0AwaxGE09bOPkNxHpBd+kA6jty3RnaEXdweX1DF1U3VQpPYb0g1IStAuK7SVQ1cy+bNBBKp4W3Fjg==}
     dependencies:
-      '@emotion/memoize': 0.8.0
+      '@emotion/memoize': 0.8.1
     dev: false
 
   /@emotion/memoize@0.7.4:
     resolution: {integrity: sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==}
     dev: false
     optional: true
-
-  /@emotion/memoize@0.8.0:
-    resolution: {integrity: sha512-G/YwXTkv7Den9mXDO7AhLWkE3q+I92B+VqAE+dYG4NGPaHZGvt3G8Q0p9vmE+sq7rTGphUbAvmQ9YpbfMQGGlA==}
-    dev: false
 
   /@emotion/memoize@0.8.1:
     resolution: {integrity: sha512-W2P2c/VRW1/1tLox0mVUalvnWXxavmv/Oum2aPsRcoDJuob75FC3Y8FbpfLwUegRcxINtGUMPq0tFCvYNTBXNA==}
