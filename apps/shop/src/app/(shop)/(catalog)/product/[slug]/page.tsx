@@ -19,6 +19,7 @@ export default async function ProductPage({
       `*[_type == "product" && slug.current == "${params.slug}"]{
       title,
       mainImage,
+      'mainImageNew': {...mainImageNew, 'altText': mainImageNew.asset->altText},
       isNew,
       description,
       'price': {
@@ -43,6 +44,9 @@ export default async function ProductPage({
           gallery: true,
         })
         .extend({
+          mainImageNew: productZod.shape.mainImageNew.extend({
+            altText: z.string().nullable(),
+          }),
           price: z.object({
             amount: productZod.shape.price.shape.amount,
             currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
@@ -93,55 +97,33 @@ export default async function ProductPage({
         <div className="flex flex-col gap-32 lg:gap-40">
           <div className="flex flex-col gap-20">
             <div className="grid gap-8 sm:grid-cols-[2fr_3fr] sm:items-center sm:gap-16 lg:grid-cols-2 lg:gap-32">
-              <div className="overflow-hidden rounded-lg">
-                <picture>
-                  {product.mainImage.desktop && (
-                    <source
-                      media={`(min-width: ${screens.lg}px)`}
-                      srcSet={`
-                        ${urlFor(product.mainImage.desktop)
-                          .width(540)
-                          .height(560)
-                          .url()},
-                        ${urlFor(product.mainImage.desktop)
-                          .width(1080)
-                          .height(1120)
-                          .url()} 2x`}
-                      width={1080}
-                      height={1120}
-                    />
-                  )}
-                  {product.mainImage.tablet && (
-                    <source
-                      media={`(min-width: ${screens.sm}px)`}
-                      srcSet={`
-                        ${urlFor(product.mainImage.tablet)
-                          .width(281)
-                          .height(480)
-                          .url()},
-                      , ${urlFor(product.mainImage.tablet)
-                        .width(562)
-                        .height(960)
-                        .url()} 2x`}
-                      width={562}
-                      height={960}
-                    />
-                  )}
-                  <img
-                    srcSet={`${urlFor(product.mainImage.mobile)
-                      .width(327)
-                      .height(327)
-                      .url()}, ${urlFor(product.mainImage.mobile)
-                      .width(654)
-                      .height(654)
-                      .url()} 2x`}
-                    alt={product.mainImage.alt}
-                    width={654}
-                    height={654}
-                    loading="eager"
-                    decoding="sync"
-                  />
-                </picture>
+              <div className="grid aspect-square place-items-center overflow-hidden rounded-lg bg-gray-100 sm:aspect-[7/12] lg:aspect-[27/28]">
+                <img
+                  className="max-w-[70%] sm:max-w-[80%]"
+                  sizes={`(min-width: ${screens.lg}px) 400w, (min-width: ${screens.sm}px) 40vw, 80vw`}
+                  srcset={[300, 400, 600, 800]
+                    .map(
+                      (size) =>
+                        `${urlFor(product.mainImageNew)
+                          .size(size, size)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .url()} ${size}w`
+                    )
+                    .join(', ')}
+                  src={urlFor(product.mainImageNew)
+                    .size(400, 400)
+                    .fit('fill')
+                    .bg('f1f1f1')
+                    .ignoreImageParams()
+                    .auto('format')
+                    .url()}
+                  decoding="sync"
+                  loading="eager"
+                  alt={product.mainImageNew.altText ?? ''}
+                />
               </div>
               <div className="flex flex-col gap-8 lg:gap-12">
                 <div className="flex max-w-md flex-col gap-6 sm:gap-8">

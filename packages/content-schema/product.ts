@@ -87,6 +87,13 @@ const baseProduct = {
       }),
     },
     {
+      name: 'mainImageNew',
+      title: 'Main image new',
+      type: s.image({
+        hotspot: true,
+      }),
+    },
+    {
       name: 'previewImage',
       title: 'Preview image',
       type: s.object({
@@ -208,6 +215,7 @@ const baseProductZod = z.object({
     tablet: sanityImageSourceZodSchema.optional(),
     desktop: sanityImageSourceZodSchema.optional(),
   }),
+  mainImageNew: sanityImageSourceZodSchema,
   previewImage: z.object({
     mobile: sanityImageSourceZodSchema,
     alt: z.string(),

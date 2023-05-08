@@ -28,7 +28,7 @@ export const productCategory = s.document({
     },
     {
       name: 'thumbnail',
-      title: 'Thumbnail images',
+      title: 'Thumbnail',
       type: s.object({
         fields: [
           {
