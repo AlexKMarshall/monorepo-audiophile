@@ -26,31 +26,7 @@ export const productCategory = s.document({
         },
       }),
     },
-    {
-      name: 'thumbnail',
-      title: 'Thumbnail images',
-      type: s.object({
-        fields: [
-          {
-            name: 'mobile',
-            title: 'Mobile',
-            type: s.image(),
-          },
-          {
-            name: 'tablet',
-            title: 'Tablet',
-            type: s.image(),
-            optional: true,
-          },
-          {
-            name: 'desktop',
-            title: 'Desktop',
-            type: s.image(),
-            optional: true,
-          },
-        ],
-      }),
-    },
+    { name: 'thumbnailNew', title: 'Thumbnail', type: s.image() },
   ],
 })
 
@@ -58,6 +34,7 @@ export const productCategoryZod = z.object({
   title: z.string(),
   order: z.number(),
   slug: slugZodSchema,
+  thumbnailNew: sanityImageSourceZodSchema,
   thumbnail: z.object({
     mobile: sanityImageSourceZodSchema,
     tablet: sanityImageSourceZodSchema.optional(),

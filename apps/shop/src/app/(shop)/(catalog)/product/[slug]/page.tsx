@@ -8,6 +8,11 @@ import { CenterContent } from '~/components/CenterContent'
 import { ChevronRightIcon } from '~/components/icons'
 import { screens } from 'tailwind.config'
 import clsx from 'clsx'
+import {
+  sanityImageCropZodSchema,
+  sanityImageHotspotZodSchema,
+  sanityImageSourceZodSchema,
+} from '@audiophile/content-schema/image'
 
 export default async function ProductPage({
   params,
@@ -18,7 +23,7 @@ export default async function ProductPage({
     .fetch(
       `*[_type == "product" && slug.current == "${params.slug}"]{
       title,
-      mainImage,
+      'mainImageNew': {...mainImageNew, 'altText': mainImageNew.asset->altText},
       isNew,
       description,
       'price': {
@@ -27,22 +32,33 @@ export default async function ProductPage({
       },
       features,
       boxIncludes,
-      gallery[0..2],
-      relatedProducts[]->{title, 'slug': slug.current, shortTitle, thumbnailImage}
+      'galleryNew': galleryNew[0...3]{..., 'altText': asset->altText},   
+      relatedProducts[]->{title, 
+        'slug': slug.current, 
+        shortTitle, 
+        'thumbnailImageNew': {...thumbnailImageNew, 'altText': thumbnailImageNew.asset->altText}}
   }[0]`
     )
     .then((result) =>
       productZod
         .pick({
           title: true,
-          mainImage: true,
           isNew: true,
           description: true,
           features: true,
           boxIncludes: true,
-          gallery: true,
         })
         .extend({
+          mainImageNew: productZod.shape.mainImageNew.extend({
+            altText: z.string().nullable(),
+          }),
+          galleryNew: z.array(
+            sanityImageSourceZodSchema.extend({
+              hotspot: sanityImageHotspotZodSchema,
+              crop: sanityImageCropZodSchema,
+              altText: z.string().nullable(),
+            })
+          ),
           price: z.object({
             amount: productZod.shape.price.shape.amount,
             currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
@@ -52,11 +68,16 @@ export default async function ProductPage({
               .pick({
                 title: true,
                 shortTitle: true,
-                thumbnailImage: true,
               })
               .extend({
                 slug: productZod.shape.relatedProducts.element.shape.slug.shape
                   .current,
+                thumbnailImageNew:
+                  productZod.shape.relatedProducts.element.shape.thumbnailImageNew.extend(
+                    {
+                      altText: z.string().nullable(),
+                    }
+                  ),
               })
           ),
         })
@@ -65,12 +86,12 @@ export default async function ProductPage({
 
   const productCategoriesPromise = sanityClient
     .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
     )
     .then((result) =>
       z
         .array(
-          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
+          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
             slug: productCategoryZod.shape.slug.shape.current,
           })
         )
@@ -93,55 +114,35 @@ export default async function ProductPage({
         <div className="flex flex-col gap-32 lg:gap-40">
           <div className="flex flex-col gap-20">
             <div className="grid gap-8 sm:grid-cols-[2fr_3fr] sm:items-center sm:gap-16 lg:grid-cols-2 lg:gap-32">
-              <div className="overflow-hidden rounded-lg">
-                <picture>
-                  {product.mainImage.desktop && (
-                    <source
-                      media={`(min-width: ${screens.lg}px)`}
-                      srcSet={`
-                        ${urlFor(product.mainImage.desktop)
-                          .width(540)
-                          .height(560)
-                          .url()},
-                        ${urlFor(product.mainImage.desktop)
-                          .width(1080)
-                          .height(1120)
-                          .url()} 2x`}
-                      width={1080}
-                      height={1120}
-                    />
-                  )}
-                  {product.mainImage.tablet && (
-                    <source
-                      media={`(min-width: ${screens.sm}px)`}
-                      srcSet={`
-                        ${urlFor(product.mainImage.tablet)
-                          .width(281)
-                          .height(480)
-                          .url()},
-                      , ${urlFor(product.mainImage.tablet)
-                        .width(562)
-                        .height(960)
-                        .url()} 2x`}
-                      width={562}
-                      height={960}
-                    />
-                  )}
-                  <img
-                    srcSet={`${urlFor(product.mainImage.mobile)
-                      .width(327)
-                      .height(327)
-                      .url()}, ${urlFor(product.mainImage.mobile)
-                      .width(654)
-                      .height(654)
-                      .url()} 2x`}
-                    alt={product.mainImage.alt}
-                    width={654}
-                    height={654}
-                    loading="eager"
-                    decoding="sync"
-                  />
-                </picture>
+              <div className="grid aspect-square place-items-center overflow-hidden rounded-lg bg-gray-100 sm:aspect-[7/12] lg:aspect-[27/28]">
+                <img
+                  className="max-w-[70%] sm:max-w-[80%]"
+                  sizes={`(min-width: ${screens.lg}px) 500w, (min-width: ${screens.sm}px) 40vw, 80vw`}
+                  srcSet={[300, 400, 600, 800, 1000]
+                    .map(
+                      (size) =>
+                        `${urlFor(product.mainImageNew)
+                          .size(size, size)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .sharpen(20)
+                          .url()} ${size}w`
+                    )
+                    .join(', ')}
+                  src={urlFor(product.mainImageNew)
+                    .size(400, 400)
+                    .fit('fill')
+                    .bg('f1f1f1')
+                    .ignoreImageParams()
+                    .auto('format')
+                    .sharpen(20)
+                    .url()}
+                  decoding="sync"
+                  loading="eager"
+                  alt={product.mainImageNew.altText ?? ''}
+                />
               </div>
               <div className="flex flex-col gap-8 lg:gap-12">
                 <div className="flex max-w-md flex-col gap-6 sm:gap-8">
@@ -219,7 +220,7 @@ export default async function ProductPage({
               </div>
             </div>
             <div className="grid gap-5 sm:grid-flow-col sm:grid-cols-[4fr_5fr] sm:grid-rows-[repeat(2,25vw)] lg:grid-cols-[2fr_3fr] lg:grid-rows-[repeat(2,20vw)]">
-              {product.gallery.map((image, index) => (
+              {product.galleryNew.map((image, index) => (
                 <div
                   key={index}
                   className={clsx('overflow-hidden rounded-lg', {
@@ -227,51 +228,54 @@ export default async function ProductPage({
                   })}
                 >
                   <picture className="h-full w-full object-cover">
-                    {image.desktop && (
-                      <source
-                        media={`(min-width: ${screens.lg}px)`}
-                        srcSet={`
-                        ${urlFor(image.desktop)
+                    <source
+                      media={`(min-width: ${screens.lg}px)`}
+                      srcSet={`
+                        ${urlFor(image)
                           .width(index === 2 ? 317 : 223)
                           .height(index === 2 ? 296 : 140)
+                          .auto('format')
                           .url()}, 
-                        ${urlFor(image.desktop)
+                        ${urlFor(image)
                           .width(index === 2 ? 635 : 445)
                           .height(index === 2 ? 592 : 280)
+                          .auto('format')
                           .url()} 2x`}
-                        width={index === 2 ? 635 : 445}
-                        height={index === 2 ? 592 : 280}
-                      />
-                    )}
-                    {image.tablet && (
-                      <source
-                        media={`(min-width: ${screens.sm}px)`}
-                        srcSet={`
-                        ${urlFor(image.tablet)
+                      width={index === 2 ? 635 : 445}
+                      height={index === 2 ? 592 : 280}
+                    />
+                    <source
+                      media={`(min-width: ${screens.sm}px)`}
+                      srcSet={`
+                        ${urlFor(image)
                           .width(index === 2 ? 395 : 277)
                           .height(index === 2 ? 368 : 172)
+                          .auto('format')
                           .url()}, 
-                        ${urlFor(image.tablet)
+                        ${urlFor(image)
                           .width(index === 2 ? 790 : 554)
                           .height(index === 2 ? 736 : 348)
+                          .auto('format')
                           .url()} 2x`}
-                        width={index === 2 ? 790 : 554}
-                        height={index === 2 ? 736 : 348}
-                      />
-                    )}
+                      width={index === 2 ? 790 : 554}
+                      height={index === 2 ? 736 : 348}
+                    />
                     <img
-                      srcSet={`${urlFor(image.mobile)
+                      srcSet={`${urlFor(image)
                         .width(327)
                         .height(index === 2 ? 368 : 174)
-                        .url()}, ${urlFor(image.mobile)
+                        .auto('format')
+                        .url()}, ${urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 358)
+                        .auto('format')
                         .url()} 2x`}
-                      src={urlFor(image.mobile)
+                      src={urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 348)
+                        .auto('format')
                         .url()}
-                      alt={image.alt}
+                      alt={image.altText ?? ''}
                       width={654}
                       height={index === 2 ? 736 : 348}
                       loading="lazy"
@@ -289,64 +293,39 @@ export default async function ProductPage({
             </h2>
             <ul className="flex flex-col gap-14 sm:flex-row sm:gap-3">
               {product.relatedProducts.map(
-                ({ slug, title, shortTitle, thumbnailImage }) => (
+                ({ slug, title, shortTitle, thumbnailImageNew }) => (
                   <li
                     key={slug}
                     className="flex flex-1 flex-col items-center gap-8"
                   >
-                    {thumbnailImage && (
-                      <picture>
-                        {thumbnailImage.desktop && (
-                          <source
-                            media={`(min-width: ${screens.lg}px)`}
-                            srcSet={`${urlFor(thumbnailImage.desktop)
-                              .width(350)
-                              .height(318)
-                              .url()}, 
-                            ${urlFor(thumbnailImage.desktop)
-                              .width(700)
-                              .height(636)
-                              .url()} 2x}`}
-                            width={700}
-                            height={636}
-                          />
-                        )}
-                        {thumbnailImage.tablet && (
-                          <source
-                            media={`(min-width: ${screens.sm}px)`}
-                            srcSet={`${urlFor(thumbnailImage.tablet)
-                              .width(223)
-                              .height(318)
-                              .url()}, 
-                            ${urlFor(thumbnailImage.tablet)
-                              .width(446)
-                              .height(636)
-                              .url()} 2x}`}
-                            width={446}
-                            height={636}
-                          />
-                        )}
-                        <img
-                          srcSet={`${urlFor(thumbnailImage.mobile)
-                            .width(357)
-                            .height(120)
-                            .url()}, ${urlFor(thumbnailImage.mobile)
-                            .width(654)
-                            .height(240)
-                            .url()} 2x`}
-                          src={urlFor(thumbnailImage.mobile)
-                            .width(654)
-                            .height(240)
-                            .url()}
-                          alt={thumbnailImage.alt}
-                          width={654}
-                          height={240}
-                          loading="lazy"
-                          decoding="async"
-                          className="rounded-lg"
-                        />
-                      </picture>
-                    )}
+                    <div className="grid max-w-full place-items-center self-stretch rounded-lg bg-gray-100 py-3 sm:py-14">
+                      <img
+                        sizes={`(min-width: ${screens.sm}px) 190px, 95px`}
+                        srcSet={[95, 190, 380]
+                          .map(
+                            (size) =>
+                              `${urlFor(thumbnailImageNew)
+                                .size(size, size)
+                                .fit('fill')
+                                .bg('f1f1f1')
+                                .ignoreImageParams()
+                                .auto('format')
+                                .url()} ${size}w`
+                          )
+                          .join(', ')}
+                        src={urlFor(thumbnailImageNew)
+                          .size(95, 95)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .url()}
+                        alt={thumbnailImageNew.altText ?? ''}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-[90%]"
+                      />
+                    </div>
                     <p
                       className="text-2xl font-bold tracking-[0.07em]"
                       id={slug}
@@ -367,20 +346,19 @@ export default async function ProductPage({
             </ul>
           </div>
           <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
-            {productCategories.map(({ slug, title, thumbnail }) => (
+            {productCategories.map(({ slug, title, thumbnailNew }) => (
               <li
                 key={slug}
                 className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  srcSet={`${urlFor(thumbnail.mobile).width(128).url()},
-                                ${urlFor(thumbnail.mobile).width(256).url()} 2x,
-                                `}
-                  src={urlFor(thumbnail.mobile).width(128).url()}
+                  srcSet={`${urlFor(thumbnailNew).width(128).url()}, 
+                            ${urlFor(thumbnailNew).width(128).dpr(2).url()} 2x,
+                            `}
+                  src={urlFor(thumbnailNew).width(128).url()}
                   alt=""
-                  width={438}
-                  height={438}
+                  width={128}
+                  height={128}
                   className="aspect-square max-w-[8rem] object-contain object-bottom"
                   loading="lazy"
                   decoding="async"
@@ -407,4 +385,14 @@ export default async function ProductPage({
       </CenterContent>
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  const slugs = await sanityClient
+    .fetch(`*[_type == "product"].slug.current`)
+    .then((result) =>
+      z.array(productZod.shape.slug.shape.current).parse(result)
+    )
+
+  return slugs.map((slug) => ({ slug }))
 }
