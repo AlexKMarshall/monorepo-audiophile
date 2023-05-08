@@ -1,47 +1,130 @@
-import Image from 'next/image'
 import { type ReactNode } from 'react'
-import bestGearMobile from './image-best-gear-mobile.jpg'
-import bestGearTablet from './image-best-gear-tablet.jpg'
-import bestGearDesktop from './image-best-gear-desktop.jpg'
 import { CenterContent } from '~/components/CenterContent'
+import { sanityClient, urlFor } from '~/sanityClient'
+import { copySectionZod } from '@audiophile/content-schema'
+import {
+  sanityImageCropZodSchema,
+  sanityImageHotspotZodSchema,
+  sanityImageSourceZodSchema,
+} from '@audiophile/content-schema/image'
+import { z } from 'zod'
+import { screens } from 'tailwind.config'
+import { PortableText } from '@portabletext/react'
 
-export default function CatalogLayout({ children }: { children: ReactNode }) {
+export default async function CatalogLayout({
+  children,
+}: {
+  children: ReactNode
+}) {
+  const copySection = await sanityClient
+    .fetch(
+      `
+    *[_type == "copySection"][0]{
+      title,
+      copy,
+      "image": {...image, 'altText': image.asset->altText}
+    }`
+    )
+    .then((result) =>
+      copySectionZod
+        .pick({ title: true, copy: true })
+        .extend({
+          image: sanityImageSourceZodSchema.extend({
+            hotspot: sanityImageHotspotZodSchema,
+            crop: sanityImageCropZodSchema,
+            altText: z.string().nullable(),
+          }),
+        })
+        .parse(result)
+    )
+
   return (
     <div>
       {children}
       <CenterContent>
         <div className="mb-32 flex flex-col items-center gap-10 sm:gap-16 lg:mb-40 lg:flex-row-reverse lg:gap-32">
-          <div className="overflow-hidden rounded-lg lg:basis-1/2">
-            <Image
-              src={bestGearDesktop}
-              alt="man listening with over-ear headphones against a patterned wall"
-              className="hidden lg:block"
-            />
-            <Image
-              src={bestGearTablet}
-              alt="man listening with over-ear headphones against a patterned wall"
-              className="hidden sm:block lg:hidden"
-            />
-            <Image
-              src={bestGearMobile}
-              alt="man listening with over-ear headphones against a patterned wall"
-              className="sm:hidden"
-            />
+          <div className="h-72 self-stretch overflow-hidden rounded-lg lg:h-auto lg:basis-1/2">
+            <picture className="h-full w-full object-cover lg:h-auto lg:w-auto lg:object-none">
+              <source
+                media={`(min-width: ${screens.lg}px)`}
+                srcSet={`${urlFor(copySection.image)
+                  .size(540, 588)
+                  .fit('crop')
+                  .auto('format')
+                  .url()}, ${urlFor(copySection.image)
+                  .size(540, 588)
+                  .fit('crop')
+                  .auto('format')
+                  .dpr(2)
+                  .url()} 2x`}
+                width={540}
+                height={588}
+              />
+              <source
+                media={`(min-width: ${screens.sm}px)`}
+                srcSet={`${urlFor(copySection.image)
+                  .size(980, 300)
+                  .fit('crop')
+                  .auto('format')
+                  .url()}, ${urlFor(copySection.image)
+                  .size(980, 300)
+                  .fit('crop')
+                  .auto('format')
+                  .dpr(2)
+                  .url()} 2x`}
+              />
+              <img
+                srcSet={`${urlFor(copySection.image)
+                  .size(327, 300)
+                  .auto('format')
+                  .fit('crop')
+                  .url()}, 
+                  ${urlFor(copySection.image)
+                    .size(327, 300)
+                    .auto('format')
+                    .fit('crop')
+                    .dpr(2)
+                    .url()} 2x`}
+                src={urlFor(copySection.image)
+                  .size(327, 300)
+                  .auto('format')
+                  .fit('crop')
+                  .url()}
+                alt={copySection.image.altText ?? ''}
+                loading="lazy"
+                decoding="async"
+                className="h-full w-full object-cover lg:h-auto lg:w-auto lg:object-none"
+              />
+            </picture>
           </div>
           <div className="max-w-xl text-center lg:basis-1/2 lg:text-left">
-            <h2 className="mb-8 text-3xl font-bold uppercase leading-none tracking-wide sm:text-5xl">
-              Bringing you the <span className="text-orange-500">best</span>{' '}
-              audio gear
-            </h2>
-            <p className="font-medium leading-6 text-black/50">
-              Located at the heart of New York City, Audiophile is the premier
-              store for high end headphones, earphones, speakers, and audio
-              accessories. We have a large showroom and luxury demonstration
-              rooms available for you to browse and experience a wide range of
-              our products. Stop by our store to meet some of the fantastic
-              people who make Audiophile the best place to buy your portable
-              audio equipment.
-            </p>
+            <PortableText
+              value={copySection.title}
+              components={{
+                block: {
+                  normal: ({ children }) => (
+                    <h2 className="mb-8 text-3xl font-bold uppercase leading-none tracking-wide sm:text-5xl">
+                      {children}
+                    </h2>
+                  ),
+                },
+                marks: {
+                  em: ({ children }) => (
+                    <em className="not-italic text-orange-500">{children}</em>
+                  ),
+                },
+              }}
+            />
+            <PortableText
+              value={copySection.copy}
+              components={{
+                block: {
+                  normal: ({ children }) => (
+                    <p className="font-medium text-black/50">{children}</p>
+                  ),
+                },
+              }}
+            />
           </div>
         </div>
       </CenterContent>

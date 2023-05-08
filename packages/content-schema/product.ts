@@ -120,12 +120,6 @@ const baseProductZod = z.object({
   price: priceZodSchema,
   mainImageNew: sanityImageSourceZodSchema,
   thumbnailImageNew: sanityImageSourceZodSchema,
-  previewImage: z.object({
-    mobile: sanityImageSourceZodSchema,
-    alt: z.string(),
-    tablet: sanityImageSourceZodSchema.optional(),
-    desktop: sanityImageSourceZodSchema.optional(),
-  }),
   order: z.number(),
   features: z.array(
     z.object({
