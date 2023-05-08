@@ -49,12 +49,12 @@ export default async function CategoryPage({
 
   const productCategoriesPromise = sanityClient
     .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
     )
     .then((result) =>
       z
         .array(
-          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
+          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
             slug: productCategoryZod.shape.slug.shape.current,
           })
         )
@@ -109,54 +109,6 @@ export default async function CategoryPage({
                   decoding={index === 0 ? 'sync' : 'async'}
                   className="w-60 max-w-[75%] lg:w-80"
                 />
-                {/* <picture>
-                  {product.previewImage.desktop && (
-                    <source
-                      media={`(min-width: ${screens.lg}px)`}
-                      srcSet={`${urlFor(product.previewImage.desktop)
-                        .width(540)
-                        .height(560)
-                        .url()}, ${urlFor(product.previewImage.desktop)
-                        .width(1080)
-                        .height(1120)
-                        .url()} 2x`}
-                      width={1080}
-                      height={1120}
-                    />
-                  )}
-                  {product.previewImage.tablet && (
-                    <source
-                      media={`(min-width: ${screens.sm}px)`}
-                      srcSet={`${urlFor(product.previewImage.tablet)
-                        .width(689)
-                        .height(352)
-                        .url()}, ${urlFor(product.previewImage.tablet)
-                        .width(1378)
-                        .height(704)
-                        .url()} 2x`}
-                      width={1378}
-                      height={704}
-                    />
-                  )}
-                  <img
-                    srcSet={`${urlFor(product.previewImage.mobile)
-                      .width(327)
-                      .height(352)
-                      .url()}, ${urlFor(product.previewImage.mobile)
-                      .width(654)
-                      .height(704)
-                      .url()} 2x`}
-                    src={urlFor(product.previewImage.mobile)
-                      .width(327)
-                      .height(352)
-                      .url()}
-                    alt={product.previewImage.alt}
-                    loading={index === 0 ? 'eager' : 'lazy'}
-                    decoding={index === 0 ? 'sync' : 'async'}
-                    width={654}
-                    height={704}
-                  />
-                </picture> */}
               </div>
               <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:basis-1/2 lg:items-start lg:text-left">
                 {product.isNew && (
@@ -185,20 +137,20 @@ export default async function CategoryPage({
             </div>
           ))}
           <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
-            {productCategories.map(({ slug, title, thumbnail }) => (
+            {productCategories.map(({ slug, title, thumbnailNew }) => (
               <li
                 key={slug}
                 className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  srcSet={`${urlFor(thumbnail.mobile).width(128).url()}, 
-                            ${urlFor(thumbnail.mobile).width(256).url()} 2x,
+                  srcSet={`${urlFor(thumbnailNew).width(128).url()}, 
+                            ${urlFor(thumbnailNew).width(128).dpr(2).url()} 2x,
                             `}
-                  src={urlFor(thumbnail.mobile).width(128).url()}
+                  src={urlFor(thumbnailNew).width(128).url()}
                   alt=""
-                  width={438}
-                  height={438}
+                  width={128}
+                  height={128}
                   className="aspect-square max-w-[8rem] object-contain object-bottom"
                   loading="lazy"
                   decoding="async"

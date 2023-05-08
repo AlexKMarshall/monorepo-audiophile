@@ -68,32 +68,6 @@ const baseProduct = {
       }),
     },
     {
-      name: 'previewImage',
-      title: 'Preview image',
-      type: s.object({
-        fields: [
-          {
-            name: 'mobile',
-            title: 'Mobile',
-            type: s.image(),
-          },
-          { name: 'alt', title: 'Alt', type: s.string() },
-          {
-            name: 'tablet',
-            title: 'Tablet',
-            type: s.image(),
-            optional: true,
-          },
-          {
-            name: 'desktop',
-            title: 'Desktop',
-            type: s.image(),
-            optional: true,
-          },
-        ],
-      }),
-    },
-    {
       name: 'thumbnailImageNew',
       title: 'Thumbnail image',
       type: s.image({
