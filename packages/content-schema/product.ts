@@ -112,36 +112,6 @@ const baseProduct = {
       }),
     },
     {
-      name: 'gallery',
-      title: 'Gallery',
-      type: s.array({
-        of: [
-          s.object({
-            fields: [
-              {
-                name: 'mobile',
-                title: 'Mobile',
-                type: s.image(),
-              },
-              { name: 'alt', title: 'Alt', type: s.string() },
-              {
-                name: 'tablet',
-                title: 'Tablet',
-                type: s.image(),
-                optional: true,
-              },
-              {
-                name: 'desktop',
-                title: 'Desktop',
-                type: s.image(),
-                optional: true,
-              },
-            ],
-          }),
-        ],
-      }),
-    },
-    {
       name: 'order',
       title: 'Order',
       type: s.number(),
@@ -182,14 +152,6 @@ const baseProductZod = z.object({
     tablet: sanityImageSourceZodSchema.optional(),
     desktop: sanityImageSourceZodSchema.optional(),
   }),
-  gallery: z.array(
-    z.object({
-      mobile: sanityImageSourceZodSchema,
-      alt: z.string(),
-      tablet: sanityImageSourceZodSchema.optional(),
-      desktop: sanityImageSourceZodSchema.optional(),
-    })
-  ),
   order: z.number(),
   features: z.array(
     z.object({

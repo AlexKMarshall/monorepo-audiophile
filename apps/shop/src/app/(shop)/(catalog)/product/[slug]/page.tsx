@@ -32,7 +32,6 @@ export default async function ProductPage({
       },
       features,
       boxIncludes,
-      gallery,
       'galleryNew': galleryNew[0...3]{..., 'altText': asset->altText},   
       relatedProducts[]->{title, 
         'slug': slug.current, 
@@ -48,7 +47,6 @@ export default async function ProductPage({
           description: true,
           features: true,
           boxIncludes: true,
-          gallery: true,
         })
         .extend({
           mainImageNew: productZod.shape.mainImageNew.extend({
@@ -120,8 +118,8 @@ export default async function ProductPage({
               <div className="grid aspect-square place-items-center overflow-hidden rounded-lg bg-gray-100 sm:aspect-[7/12] lg:aspect-[27/28]">
                 <img
                   className="max-w-[70%] sm:max-w-[80%]"
-                  sizes={`(min-width: ${screens.lg}px) 400w, (min-width: ${screens.sm}px) 40vw, 80vw`}
-                  srcSet={[300, 400, 600, 800]
+                  sizes={`(min-width: ${screens.lg}px) 500w, (min-width: ${screens.sm}px) 40vw, 80vw`}
+                  srcSet={[300, 400, 600, 800, 1000]
                     .map(
                       (size) =>
                         `${urlFor(product.mainImageNew)
@@ -130,6 +128,7 @@ export default async function ProductPage({
                           .bg('f1f1f1')
                           .ignoreImageParams()
                           .auto('format')
+                          .sharpen(20)
                           .url()} ${size}w`
                     )
                     .join(', ')}
@@ -139,6 +138,7 @@ export default async function ProductPage({
                     .bg('f1f1f1')
                     .ignoreImageParams()
                     .auto('format')
+                    .sharpen(20)
                     .url()}
                   decoding="sync"
                   loading="eager"
@@ -235,10 +235,12 @@ export default async function ProductPage({
                         ${urlFor(image)
                           .width(index === 2 ? 317 : 223)
                           .height(index === 2 ? 296 : 140)
+                          .auto('format')
                           .url()}, 
                         ${urlFor(image)
                           .width(index === 2 ? 635 : 445)
                           .height(index === 2 ? 592 : 280)
+                          .auto('format')
                           .url()} 2x`}
                       width={index === 2 ? 635 : 445}
                       height={index === 2 ? 592 : 280}
@@ -249,10 +251,12 @@ export default async function ProductPage({
                         ${urlFor(image)
                           .width(index === 2 ? 395 : 277)
                           .height(index === 2 ? 368 : 172)
+                          .auto('format')
                           .url()}, 
                         ${urlFor(image)
                           .width(index === 2 ? 790 : 554)
                           .height(index === 2 ? 736 : 348)
+                          .auto('format')
                           .url()} 2x`}
                       width={index === 2 ? 790 : 554}
                       height={index === 2 ? 736 : 348}
@@ -261,13 +265,16 @@ export default async function ProductPage({
                       srcSet={`${urlFor(image)
                         .width(327)
                         .height(index === 2 ? 368 : 174)
+                        .auto('format')
                         .url()}, ${urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 358)
+                        .auto('format')
                         .url()} 2x`}
                       src={urlFor(image)
                         .width(654)
                         .height(index === 2 ? 736 : 348)
+                        .auto('format')
                         .url()}
                       alt={image.altText ?? ''}
                       width={654}

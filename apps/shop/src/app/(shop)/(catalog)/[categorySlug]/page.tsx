@@ -21,7 +21,7 @@ export default async function CategoryPage({
           description,
           isNew,
           "slug": slug.current,
-          previewImage,
+          'image': {...mainImageNew, 'altText': mainImageNew.asset->altText},
         }
       }[0]`
     )
@@ -35,9 +35,13 @@ export default async function CategoryPage({
                 title: true,
                 isNew: true,
                 description: true,
-                previewImage: true,
               })
-              .extend({ slug: productZod.shape.slug.shape.current })
+              .extend({
+                slug: productZod.shape.slug.shape.current,
+                image: productZod.shape.mainImageNew.extend({
+                  altText: z.string().nullable(),
+                }),
+              })
           ),
         })
         .parse(result)
@@ -76,8 +80,36 @@ export default async function CategoryPage({
               key={product.slug}
               className="flex flex-col items-center gap-8 sm:gap-14 lg:gap-32 odd:lg:flex-row even:lg:flex-row-reverse"
             >
-              <div className="overflow-hidden rounded-lg lg:basis-1/2">
-                <picture>
+              <div className="grid aspect-square w-full place-items-center overflow-hidden rounded-lg bg-gray-100 py-10 sm:aspect-auto lg:aspect-square lg:basis-1/2">
+                <img
+                  sizes={`(min-width: ${screens.lg}px) 400w, 300w`}
+                  srcSet={[300, 400, 600, 800, 1000]
+                    .map(
+                      (size) =>
+                        `${urlFor(product.image)
+                          .size(size, size)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .sharpen(20)
+                          .url()} ${size}w`
+                    )
+                    .join(', ')}
+                  src={urlFor(product.image)
+                    .size(300, 300)
+                    .fit('fill')
+                    .bg('f1f1f1')
+                    .ignoreImageParams()
+                    .auto('format')
+                    .sharpen(20)
+                    .url()}
+                  alt={product.image.altText ?? ''}
+                  loading={index === 0 ? 'eager' : 'lazy'}
+                  decoding={index === 0 ? 'sync' : 'async'}
+                  className="w-60 max-w-[75%] lg:w-80"
+                />
+                {/* <picture>
                   {product.previewImage.desktop && (
                     <source
                       media={`(min-width: ${screens.lg}px)`}
@@ -124,7 +156,7 @@ export default async function CategoryPage({
                     width={654}
                     height={704}
                   />
-                </picture>
+                </picture> */}
               </div>
               <div className="flex max-w-xl flex-col items-center gap-6 text-center sm:gap-0 lg:basis-1/2 lg:items-start lg:text-left">
                 {product.isNew && (
