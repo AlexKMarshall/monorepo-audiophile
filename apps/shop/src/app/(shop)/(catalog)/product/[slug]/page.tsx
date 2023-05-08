@@ -68,7 +68,6 @@ export default async function ProductPage({
               .pick({
                 title: true,
                 shortTitle: true,
-                thumbnailImage: true,
               })
               .extend({
                 slug: productZod.shape.relatedProducts.element.shape.slug.shape
@@ -87,12 +86,12 @@ export default async function ProductPage({
 
   const productCategoriesPromise = sanityClient
     .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnail}`
+      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
     )
     .then((result) =>
       z
         .array(
-          productCategoryZod.pick({ title: true, thumbnail: true }).extend({
+          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
             slug: productCategoryZod.shape.slug.shape.current,
           })
         )
@@ -347,19 +346,19 @@ export default async function ProductPage({
             </ul>
           </div>
           <ul className="flex flex-col sm:flex-row sm:gap-3 lg:gap-8">
-            {productCategories.map(({ slug, title, thumbnail }) => (
+            {productCategories.map(({ slug, title, thumbnailNew }) => (
               <li
                 key={slug}
                 className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
                 <img
-                  srcSet={`${urlFor(thumbnail.mobile).width(128).url()},
-                                ${urlFor(thumbnail.mobile).width(256).url()} 2x,
-                                `}
-                  src={urlFor(thumbnail.mobile).width(128).url()}
+                  srcSet={`${urlFor(thumbnailNew).width(128).url()}, 
+                            ${urlFor(thumbnailNew).width(128).dpr(2).url()} 2x,
+                            `}
+                  src={urlFor(thumbnailNew).width(128).url()}
                   alt=""
-                  width={438}
-                  height={438}
+                  width={128}
+                  height={128}
                   className="aspect-square max-w-[8rem] object-contain object-bottom"
                   loading="lazy"
                   decoding="async"
@@ -386,4 +385,14 @@ export default async function ProductPage({
       </CenterContent>
     </div>
   )
+}
+
+export async function generateStaticParams() {
+  const slugs = await sanityClient
+    .fetch(`*[_type == "product"].slug.current`)
+    .then((result) =>
+      z.array(productZod.shape.slug.shape.current).parse(result)
+    )
+
+  return slugs.map((slug) => ({ slug }))
 }
