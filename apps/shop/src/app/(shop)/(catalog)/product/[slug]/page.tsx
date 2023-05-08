@@ -18,7 +18,6 @@ export default async function ProductPage({
     .fetch(
       `*[_type == "product" && slug.current == "${params.slug}"]{
       title,
-      mainImage,
       'mainImageNew': {...mainImageNew, 'altText': mainImageNew.asset->altText},
       isNew,
       description,
@@ -29,14 +28,16 @@ export default async function ProductPage({
       features,
       boxIncludes,
       gallery[0..2],
-      relatedProducts[]->{title, 'slug': slug.current, shortTitle, thumbnailImage}
+      relatedProducts[]->{title, 
+        'slug': slug.current, 
+        shortTitle, 
+        'thumbnailImageNew': {...thumbnailImageNew, 'altText': thumbnailImageNew.asset->altText}}
   }[0]`
     )
     .then((result) =>
       productZod
         .pick({
           title: true,
-          mainImage: true,
           isNew: true,
           description: true,
           features: true,
@@ -61,6 +62,12 @@ export default async function ProductPage({
               .extend({
                 slug: productZod.shape.relatedProducts.element.shape.slug.shape
                   .current,
+                thumbnailImageNew:
+                  productZod.shape.relatedProducts.element.shape.thumbnailImageNew.extend(
+                    {
+                      altText: z.string().nullable(),
+                    }
+                  ),
               })
           ),
         })
@@ -101,7 +108,7 @@ export default async function ProductPage({
                 <img
                   className="max-w-[70%] sm:max-w-[80%]"
                   sizes={`(min-width: ${screens.lg}px) 400w, (min-width: ${screens.sm}px) 40vw, 80vw`}
-                  srcset={[300, 400, 600, 800]
+                  srcSet={[300, 400, 600, 800]
                     .map(
                       (size) =>
                         `${urlFor(product.mainImageNew)
@@ -271,64 +278,39 @@ export default async function ProductPage({
             </h2>
             <ul className="flex flex-col gap-14 sm:flex-row sm:gap-3">
               {product.relatedProducts.map(
-                ({ slug, title, shortTitle, thumbnailImage }) => (
+                ({ slug, title, shortTitle, thumbnailImageNew }) => (
                   <li
                     key={slug}
                     className="flex flex-1 flex-col items-center gap-8"
                   >
-                    {thumbnailImage && (
-                      <picture>
-                        {thumbnailImage.desktop && (
-                          <source
-                            media={`(min-width: ${screens.lg}px)`}
-                            srcSet={`${urlFor(thumbnailImage.desktop)
-                              .width(350)
-                              .height(318)
-                              .url()}, 
-                            ${urlFor(thumbnailImage.desktop)
-                              .width(700)
-                              .height(636)
-                              .url()} 2x}`}
-                            width={700}
-                            height={636}
-                          />
-                        )}
-                        {thumbnailImage.tablet && (
-                          <source
-                            media={`(min-width: ${screens.sm}px)`}
-                            srcSet={`${urlFor(thumbnailImage.tablet)
-                              .width(223)
-                              .height(318)
-                              .url()}, 
-                            ${urlFor(thumbnailImage.tablet)
-                              .width(446)
-                              .height(636)
-                              .url()} 2x}`}
-                            width={446}
-                            height={636}
-                          />
-                        )}
-                        <img
-                          srcSet={`${urlFor(thumbnailImage.mobile)
-                            .width(357)
-                            .height(120)
-                            .url()}, ${urlFor(thumbnailImage.mobile)
-                            .width(654)
-                            .height(240)
-                            .url()} 2x`}
-                          src={urlFor(thumbnailImage.mobile)
-                            .width(654)
-                            .height(240)
-                            .url()}
-                          alt={thumbnailImage.alt}
-                          width={654}
-                          height={240}
-                          loading="lazy"
-                          decoding="async"
-                          className="rounded-lg"
-                        />
-                      </picture>
-                    )}
+                    <div className="grid max-w-full place-items-center self-stretch rounded-lg bg-gray-100 py-3 sm:py-14">
+                      <img
+                        sizes={`(min-width: ${screens.sm}px) 190px, 95px`}
+                        srcSet={[95, 190, 380]
+                          .map(
+                            (size) =>
+                              `${urlFor(thumbnailImageNew)
+                                .size(size, size)
+                                .fit('fill')
+                                .bg('f1f1f1')
+                                .ignoreImageParams()
+                                .auto('format')
+                                .url()} ${size}w`
+                          )
+                          .join(', ')}
+                        src={urlFor(thumbnailImageNew)
+                          .size(95, 95)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .url()}
+                        alt={thumbnailImageNew.altText}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-w-[90%]"
+                      />
+                    </div>
                     <p
                       className="text-2xl font-bold tracking-[0.07em]"
                       id={slug}

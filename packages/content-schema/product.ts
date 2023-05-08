@@ -61,34 +61,8 @@ const baseProduct = {
       }),
     },
     {
-      name: 'mainImage',
-      title: 'Main image',
-      type: s.object({
-        fields: [
-          {
-            name: 'mobile',
-            title: 'Mobile',
-            type: s.image(),
-          },
-          { name: 'alt', title: 'Alt', type: s.string() },
-          {
-            name: 'tablet',
-            title: 'Tablet',
-            type: s.image(),
-            optional: true,
-          },
-          {
-            name: 'desktop',
-            title: 'Desktop',
-            type: s.image(),
-            optional: true,
-          },
-        ],
-      }),
-    },
-    {
       name: 'mainImageNew',
-      title: 'Main image new',
+      title: 'Main image',
       type: s.image({
         hotspot: true,
       }),
@@ -120,30 +94,10 @@ const baseProduct = {
       }),
     },
     {
-      name: 'thumbnailImage',
+      name: 'thumbnailImageNew',
       title: 'Thumbnail image',
-      optional: true,
-      type: s.object({
-        fields: [
-          {
-            name: 'mobile',
-            title: 'Mobile',
-            type: s.image(),
-          },
-          { name: 'alt', title: 'Alt', type: s.string() },
-          {
-            name: 'tablet',
-            title: 'Tablet',
-            type: s.image(),
-            optional: true,
-          },
-          {
-            name: 'desktop',
-            title: 'Desktop',
-            type: s.image(),
-            optional: true,
-          },
-        ],
+      type: s.image({
+        hotspot: true,
       }),
     },
     {
@@ -209,27 +163,14 @@ const baseProductZod = z.object({
   description: z.string(),
   isNew: z.boolean().optional(),
   price: priceZodSchema,
-  mainImage: z.object({
-    mobile: sanityImageSourceZodSchema,
-    alt: z.string(),
-    tablet: sanityImageSourceZodSchema.optional(),
-    desktop: sanityImageSourceZodSchema.optional(),
-  }),
   mainImageNew: sanityImageSourceZodSchema,
+  thumbnailImageNew: sanityImageSourceZodSchema,
   previewImage: z.object({
     mobile: sanityImageSourceZodSchema,
     alt: z.string(),
     tablet: sanityImageSourceZodSchema.optional(),
     desktop: sanityImageSourceZodSchema.optional(),
   }),
-  thumbnailImage: z
-    .object({
-      mobile: sanityImageSourceZodSchema,
-      alt: z.string(),
-      tablet: sanityImageSourceZodSchema.optional(),
-      desktop: sanityImageSourceZodSchema.optional(),
-    })
-    .nullish(),
   gallery: z.array(
     z.object({
       mobile: sanityImageSourceZodSchema,
