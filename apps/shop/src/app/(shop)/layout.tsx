@@ -17,6 +17,7 @@ import { sanityClient, urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { productCategoryZod } from '@audiophile/content-schema'
 import { ChevronRightIcon } from '~/components/icons'
+import { fetchQuery } from '~/contentClient'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -29,19 +30,14 @@ export default async function RootLayout({
   children: ReactNode
   modal: ReactNode
 }) {
-  const productCategories = await sanityClient
-    .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
-    )
-    .then((result) =>
-      z
-        .array(
-          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
-            slug: productCategoryZod.shape.slug.shape.current,
-          })
-        )
-        .parse(result)
-    )
+  const productCategories = await fetchQuery({
+    query: `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`,
+    validationSchema: z.array(
+      productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
+        slug: productCategoryZod.shape.slug.shape.current,
+      })
+    ),
+  })
 
   return (
     <html lang="en">

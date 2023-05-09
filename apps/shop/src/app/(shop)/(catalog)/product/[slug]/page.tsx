@@ -13,15 +13,15 @@ import {
   sanityImageHotspotZodSchema,
   sanityImageSourceZodSchema,
 } from '@audiophile/content-schema/image'
+import { fetchQuery } from '~/contentClient'
 
 export default async function ProductPage({
   params,
 }: {
   params: { slug: string }
 }) {
-  const productPromise = sanityClient
-    .fetch(
-      `*[_type == "product" && slug.current == "${params.slug}"]{
+  const productPromise = fetchQuery({
+    query: `*[_type == "product" && slug.current == $slug]{
       title,
       'mainImageNew': {...mainImageNew, 'altText': mainImageNew.asset->altText},
       isNew,
@@ -37,66 +37,59 @@ export default async function ProductPage({
         'slug': slug.current, 
         shortTitle, 
         'thumbnailImageNew': {...thumbnailImageNew, 'altText': thumbnailImageNew.asset->altText}}
-  }[0]`
-    )
-    .then((result) =>
-      productZod
-        .pick({
-          title: true,
-          isNew: true,
-          description: true,
-          features: true,
-          boxIncludes: true,
-        })
-        .extend({
-          mainImageNew: productZod.shape.mainImageNew.extend({
+  }[0]`,
+    params: { slug: params.slug },
+    validationSchema: productZod
+      .pick({
+        title: true,
+        isNew: true,
+        description: true,
+        features: true,
+        boxIncludes: true,
+      })
+      .extend({
+        mainImageNew: productZod.shape.mainImageNew.extend({
+          altText: z.string().nullable(),
+        }),
+        galleryNew: z.array(
+          sanityImageSourceZodSchema.extend({
+            hotspot: sanityImageHotspotZodSchema,
+            crop: sanityImageCropZodSchema,
             altText: z.string().nullable(),
-          }),
-          galleryNew: z.array(
-            sanityImageSourceZodSchema.extend({
-              hotspot: sanityImageHotspotZodSchema,
-              crop: sanityImageCropZodSchema,
-              altText: z.string().nullable(),
-            })
-          ),
-          price: z.object({
-            amount: productZod.shape.price.shape.amount,
-            currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
-          }),
-          relatedProducts: z.array(
-            productZod.shape.relatedProducts.element
-              .pick({
-                title: true,
-                shortTitle: true,
-              })
-              .extend({
-                slug: productZod.shape.relatedProducts.element.shape.slug.shape
-                  .current,
-                thumbnailImageNew:
-                  productZod.shape.relatedProducts.element.shape.thumbnailImageNew.extend(
-                    {
-                      altText: z.string().nullable(),
-                    }
-                  ),
-              })
-          ),
-        })
-        .parse(result)
-    )
-
-  const productCategoriesPromise = sanityClient
-    .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
-    )
-    .then((result) =>
-      z
-        .array(
-          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
-            slug: productCategoryZod.shape.slug.shape.current,
           })
-        )
-        .parse(result)
-    )
+        ),
+        price: z.object({
+          amount: productZod.shape.price.shape.amount,
+          currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
+        }),
+        relatedProducts: z.array(
+          productZod.shape.relatedProducts.element
+            .pick({
+              title: true,
+              shortTitle: true,
+            })
+            .extend({
+              slug: productZod.shape.relatedProducts.element.shape.slug.shape
+                .current,
+              thumbnailImageNew:
+                productZod.shape.relatedProducts.element.shape.thumbnailImageNew.extend(
+                  {
+                    altText: z.string().nullable(),
+                  }
+                ),
+            })
+        ),
+      }),
+  })
+
+  const productCategoriesPromise = fetchQuery({
+    query: `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`,
+    validationSchema: z.array(
+      productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
+        slug: productCategoryZod.shape.slug.shape.current,
+      })
+    ),
+  })
 
   const [product, productCategories] = await Promise.all([
     productPromise,
@@ -388,11 +381,10 @@ export default async function ProductPage({
 }
 
 export async function generateStaticParams() {
-  const slugs = await sanityClient
-    .fetch(`*[_type == "product"].slug.current`)
-    .then((result) =>
-      z.array(productZod.shape.slug.shape.current).parse(result)
-    )
+  const slugs = await fetchQuery({
+    query: `*[_type == "product"].slug.current`,
+    validationSchema: z.array(productZod.shape.slug.shape.current),
+  })
 
   return slugs.map((slug) => ({ slug }))
 }

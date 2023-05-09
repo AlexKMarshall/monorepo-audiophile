@@ -1,6 +1,6 @@
 import { type ReactNode } from 'react'
 import { CenterContent } from '~/components/CenterContent'
-import { sanityClient, urlFor } from '~/sanityClient'
+import { urlFor } from '~/sanityClient'
 import { copySectionZod } from '@audiophile/content-schema'
 import {
   sanityImageCropZodSchema,
@@ -10,33 +10,27 @@ import {
 import { z } from 'zod'
 import { screens } from 'tailwind.config'
 import { PortableText } from '@portabletext/react'
+import { fetchQuery } from '~/contentClient'
 
 export default async function CatalogLayout({
   children,
 }: {
   children: ReactNode
 }) {
-  const copySection = await sanityClient
-    .fetch(
-      `
-    *[_type == "copySection"][0]{
+  const copySection = await fetchQuery({
+    query: `*[_type == "copySection"][0]{
       title,
       copy,
       "image": {...image, 'altText': image.asset->altText}
-    }`
-    )
-    .then((result) =>
-      copySectionZod
-        .pick({ title: true, copy: true })
-        .extend({
-          image: sanityImageSourceZodSchema.extend({
-            hotspot: sanityImageHotspotZodSchema,
-            crop: sanityImageCropZodSchema,
-            altText: z.string().nullable(),
-          }),
-        })
-        .parse(result)
-    )
+    }`,
+    validationSchema: copySectionZod.pick({ title: true, copy: true }).extend({
+      image: sanityImageSourceZodSchema.extend({
+        hotspot: sanityImageHotspotZodSchema,
+        crop: sanityImageCropZodSchema,
+        altText: z.string().nullable(),
+      }),
+    }),
+  })
 
   return (
     <div>
