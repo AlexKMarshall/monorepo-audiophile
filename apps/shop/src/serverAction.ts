@@ -9,6 +9,7 @@ export async function myServerAction() {
 
   console.log('server action', updatedCount)
 
+  //@ts-expect-error
   cookies().set('test-count', updatedCount.toString())
   revalidatePath('/test')
   revalidatePath('/')
