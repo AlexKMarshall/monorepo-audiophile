@@ -17,7 +17,7 @@ export default async function CatalogLayout({
 }: {
   children: ReactNode
 }) {
-  const copySection = await fetchQuery({
+  const { result: copySection } = await fetchQuery({
     query: `*[_type == "copySection"][0]{
       title,
       copy,

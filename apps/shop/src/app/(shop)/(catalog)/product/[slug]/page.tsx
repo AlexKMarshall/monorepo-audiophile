@@ -91,10 +91,8 @@ export default async function ProductPage({
     ),
   })
 
-  const [product, productCategories] = await Promise.all([
-    productPromise,
-    productCategoriesPromise,
-  ])
+  const [{ result: product }, { result: productCategories }] =
+    await Promise.all([productPromise, productCategoriesPromise])
 
   return (
     <div className="mb-32 lg:mb-40">
@@ -381,7 +379,7 @@ export default async function ProductPage({
 }
 
 export async function generateStaticParams() {
-  const slugs = await fetchQuery({
+  const { result: slugs } = await fetchQuery({
     query: `*[_type == "product"].slug.current`,
     validationSchema: z.array(productZod.shape.slug.shape.current),
   })

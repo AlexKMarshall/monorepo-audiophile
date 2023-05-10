@@ -60,10 +60,8 @@ export default async function CategoryPage({
     ),
   })
 
-  const [productCategory, productCategories] = await Promise.all([
-    productCategoryPromise,
-    productCategoriesPromise,
-  ])
+  const [{ result: productCategory }, { result: productCategories }] =
+    await Promise.all([productCategoryPromise, productCategoriesPromise])
 
   return (
     <div>
@@ -178,7 +176,7 @@ export default async function CategoryPage({
 }
 
 export async function generateStaticParams() {
-  const slugs = await fetchQuery({
+  const { result: slugs } = await fetchQuery({
     query: `*[_type == "productCategory"] | order(order asc)[].slug.current`,
     validationSchema: z.array(productCategoryZod.shape.slug.shape.current),
   })

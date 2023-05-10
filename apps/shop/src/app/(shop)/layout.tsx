@@ -30,7 +30,7 @@ export default async function RootLayout({
   children: ReactNode
   modal: ReactNode
 }) {
-  const productCategories = await fetchQuery({
+  const { result: productCategories } = await fetchQuery({
     query: `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`,
     validationSchema: z.array(
       productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
