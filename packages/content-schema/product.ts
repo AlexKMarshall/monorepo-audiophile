@@ -112,6 +112,7 @@ export const product = s.document({
 })
 
 const baseProductZod = z.object({
+  _id: z.string(),
   title: z.string(),
   shortTitle: z.string().nullable(),
   slug: slugZodSchema,

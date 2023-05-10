@@ -1,20 +1,38 @@
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
-import { sanityClient, urlFor } from '~/sanityClient'
+import { urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { productCategoryZod, productZod } from '@audiophile/content-schema'
 
 import { screens } from 'tailwind.config'
 import { ChevronRightIcon } from '~/components/icons'
+import { fetchQuery } from '~/contentClient'
 
 export default async function CategoryPage({
   params,
 }: {
   params: { categorySlug: string }
 }) {
-  const productCategoryPromise = sanityClient
-    .fetch(
-      `*[_type == "productCategory" && slug.current == "${params.categorySlug}"]{
+  const productCategorySchema = productCategoryZod
+    .pick({ title: true })
+    .extend({
+      products: z.array(
+        productZod
+          .pick({
+            title: true,
+            isNew: true,
+            description: true,
+          })
+          .extend({
+            slug: productZod.shape.slug.shape.current,
+            image: productZod.shape.mainImageNew.extend({
+              altText: z.string().nullable(),
+            }),
+          })
+      ),
+    })
+
+  const productCategoryQuery = `*[_type == "productCategory" && slug.current == $categorySlug]{
         title,
         "products": *[_type == "product" && references(^._id)] | order(order asc)[] {
           title,
@@ -24,47 +42,26 @@ export default async function CategoryPage({
           'image': {...mainImageNew, 'altText': mainImageNew.asset->altText},
         }
       }[0]`
-    )
-    .then((result) =>
-      productCategoryZod
-        .pick({ title: true })
-        .extend({
-          products: z.array(
-            productZod
-              .pick({
-                title: true,
-                isNew: true,
-                description: true,
-              })
-              .extend({
-                slug: productZod.shape.slug.shape.current,
-                image: productZod.shape.mainImageNew.extend({
-                  altText: z.string().nullable(),
-                }),
-              })
-          ),
-        })
-        .parse(result)
-    )
 
-  const productCategoriesPromise = sanityClient
-    .fetch(
-      `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
-    )
-    .then((result) =>
-      z
-        .array(
-          productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
-            slug: productCategoryZod.shape.slug.shape.current,
-          })
-        )
-        .parse(result)
-    )
+  const productCategoryPromise = fetchQuery({
+    query: productCategoryQuery,
+    params: { categorySlug: params.categorySlug },
+    validationSchema: productCategorySchema,
+  })
 
-  const [productCategory, productCategories] = await Promise.all([
-    productCategoryPromise,
-    productCategoriesPromise,
-  ])
+  const productCategoriesQuery = `*[_type == "productCategory"] | order(order asc)[]{title, "slug": slug.current, thumbnailNew}`
+
+  const productCategoriesPromise = fetchQuery({
+    query: productCategoriesQuery,
+    validationSchema: z.array(
+      productCategoryZod.pick({ title: true, thumbnailNew: true }).extend({
+        slug: productCategoryZod.shape.slug.shape.current,
+      })
+    ),
+  })
+
+  const [{ result: productCategory }, { result: productCategories }] =
+    await Promise.all([productCategoryPromise, productCategoriesPromise])
 
   return (
     <div>
@@ -142,9 +139,8 @@ export default async function CategoryPage({
                 key={slug}
                 className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  srcSet={`${urlFor(thumbnailNew).width(128).url()}, 
+                  srcSet={`${urlFor(thumbnailNew).width(128).url()},
                             ${urlFor(thumbnailNew).width(128).dpr(2).url()} 2x,
                             `}
                   src={urlFor(thumbnailNew).width(128).url()}
@@ -179,12 +175,14 @@ export default async function CategoryPage({
   )
 }
 
-export async function generateStaticParams() {
-  const slugs = await sanityClient
-    .fetch(`*[_type == "productCategory"] | order(order asc)[].slug.current`)
-    .then((result) =>
-      z.array(productCategoryZod.shape.slug.shape.current).parse(result)
-    )
+// TODO: It seems that generateStaticParams doesn't work with server actions
+// Get a `Detected multiple renderers concurrently rendering the same context provider.`
+// when this is enabled
+// export async function generateStaticParams() {
+//   const { result: slugs } = await fetchQuery({
+//     query: `*[_type == "productCategory"] | order(order asc)[].slug.current`,
+//     validationSchema: z.array(productCategoryZod.shape.slug.shape.current),
+//   })
 
-  return slugs.map((slug) => ({ category: slug }))
-}
+//   return slugs.map((slug) => ({ category: slug }))
+// }
