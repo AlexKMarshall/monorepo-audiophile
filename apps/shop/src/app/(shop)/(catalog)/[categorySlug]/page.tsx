@@ -140,7 +140,7 @@ export default async function CategoryPage({
                 className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
               >
                 <img
-                  srcSet={`${urlFor(thumbnailNew).width(128).url()}, 
+                  srcSet={`${urlFor(thumbnailNew).width(128).url()},
                             ${urlFor(thumbnailNew).width(128).dpr(2).url()} 2x,
                             `}
                   src={urlFor(thumbnailNew).width(128).url()}
@@ -175,11 +175,14 @@ export default async function CategoryPage({
   )
 }
 
-export async function generateStaticParams() {
-  const { result: slugs } = await fetchQuery({
-    query: `*[_type == "productCategory"] | order(order asc)[].slug.current`,
-    validationSchema: z.array(productCategoryZod.shape.slug.shape.current),
-  })
+// TODO: It seems that generateStaticParams doesn't work with server actions
+// Get a `Detected multiple renderers concurrently rendering the same context provider.`
+// when this is enabled
+// export async function generateStaticParams() {
+//   const { result: slugs } = await fetchQuery({
+//     query: `*[_type == "productCategory"] | order(order asc)[].slug.current`,
+//     validationSchema: z.array(productCategoryZod.shape.slug.shape.current),
+//   })
 
-  return slugs.map((slug) => ({ category: slug }))
-}
+//   return slugs.map((slug) => ({ category: slug }))
+// }

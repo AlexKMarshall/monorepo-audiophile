@@ -1,6 +1,6 @@
 import { productZod, productCategoryZod } from '@audiophile/content-schema'
 import { BackButton } from '~/components/BackButton'
-import { sanityClient, urlFor } from '~/sanityClient'
+import { urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
@@ -14,6 +14,8 @@ import {
   sanityImageSourceZodSchema,
 } from '@audiophile/content-schema/image'
 import { fetchQuery } from '~/contentClient'
+import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
+import { revalidatePath } from 'next/cache'
 
 export default async function ProductPage({
   params,
@@ -22,6 +24,7 @@ export default async function ProductPage({
 }) {
   const productPromise = fetchQuery({
     query: `*[_type == "product" && slug.current == $slug]{
+      _id,
       title,
       'mainImageNew': {...mainImageNew, 'altText': mainImageNew.asset->altText},
       isNew,
@@ -41,6 +44,7 @@ export default async function ProductPage({
     params: { slug: params.slug },
     validationSchema: productZod
       .pick({
+        _id: true,
         title: true,
         isNew: true,
         description: true,
@@ -93,6 +97,22 @@ export default async function ProductPage({
 
   const [{ result: product }, { result: productCategories }] =
     await Promise.all([productPromise, productCategoriesPromise])
+
+  // server actions have to be async
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async function addToCart(data: FormData) {
+    'use server'
+    const cart = getCartFromCookies()
+    const productId = product._id
+    const quantity = z
+      .preprocess((val) => Number(val), z.number().min(1))
+      .parse(data.get('quantity'))
+
+    const updatedCart = cartReducer(cart, { type: 'add', productId, quantity })
+
+    updateCartCookie(updatedCart)
+    revalidatePath('/')
+  }
 
   return (
     <div className="mb-32 lg:mb-40">
@@ -159,8 +179,12 @@ export default async function ProductPage({
                     }).format(product.price.amount)}
                   </p>
                 </div>
-                <form className="flex gap-4">
+                {/* TODO: React typings haven't caught up yet with server actions */}
+                {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
+                <form action={addToCart} className="flex gap-4">
                   <input
+                    name="quantity"
+                    defaultValue={1}
                     type="number"
                     aria-label="quantity"
                     className="w-0 basis-32 bg-gray-100"
@@ -378,11 +402,13 @@ export default async function ProductPage({
   )
 }
 
-export async function generateStaticParams() {
-  const { result: slugs } = await fetchQuery({
-    query: `*[_type == "product"].slug.current`,
-    validationSchema: z.array(productZod.shape.slug.shape.current),
-  })
+// Not working with server actions
 
-  return slugs.map((slug) => ({ slug }))
-}
+// export async function generateStaticParams() {
+//   const { result: slugs } = await fetchQuery({
+//     query: `*[_type == "product"].slug.current`,
+//     validationSchema: z.array(productZod.shape.slug.shape.current),
+//   })
+
+//   return slugs.map((slug) => ({ slug }))
+// }

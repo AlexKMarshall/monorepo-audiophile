@@ -13,11 +13,12 @@ import {
 } from './MobileNav'
 
 import { CenterContent } from '~/components/CenterContent'
-import { sanityClient, urlFor } from '~/sanityClient'
+import { urlFor } from '~/sanityClient'
 import { z } from 'zod'
 import { productCategoryZod } from '@audiophile/content-schema'
 import { ChevronRightIcon } from '~/components/icons'
 import { fetchQuery } from '~/contentClient'
+import { getCartFromCookies } from '~/cart'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -38,6 +39,10 @@ export default async function RootLayout({
       })
     ),
   })
+
+  const cart = getCartFromCookies()
+
+  const cartLinesCount = Object.keys(cart).length
 
   return (
     <html lang="en">
@@ -61,7 +66,7 @@ export default async function RootLayout({
                             <img
                               srcSet={`${urlFor(thumbnailNew)
                                 .size(128, 128)
-                                .url()}, 
+                                .url()},
                             ${urlFor(thumbnailNew)
                               .size(128, 128)
                               .dpr(2)
@@ -116,8 +121,27 @@ export default async function RootLayout({
                   ))}
                 </ul>
               </nav>
-              <Link href="/cart" className="justify-self-end">
-                <CartIcon title="cart" className="w-6" />
+              <Link href="/cart" className="relative justify-self-end">
+                <CartIcon className="w-6" />
+                {cartLinesCount > 0 && (
+                  <span
+                    aria-hidden
+                    className="absolute right-0 top-0 grid aspect-square min-w-[1.25rem] -translate-y-2/3 translate-x-2/3 place-items-center rounded-full bg-orange-500 p-0.5 text-xs text-white"
+                  >
+                    {cartLinesCount}
+                  </span>
+                )}
+                <span className="sr-only">
+                  Cart
+                  {cartLinesCount > 0 ? (
+                    <span className="sr-only">
+                      {' '}
+                      with {cartLinesCount} items
+                    </span>
+                  ) : (
+                    <span> empty</span>
+                  )}
+                </span>
               </Link>
             </header>
           </CenterContent>
