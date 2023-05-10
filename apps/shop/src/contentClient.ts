@@ -12,7 +12,7 @@ export async function fetchQuery<T extends z.ZodType<JsonValue>>({
   validationSchema,
 }: {
   query: string
-  params?: Record<string, string>
+  params?: Record<string, string | string[]>
   validationSchema: T
 }) {
   const url = new URL(baseUrl)
@@ -21,8 +21,7 @@ export async function fetchQuery<T extends z.ZodType<JsonValue>>({
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
       const keyWithDollar = `$${key}`
-      const valueInQuotes = `"${value}"`
-      url.searchParams.set(keyWithDollar, valueInQuotes)
+      url.searchParams.set(keyWithDollar, JSON.stringify(value))
     })
   }
 
