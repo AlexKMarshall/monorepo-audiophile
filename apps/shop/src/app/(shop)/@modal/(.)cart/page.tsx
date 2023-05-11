@@ -18,6 +18,20 @@ export default async function CartModalPage() {
   const productIds = Object.keys(cart)
   const cartItemsCount = productIds.length
 
+  if (cartItemsCount === 0) {
+    return (
+      <Dialog>
+        <DialogOverlay className="fixed inset-0 bg-black/50">
+          <CenterContent>
+            <DialogContent className="mt-24 max-h-full overflow-auto rounded-lg bg-white px-7 py-8">
+              Empty cart
+            </DialogContent>
+          </CenterContent>
+        </DialogOverlay>
+      </Dialog>
+    )
+  }
+
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
         'amount': price.amount,
@@ -41,6 +55,13 @@ export default async function CartModalPage() {
         })
     ),
   })
+
+  const cartTotal = products.reduce(
+    (total, product) => total + product.price.amount * (cart[product._id] ?? 0),
+    0
+  )
+
+  const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
 
   return (
     <Dialog>
@@ -123,7 +144,13 @@ export default async function CartModalPage() {
                   <span className="text-[15px] font-medium uppercase text-black/50">
                     Total
                   </span>
-                  <span className="text-lg font-bold">$Total</span>
+                  <span className="text-lg font-bold">
+                    {new Intl.NumberFormat('en-GB', {
+                      style: 'currency',
+                      currency: cartCurrency,
+                      currencyDisplay: 'narrowSymbol',
+                    }).format(cartTotal)}
+                  </span>
                 </h3>
                 <button
                   type="submit"
