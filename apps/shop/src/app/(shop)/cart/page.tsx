@@ -91,7 +91,7 @@ export default async function CartPage() {
   }
 
   return (
-    <div className="mb-24">
+    <div className="mb-24 sm:mb-28 lg:mb-36">
       <CenterContent>
         <div className="pb-6 pt-4 sm:pt-8 lg:pb-14 lg:pt-20">
           <BackButton className="font-medium leading-relaxed text-black/50">
@@ -99,7 +99,7 @@ export default async function CartPage() {
           </BackButton>
         </div>
         <form
-          className="flex flex-col gap-8 rounded-lg bg-white px-6 py-8"
+          className="mx-auto flex max-w-2xl flex-col gap-8 rounded-lg bg-white px-6 py-8"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           action={checkout}
           aria-labelledby="cart-form-heading"
