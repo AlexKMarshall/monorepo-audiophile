@@ -1,5 +1,22 @@
 import { test, expect } from '@playwright/test'
 import { getPageObjectModel } from './pageObjectModel'
+import { format } from 'path'
+
+function formatCurrency({
+  currencyCode,
+  amount,
+}: {
+  currencyCode: string
+  amount: number
+}) {
+  return new Intl.NumberFormat('en-GB', {
+    style: 'currency',
+    currency: currencyCode,
+    currencyDisplay: 'narrowSymbol',
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  }).format(amount)
+}
 
 test('add to cart', async ({ page, viewport }) => {
   await page.goto('/product/xx99-mark-ii-headphones')
@@ -55,11 +72,7 @@ test('add to cart', async ({ page, viewport }) => {
   // Total is calculated correctly
 
   await expect(pageObjectModel.getCartSummaryValue(/total/i)).toHaveText(
-    new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'USD',
-      currencyDisplay: 'narrowSymbol',
-    }).format(2 * 2999 + 3 * 897)
+    formatCurrency({ currencyCode: 'USD', amount: 2 * 2999 + 3 * 897 })
   )
 
   // Update a cart line quantity
@@ -72,11 +85,7 @@ test('add to cart', async ({ page, viewport }) => {
   await page.keyboard.press('Tab')
 
   await expect(pageObjectModel.getCartSummaryValue(/total/i)).toHaveText(
-    new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'USD',
-      currencyDisplay: 'narrowSymbol',
-    }).format(1 * 2999 + 3 * 897)
+    formatCurrency({ currencyCode: 'USD', amount: 1 * 2999 + 3 * 897 })
   )
 
   // Remove a cart line
@@ -88,11 +97,7 @@ test('add to cart', async ({ page, viewport }) => {
   await expect(pageObjectModel.getCartLine(/xx99/i)).toBeHidden()
 
   await expect(pageObjectModel.getCartSummaryValue(/total/i)).toHaveText(
-    new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: 'USD',
-      currencyDisplay: 'narrowSymbol',
-    }).format(3 * 897)
+    formatCurrency({ currencyCode: 'USD', amount: 3 * 897 })
   )
 
   // Remove all lines

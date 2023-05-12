@@ -13,16 +13,12 @@ import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import { QuantityInput } from './QuantityInput'
 import { BackButton } from '~/components/BackButton'
+import { formatCurrency } from '~/currency'
 
 export default async function CartPage() {
   const cart = getCartFromCookies()
 
   const productIds = Object.keys(cart)
-  const cartItemsCount = productIds.length
-
-  if (cartItemsCount === 0) {
-    return <div>Empty cart</div>
-  }
 
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
@@ -82,6 +78,16 @@ export default async function CartPage() {
 
     revalidatePath('/')
     revalidatePath('/cart')
+  }
+
+  const cartItemsCount = products.length
+
+  if (cartItemsCount === 0) {
+    return (
+      <div>
+        <h1>Cart Empty</h1>
+      </div>
+    )
   }
 
   return (
@@ -159,11 +165,10 @@ export default async function CartPage() {
                       product.title}
                   </p>
                   <p className="text-sm font-bold text-black/50">
-                    {new Intl.NumberFormat('en-GB', {
-                      style: 'currency',
-                      currency: product.price.currencyCode,
-                      currencyDisplay: 'narrowSymbol',
-                    }).format(product.price.amount)}
+                    {formatCurrency({
+                      currencyCode: product.price.currencyCode,
+                      amount: product.price.amount,
+                    })}
                   </p>
                 </div>
                 <QuantityInput
@@ -185,11 +190,10 @@ export default async function CartPage() {
                   Total
                 </dt>
                 <dd className="text-lg font-bold">
-                  {new Intl.NumberFormat('en-GB', {
-                    style: 'currency',
-                    currency: cartCurrency,
-                    currencyDisplay: 'narrowSymbol',
-                  }).format(cartTotal)}
+                  {formatCurrency({
+                    currencyCode: cartCurrency,
+                    amount: cartTotal,
+                  })}
                 </dd>
               </div>
             </dl>

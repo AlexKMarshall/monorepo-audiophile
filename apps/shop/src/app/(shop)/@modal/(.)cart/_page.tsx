@@ -12,6 +12,7 @@ import {
 import { CenterContent } from '~/components/CenterContent'
 import { urlFor } from '~/sanityClient'
 import { QuantityInput } from '../../cart/QuantityInput'
+import { formatCurrency } from '~/currency'
 
 // Next seems to have problems revalidating and refreshing with new data with intercepted routes
 
@@ -130,11 +131,10 @@ export default async function CartModalPage() {
                           product.title}
                       </p>
                       <p className="text-sm font-bold text-black/50">
-                        {new Intl.NumberFormat('en-GB', {
-                          style: 'currency',
-                          currency: product.price.currencyCode,
-                          currencyDisplay: 'narrowSymbol',
-                        }).format(product.price.amount)}
+                        {formatCurrency({
+                          currencyCode: product.price.currencyCode,
+                          amount: product.price.amount,
+                        })}
                       </p>
                     </div>
                     <QuantityInput
@@ -151,11 +151,10 @@ export default async function CartModalPage() {
                     Total
                   </span>
                   <span className="text-lg font-bold">
-                    {new Intl.NumberFormat('en-GB', {
-                      style: 'currency',
-                      currency: cartCurrency,
-                      currencyDisplay: 'narrowSymbol',
-                    }).format(cartTotal)}
+                    {formatCurrency({
+                      currencyCode: cartCurrency,
+                      amount: cartTotal,
+                    })}
                   </span>
                 </h3>
                 <button

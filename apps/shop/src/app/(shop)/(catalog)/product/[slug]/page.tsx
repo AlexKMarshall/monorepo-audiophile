@@ -18,6 +18,7 @@ import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
 import { revalidatePath } from 'next/cache'
 import { cookies } from 'next/headers'
 import { randomUUID } from 'crypto'
+import { formatCurrency } from '~/currency'
 
 const userIdCookieName = 'audiophile-user-id'
 
@@ -191,11 +192,10 @@ export default async function ProductPage({
                   </p>
                   {/* TODO: put a space between the symbol and the amount */}
                   <p className="text-lg font-bold tracking-wider">
-                    {new Intl.NumberFormat('en-GB', {
-                      style: 'currency',
-                      currency: product.price.currencyCode,
-                      currencyDisplay: 'narrowSymbol',
-                    }).format(product.price.amount)}
+                    {formatCurrency({
+                      currencyCode: product.price.currencyCode,
+                      amount: product.price.amount,
+                    })}
                   </p>
                 </div>
                 {/* TODO: React typings haven't caught up yet with server actions */}
