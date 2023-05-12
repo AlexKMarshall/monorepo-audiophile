@@ -96,9 +96,13 @@ export default async function CartPage() {
           className="flex flex-col gap-8 rounded-lg bg-white px-6 py-8"
           // eslint-disable-next-line @typescript-eslint/no-misused-promises
           action={checkout}
+          aria-labelledby="cart-form-heading"
         >
           <div className="flex items-center justify-between">
-            <h1 className="text-lg font-bold uppercase tracking-[0.04em]">
+            <h1
+              id="cart-form-heading"
+              className="text-lg font-bold uppercase tracking-[0.04em]"
+            >
               Cart ({cartItemsCount})
             </h1>
             <button
@@ -166,23 +170,29 @@ export default async function CartPage() {
                   className="ml-auto w-0 basis-24 bg-gray-100 py-2 text-center"
                   defaultValue={cart[product._id]}
                   name={product._id}
+                  aria-label="Quantity"
                 />
               </li>
             ))}
           </ul>
           <div className="flex flex-col gap-6">
-            <h3 className="flex items-center justify-between">
-              <span className="text-[15px] font-medium uppercase text-black/50">
-                Total
-              </span>
-              <span className="text-lg font-bold">
-                {new Intl.NumberFormat('en-GB', {
-                  style: 'currency',
-                  currency: cartCurrency,
-                  currencyDisplay: 'narrowSymbol',
-                }).format(cartTotal)}
-              </span>
-            </h3>
+            <dl>
+              <div
+                className="flex items-center justify-between"
+                data-testId="cart-summary-item"
+              >
+                <dt className="text-[15px] font-medium uppercase text-black/50">
+                  Total
+                </dt>
+                <dd className="text-lg font-bold">
+                  {new Intl.NumberFormat('en-GB', {
+                    style: 'currency',
+                    currency: cartCurrency,
+                    currencyDisplay: 'narrowSymbol',
+                  }).format(cartTotal)}
+                </dd>
+              </div>
+            </dl>
             <button
               type="submit"
               className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
