@@ -9,7 +9,7 @@ export async function PATCH(
 ) {
   const { productId } = params
   const requestSchema = z.object({
-    quantity: z.number().int().positive(),
+    quantity: z.number().int().min(0),
   })
   try {
     const body = (await request.json()) as unknown
