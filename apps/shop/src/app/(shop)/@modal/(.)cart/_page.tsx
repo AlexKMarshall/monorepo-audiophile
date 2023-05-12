@@ -11,29 +11,16 @@ import {
 } from '~/components/Dialog'
 import { CenterContent } from '~/components/CenterContent'
 import { urlFor } from '~/sanityClient'
-import { QuantityInput } from './QuantityInput'
+import { QuantityInput } from '../../cart/QuantityInput'
 
-export const revalidate = 0
+// Next seems to have problems revalidating and refreshing with new data with intercepted routes
+
+// export const revalidate = 0
 
 export default async function CartModalPage() {
   const cart = getCartFromCookies()
 
   const productIds = Object.keys(cart)
-  const cartItemsCount = productIds.length
-
-  if (cartItemsCount === 0) {
-    return (
-      <Dialog>
-        <DialogOverlay className="fixed inset-0 bg-black/50">
-          <CenterContent>
-            <DialogContent className="mt-24 max-h-full overflow-auto rounded-lg bg-white px-7 py-8">
-              Empty cart
-            </DialogContent>
-          </CenterContent>
-        </DialogOverlay>
-      </Dialog>
-    )
-  }
 
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
@@ -58,6 +45,23 @@ export default async function CartModalPage() {
         })
     ),
   })
+
+  // look for the fetched products, not the items in the cart cookie, as they may be invalid ids
+  const cartItemsCount = products.length
+
+  if (cartItemsCount === 0) {
+    return (
+      <Dialog>
+        <DialogOverlay className="fixed inset-0 bg-black/50">
+          <CenterContent>
+            <DialogContent className="mt-24 max-h-full overflow-auto rounded-lg bg-white px-7 py-8">
+              Empty cart
+            </DialogContent>
+          </CenterContent>
+        </DialogOverlay>
+      </Dialog>
+    )
+  }
 
   const cartTotal = products.reduce(
     (total, product) => total + product.price.amount * (cart[product._id] ?? 0),
@@ -136,7 +140,7 @@ export default async function CartModalPage() {
                     <QuantityInput
                       className="ml-auto w-0 basis-24 bg-gray-100 py-2 text-center"
                       defaultValue={cart[product._id]}
-                      name={`${product._id} `}
+                      name={product._id}
                     />
                   </li>
                 ))}

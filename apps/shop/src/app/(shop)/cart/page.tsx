@@ -69,7 +69,16 @@ export default async function CartPage() {
     updateCartCookie(updatedCart)
 
     revalidatePath('/')
-    // return redirect('/checkout')
+    return redirect('/checkout')
+  }
+
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async function removeAll() {
+    'use server'
+
+    updateCartCookie({})
+
+    revalidatePath('/')
   }
 
   return (
@@ -80,7 +89,11 @@ export default async function CartPage() {
           <h1 className="text-lg font-bold uppercase tracking-[0.04em]">
             Cart ({cartItemsCount})
           </h1>
-          <button className="text-[15px] font-medium text-black/50 underline">
+          <button
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
+            formAction={removeAll}
+            className="text-[15px] font-medium text-black/50 underline"
+          >
             Remove all
           </button>
         </div>

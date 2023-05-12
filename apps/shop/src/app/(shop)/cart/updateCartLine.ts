@@ -22,5 +22,4 @@ export async function updateCartLine({
   updateCartCookie(updatedCart)
 
   revalidatePath('/')
-  revalidatePath('/cart')
 }
