@@ -46,7 +46,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
+      <body
+        className={clsx(
+          'flex min-h-screen flex-col bg-gray-50',
+          manrope.className
+        )}
+      >
         <header className="isolate z-10 bg-black text-white">
           <CenterContent>
             <header className="flex items-center justify-between gap-10 border-b border-white/10 py-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">

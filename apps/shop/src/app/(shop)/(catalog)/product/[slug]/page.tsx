@@ -130,6 +130,7 @@ export default async function ProductPage({
 
     updateCartCookie(updatedCart)
     revalidatePath('/')
+    revalidatePath('/cart')
   }
 
   return (
