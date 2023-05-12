@@ -11,6 +11,7 @@ import {
 } from '~/components/Dialog'
 import { CenterContent } from '~/components/CenterContent'
 import { urlFor } from '~/sanityClient'
+import { QuantityInput } from './QuantityInput'
 
 export default async function CartModalPage() {
   const cart = getCartFromCookies()
@@ -130,11 +131,10 @@ export default async function CartModalPage() {
                         }).format(product.price.amount)}
                       </p>
                     </div>
-                    <input
+                    <QuantityInput
                       className="ml-auto w-0 basis-24 bg-gray-100 py-2 text-center"
-                      type="number"
                       defaultValue={cart[product._id]}
-                      name={`${product._id}.quantity`}
+                      name={`${product._id}`}
                     />
                   </li>
                 ))}

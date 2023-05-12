@@ -16,6 +16,7 @@
     "@sanity/client": "6.0.1",
     "@sanity/image-url": "1.0.2",
     "@t3-oss/env-nextjs": "0.2.2",
+    "@tanstack/react-query": "^4.29.5",
     "clsx": "1.2.1",
     "next": "13.4.1",
     "next-sanity": "4.3.2",
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "@lhci/cli": "0.12.0",
+    "@tanstack/eslint-plugin-query": "^4.29.4",
     "@types/eslint": "8.37.0",
     "@types/node": "20.0.0",
     "@types/prettier": "2.7.2",

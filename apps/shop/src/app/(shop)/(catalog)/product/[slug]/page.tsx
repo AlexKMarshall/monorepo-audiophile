@@ -16,6 +16,21 @@ import {
 import { fetchQuery } from '~/contentClient'
 import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
+import { randomUUID } from 'crypto'
+
+const userIdCookieName = 'audiophile-user-id'
+
+function getOrCreateUserId() {
+  const existingUserId = cookies().get(userIdCookieName)?.value
+  if (existingUserId) return existingUserId
+
+  const newUserId = randomUUID()
+  // @ts-expect-error - NextJS types are wrong
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  cookies().set(userIdCookieName, newUserId)
+  return newUserId
+}
 
 export default async function ProductPage({
   params,
@@ -102,6 +117,9 @@ export default async function ProductPage({
   // eslint-disable-next-line @typescript-eslint/require-await
   async function addToCart(data: FormData) {
     'use server'
+
+    const userId = getOrCreateUserId()
+
     const cart = getCartFromCookies()
     const productId = product._id
     const quantity = z

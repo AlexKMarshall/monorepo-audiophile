@@ -19,6 +19,7 @@ import { productCategoryZod } from '@audiophile/content-schema'
 import { ChevronRightIcon } from '~/components/icons'
 import { fetchQuery } from '~/contentClient'
 import { getCartFromCookies } from '~/cart'
+import { QueryClientProvider } from './QueryClientProvider'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -45,163 +46,165 @@ export default async function RootLayout({
   const cartLinesCount = Object.keys(cart).length
 
   return (
-    <html lang="en">
-      <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
-        <header className="isolate z-10 bg-black text-white">
-          <CenterContent>
-            <header className="flex items-center justify-between gap-10 border-b border-white/10 py-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
-              <MobileNav className="lg:hidden">
-                <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
-                  <MobileNavContent
-                    aria-label="primary"
-                    className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14"
-                  >
-                    <ul className="flex flex-col sm:flex-row sm:gap-3">
-                      {productCategories.map(
-                        ({ slug, title, thumbnailNew }) => (
-                          <li
-                            key={slug}
-                            className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
-                          >
-                            <img
-                              srcSet={`${urlFor(thumbnailNew)
+    <QueryClientProvider>
+      <html lang="en">
+        <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
+          <header className="isolate z-10 bg-black text-white">
+            <CenterContent>
+              <header className="flex items-center justify-between gap-10 border-b border-white/10 py-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+                <MobileNav className="lg:hidden">
+                  <MobileNavOverlay className="fixed bottom-0 left-0 right-0 top-24 bg-black/40 data-[state=open]:block data-[state=closed]:hidden">
+                    <MobileNavContent
+                      aria-label="primary"
+                      className="max-h-full overflow-auto rounded-b-lg bg-white px-6 pb-10 pt-7 text-black data-[state=open]:block data-[state=closed]:hidden sm:px-10 sm:pb-16 sm:pt-14"
+                    >
+                      <ul className="flex flex-col sm:flex-row sm:gap-3">
+                        {productCategories.map(
+                          ({ slug, title, thumbnailNew }) => (
+                            <li
+                              key={slug}
+                              className="relative isolate flex flex-1 flex-col items-center p-5 before:absolute before:inset-0 before:top-1/4 before:-z-10 before:rounded-lg before:bg-gray-100"
+                            >
+                              <img
+                                srcSet={`${urlFor(thumbnailNew)
+                                  .size(128, 128)
+                                  .url()},
+                              ${urlFor(thumbnailNew)
                                 .size(128, 128)
-                                .url()},
-                            ${urlFor(thumbnailNew)
-                              .size(128, 128)
-                              .dpr(2)
-                              .url()} 2x,
-                            `}
-                              src={urlFor(thumbnailNew).size(128, 128).url()}
-                              alt=""
-                              width={128}
-                              height={128}
-                              className="aspect-square max-w-[8rem] object-contain object-bottom"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                            <p
-                              id={`${slug}-link-description`}
-                              className="mb-4 font-bold uppercase tracking-wider"
-                            >
-                              {title}
-                            </p>
-                            <MobileNavLink
-                              href={slug}
-                              id={`${slug}-link`}
-                              aria-labelledby={`${slug}-link ${slug}-link-description`}
-                              className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
-                            >
-                              Shop
-                              <ChevronRightIcon className="w-2 text-orange-500" />
-                            </MobileNavLink>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </MobileNavContent>
-                </MobileNavOverlay>
-              </MobileNav>
-              <Link
-                href="/"
-                aria-label="Audiophile home"
-                className="sm:mr-auto lg:mr-0"
-              >
-                <AudiophileLogo className="w-36" />
-              </Link>
-              <nav aria-label="primary" className="hidden lg:block">
-                <ul className="flex gap-8 text-sm font-bold uppercase tracking-widest">
-                  <li>
-                    <Link href="/">Home</Link>
-                  </li>
-                  {productCategories.map(({ title, slug }) => (
-                    <li key={slug}>
-                      <Link href={`/${slug}`}>{title}</Link>
+                                .dpr(2)
+                                .url()} 2x,
+                              `}
+                                src={urlFor(thumbnailNew).size(128, 128).url()}
+                                alt=""
+                                width={128}
+                                height={128}
+                                className="aspect-square max-w-[8rem] object-contain object-bottom"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                              <p
+                                id={`${slug}-link-description`}
+                                className="mb-4 font-bold uppercase tracking-wider"
+                              >
+                                {title}
+                              </p>
+                              <MobileNavLink
+                                href={slug}
+                                id={`${slug}-link`}
+                                aria-labelledby={`${slug}-link ${slug}-link-description`}
+                                className="inline-flex items-center gap-3 text-sm font-bold uppercase tracking-wider text-black/50 before:absolute before:inset-0 before:cursor-pointer"
+                              >
+                                Shop
+                                <ChevronRightIcon className="w-2 text-orange-500" />
+                              </MobileNavLink>
+                            </li>
+                          )
+                        )}
+                      </ul>
+                    </MobileNavContent>
+                  </MobileNavOverlay>
+                </MobileNav>
+                <Link
+                  href="/"
+                  aria-label="Audiophile home"
+                  className="sm:mr-auto lg:mr-0"
+                >
+                  <AudiophileLogo className="w-36" />
+                </Link>
+                <nav aria-label="primary" className="hidden lg:block">
+                  <ul className="flex gap-8 text-sm font-bold uppercase tracking-widest">
+                    <li>
+                      <Link href="/">Home</Link>
                     </li>
-                  ))}
-                </ul>
-              </nav>
-              <Link href="/cart" className="relative justify-self-end">
-                <CartIcon className="w-6" />
-                {cartLinesCount > 0 && (
-                  <span
-                    aria-hidden
-                    className="absolute right-0 top-0 grid aspect-square min-w-[1.25rem] -translate-y-2/3 translate-x-2/3 place-items-center rounded-full bg-orange-500 p-0.5 text-xs text-white"
-                  >
-                    {cartLinesCount}
-                  </span>
-                )}
-                <span className="sr-only">
-                  Cart
-                  {cartLinesCount > 0 ? (
-                    <span className="sr-only">
-                      {' '}
-                      with {cartLinesCount} items
+                    {productCategories.map(({ title, slug }) => (
+                      <li key={slug}>
+                        <Link href={`/${slug}`}>{title}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+                <Link href="/cart" className="relative justify-self-end">
+                  <CartIcon className="w-6" />
+                  {cartLinesCount > 0 && (
+                    <span
+                      aria-hidden
+                      className="absolute right-0 top-0 grid aspect-square min-w-[1.25rem] -translate-y-2/3 translate-x-2/3 place-items-center rounded-full bg-orange-500 p-0.5 text-xs text-white"
+                    >
+                      {cartLinesCount}
                     </span>
-                  ) : (
-                    <span> empty</span>
                   )}
-                </span>
-              </Link>
-            </header>
-          </CenterContent>
-        </header>
-        <main className="flex-1">{children}</main>
-        <footer className="bg-gray-950 text-white">
-          <CenterContent>
-            <div className="grid justify-items-center gap-12 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
-              <Link
-                href="/"
-                aria-label="Audiophile home"
-                className="[grid-area:logo]"
-              >
-                <AudiophileLogo className="w-36" />
-              </Link>
-              <nav aria-label="secondary" className="[grid-area:nav]">
-                <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest sm:flex-row sm:items-baseline">
-                  <li>
-                    <Link href="/">Home</Link>
-                  </li>
-                  {productCategories.map(({ title, slug }) => (
-                    <li key={slug}>
-                      <Link href={`/${slug}`}>{title}</Link>
+                  <span className="sr-only">
+                    Cart
+                    {cartLinesCount > 0 ? (
+                      <span className="sr-only">
+                        {' '}
+                        with {cartLinesCount} items
+                      </span>
+                    ) : (
+                      <span> empty</span>
+                    )}
+                  </span>
+                </Link>
+              </header>
+            </CenterContent>
+          </header>
+          <main className="flex-1">{children}</main>
+          <footer className="bg-gray-950 text-white">
+            <CenterContent>
+              <div className="grid justify-items-center gap-12 pb-10 text-center [grid-template-areas:'colorbar'_'logo'_'nav'_'copy'_'copyright'_'socials'] before:h-1 before:w-24 before:bg-orange-500 sm:grid-cols-[1fr_auto] sm:justify-items-start sm:gap-8 sm:pb-12 sm:text-left sm:[grid-template-areas:'colorbar_colorbar'_'logo_logo'_'nav_nav'_'copy_copy'_'copyright_socials'] sm:before:mb-6 lg:gap-x-36 lg:gap-y-9 lg:[grid-template-areas:'colorbar_colorbar'_'logo_nav'_'copy_socials'_'copyright_copyright'] lg:before:mb-9">
+                <Link
+                  href="/"
+                  aria-label="Audiophile home"
+                  className="[grid-area:logo]"
+                >
+                  <AudiophileLogo className="w-36" />
+                </Link>
+                <nav aria-label="secondary" className="[grid-area:nav]">
+                  <ul className="flex flex-col items-center gap-4 text-sm font-bold uppercase tracking-widest sm:flex-row sm:items-baseline">
+                    <li>
+                      <Link href="/">Home</Link>
                     </li>
-                  ))}
+                    {productCategories.map(({ title, slug }) => (
+                      <li key={slug}>
+                        <Link href={`/${slug}`}>{title}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                </nav>
+                <p className="font-medium leading-relaxed opacity-50 [grid-area:copy] sm:mb-12 lg:mb-0">
+                  Audiophile is an all in one stop to fulfill your audio needs.
+                  We&apos;re a small team of music lovers and sound specialists
+                  who are devoted to helping you get the most out of personal
+                  audio. Come and visit our demo facility - we&apos;re open 7
+                  days a week.
+                </p>
+                <p className="font-bold opacity-50 [grid-area:copyright] lg:mt-5">
+                  Copyright 2021. All Rights Reserved
+                </p>
+                <ul className="flex items-center gap-4 [grid-area:socials] lg:self-end lg:justify-self-end">
+                  <li>
+                    <Link href="/">
+                      <FacebookIcon className="w-6" />
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/">
+                      <TwitterIcon className="w-6" />
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/">
+                      <InstagramIcon className="w-6" />
+                    </Link>
+                  </li>
                 </ul>
-              </nav>
-              <p className="font-medium leading-relaxed opacity-50 [grid-area:copy] sm:mb-12 lg:mb-0">
-                Audiophile is an all in one stop to fulfill your audio needs.
-                We&apos;re a small team of music lovers and sound specialists
-                who are devoted to helping you get the most out of personal
-                audio. Come and visit our demo facility - we&apos;re open 7 days
-                a week.
-              </p>
-              <p className="font-bold opacity-50 [grid-area:copyright] lg:mt-5">
-                Copyright 2021. All Rights Reserved
-              </p>
-              <ul className="flex items-center gap-4 [grid-area:socials] lg:self-end lg:justify-self-end">
-                <li>
-                  <Link href="/">
-                    <FacebookIcon className="w-6" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/">
-                    <TwitterIcon className="w-6" />
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/">
-                    <InstagramIcon className="w-6" />
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </CenterContent>
-        </footer>
-        {modal}
-      </body>
-    </html>
+              </div>
+            </CenterContent>
+          </footer>
+          {modal}
+        </body>
+      </html>
+    </QueryClientProvider>
   )
 }
 

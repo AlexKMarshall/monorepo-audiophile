@@ -80,6 +80,9 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: 0.2.2
         version: 0.2.2(zod@3.21.4)
+      '@tanstack/react-query':
+        specifier: ^4.29.5
+        version: 4.29.5(react-dom@18.2.0)(react@18.2.0)
       clsx:
         specifier: 1.2.1
         version: 1.2.1
@@ -108,6 +111,9 @@ importers:
       '@lhci/cli':
         specifier: 0.12.0
         version: 0.12.0(typescript@5.0.4)
+      '@tanstack/eslint-plugin-query':
+        specifier: ^4.29.4
+        version: 4.29.4
       '@types/eslint':
         specifier: 8.37.0
         version: 8.37.0
@@ -3198,6 +3204,32 @@ packages:
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@tanstack/eslint-plugin-query@4.29.4:
+    resolution: {integrity: sha512-dKWigue+8KV9BaKLq5yUu4wUYCendpvEve8lc3YyD634MQJ/joK7nJXiMfAEHY5Bwnh00Y3ZTBJ6YNtAz4CbVQ==}
+    dev: true
+
+  /@tanstack/query-core@4.29.5:
+    resolution: {integrity: sha512-xXIiyQ/4r9KfaJ3k6kejqcaqFXXBTzN2aOJ5H1J6aTJE9hl/nbgAdfF6oiIu0CD5xowejJEJ6bBg8TO7BN4NuQ==}
+    dev: false
+
+  /@tanstack/react-query@4.29.5(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-F87cibC3s3eG0Q90g2O+hqntpCrudKFnR8P24qkH9uccEhXErnJxBC/AAI4cJRV2bfMO8IeGZQYf3WyYgmSg0w==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 4.29.5
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+      use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
 
   /@tanstack/react-virtual@3.0.0-beta.53(react@18.2.0):
