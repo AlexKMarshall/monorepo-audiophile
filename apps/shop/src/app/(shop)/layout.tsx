@@ -126,7 +126,7 @@ export default async function RootLayout({
                   ))}
                 </ul>
               </nav>
-              <Link href="/cart" className="relative justify-self-end">
+              <a href="/cart" className="relative justify-self-end">
                 <CartIcon className="w-6" />
                 {cartLinesCount > 0 && (
                   <span
@@ -147,7 +147,7 @@ export default async function RootLayout({
                     <span> empty</span>
                   )}
                 </span>
-              </Link>
+              </a>
             </header>
           </CenterContent>
         </header>
