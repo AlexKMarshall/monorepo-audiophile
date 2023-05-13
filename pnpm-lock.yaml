@@ -69,7 +69,7 @@ importers:
         specifier: 3.0.0
         version: 3.0.0(react@18.2.0)
       '@radix-ui/react-dialog':
-        specifier: ^1.0.3
+        specifier: 1.0.3
         version: 1.0.3(@types/react@18.2.6)(react-dom@18.2.0)(react@18.2.0)
       '@sanity/client':
         specifier: 6.0.1
@@ -109,7 +109,7 @@ importers:
         specifier: 0.12.0
         version: 0.12.0(typescript@5.0.4)
       '@tanstack/eslint-plugin-query':
-        specifier: ^4.29.4
+        specifier: 4.29.4
         version: 4.29.4
       '@types/eslint':
         specifier: 8.37.0
