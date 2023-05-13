@@ -16,6 +16,22 @@ import {
 import { fetchQuery } from '~/contentClient'
 import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
+import { randomUUID } from 'crypto'
+import { formatCurrency } from '~/currency'
+
+const userIdCookieName = 'audiophile-user-id'
+
+function getOrCreateUserId() {
+  const existingUserId = cookies().get(userIdCookieName)?.value
+  if (existingUserId) return existingUserId
+
+  const newUserId = randomUUID()
+  // @ts-expect-error - NextJS types are wrong
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  cookies().set(userIdCookieName, newUserId)
+  return newUserId
+}
 
 export default async function ProductPage({
   params,
@@ -102,6 +118,9 @@ export default async function ProductPage({
   // eslint-disable-next-line @typescript-eslint/require-await
   async function addToCart(data: FormData) {
     'use server'
+
+    const userId = getOrCreateUserId()
+
     const cart = getCartFromCookies()
     const productId = product._id
     const quantity = z
@@ -112,6 +131,7 @@ export default async function ProductPage({
 
     updateCartCookie(updatedCart)
     revalidatePath('/')
+    revalidatePath('/cart')
   }
 
   return (
@@ -172,11 +192,10 @@ export default async function ProductPage({
                   </p>
                   {/* TODO: put a space between the symbol and the amount */}
                   <p className="text-lg font-bold tracking-wider">
-                    {new Intl.NumberFormat('en-GB', {
-                      style: 'currency',
-                      currency: product.price.currencyCode,
-                      currencyDisplay: 'narrowSymbol',
-                    }).format(product.price.amount)}
+                    {formatCurrency({
+                      currencyCode: product.price.currencyCode,
+                      amount: product.price.amount,
+                    })}
                   </p>
                 </div>
                 {/* TODO: React typings haven't caught up yet with server actions */}

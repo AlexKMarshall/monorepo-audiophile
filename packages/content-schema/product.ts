@@ -21,6 +21,12 @@ const baseProduct = {
       optional: true,
     },
     {
+      name: 'shortestTitle',
+      title: 'Shortest title',
+      type: s.string(),
+      optional: true,
+    },
+    {
       name: 'slug',
       title: 'Slug',
       type: s.slug({ options: { source: 'title' } }),
@@ -115,6 +121,7 @@ const baseProductZod = z.object({
   _id: z.string(),
   title: z.string(),
   shortTitle: z.string().nullable(),
+  shortestTitle: z.string().nullable(),
   slug: slugZodSchema,
   description: z.string(),
   isNew: z.boolean().optional(),

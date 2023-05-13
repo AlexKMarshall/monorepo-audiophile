@@ -2,13 +2,14 @@ import { cookies } from 'next/headers'
 
 import { z } from 'zod'
 
-export const cartSchema = z.record(z.number().min(1))
+export const cartSchema = z.record(z.preprocess(Number, z.number().min(1)))
 
 type Cart = z.infer<typeof cartSchema>
 type CartAction =
   | { type: 'add'; productId: string; quantity: number }
   | { type: 'remove'; productId: string }
   | { type: 'update'; productId: string; quantity: number }
+  | { type: 'replace'; cart: Cart }
 
 export function cartReducer(cart: Cart, action: CartAction): Cart {
   switch (action.type) {
@@ -21,10 +22,18 @@ export function cartReducer(cart: Cart, action: CartAction): Cart {
       const { [action.productId]: _, ...rest } = cart
       return rest
     case 'update':
+      if (action.quantity === 0) {
+        return cartReducer(cart, {
+          type: 'remove',
+          productId: action.productId,
+        })
+      }
       return {
         ...cart,
         [action.productId]: action.quantity,
       }
+    case 'replace':
+      return action.cart
   }
 }
 

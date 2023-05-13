@@ -46,7 +46,12 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={clsx('flex min-h-screen flex-col', manrope.className)}>
+      <body
+        className={clsx(
+          'flex min-h-screen flex-col bg-gray-50',
+          manrope.className
+        )}
+      >
         <header className="isolate z-10 bg-black text-white">
           <CenterContent>
             <header className="flex items-center justify-between gap-10 border-b border-white/10 py-8 lg:grid lg:grid-cols-[1fr_auto_1fr]">
@@ -121,7 +126,7 @@ export default async function RootLayout({
                   ))}
                 </ul>
               </nav>
-              <Link href="/cart" className="relative justify-self-end">
+              <a href="/cart" className="relative justify-self-end">
                 <CartIcon className="w-6" />
                 {cartLinesCount > 0 && (
                   <span
@@ -142,7 +147,7 @@ export default async function RootLayout({
                     <span> empty</span>
                   )}
                 </span>
-              </Link>
+              </a>
             </header>
           </CenterContent>
         </header>

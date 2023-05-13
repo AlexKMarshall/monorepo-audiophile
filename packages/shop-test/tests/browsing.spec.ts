@@ -1,42 +1,5 @@
-import { test, expect, type Page, type ViewportSize } from '@playwright/test'
-import { screens } from '../../../apps/shop/tailwind.config'
-
-const getPageObjectModel = ({
-  page,
-  viewport,
-}: {
-  page: Page
-  viewport: ViewportSize | null
-}) => {
-  const getPrimaryNavLink = async (name: string | RegExp) => {
-    if (!viewport) throw new Error('Viewport is missing')
-
-    if (viewport.width >= screens.lg) {
-      return page
-        .getByRole('navigation', { name: /primary/i })
-        .getByRole('link', { name })
-    }
-
-    await page.getByRole('button', { name: /open navigation menu/i }).click()
-
-    return page
-      .getByRole('navigation', { name: /primary/i })
-      .getByRole('link', { name })
-  }
-
-  const getProductLink = (name: string | RegExp) => {
-    const linkName = new RegExp(
-      `see product ${name instanceof RegExp ? name.source : name}`,
-      'i'
-    )
-    return page.getByRole('link', { name: linkName })
-  }
-
-  return {
-    getPrimaryNavLink,
-    getProductLink,
-  }
-}
+import { test, expect } from '@playwright/test'
+import { getPageObjectModel } from './pageObjectModel'
 
 test('main navigation', async ({ page, viewport }) => {
   await page.goto('/')
@@ -80,7 +43,7 @@ test('product navigation', async ({ page, viewport }) => {
 
   const pageObjectModel = getPageObjectModel({ page, viewport })
 
-  await (await pageObjectModel.getProductLink(/xx99 mark ii/i)).click()
+  await pageObjectModel.getProductLink(/xx99 mark ii/i).click()
 
   await expect(
     page.getByRole('heading', { name: /xx99 mark ii/i, level: 1 })
