@@ -68,7 +68,6 @@ export default async function CheckoutPage() {
         <div className="grid items-start gap-8 lg:grid-cols-[2fr_1fr]">
           <form
             id="checkout-form"
-            // @ts-expect-error NextJS types are wrong
             action={checkout}
             aria-labelledby="checkout-heading"
             className="flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
