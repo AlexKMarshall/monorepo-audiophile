@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
 import { BackButton } from '~/components/BackButton'
 import { CenterContent } from '~/components/CenterContent'
 import { TextField, TextFieldInput, TextFieldLabel } from './TextField'
@@ -8,6 +9,7 @@ import { productZod } from '@audiophile/content-schema'
 import { z } from 'zod'
 import { formatCurrency } from '~/currency'
 import { urlFor } from '~/sanityClient'
+import { redirect } from 'next/navigation'
 
 export default async function CheckoutPage() {
   const cart = getCartFromCookies()
@@ -48,6 +50,13 @@ export default async function CheckoutPage() {
 
   const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
 
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async function checkout() {
+    'use server'
+    console.log('checkout')
+    redirect('/confirmation/abc')
+  }
+
   return (
     <div className="mb-24 sm:mb-32 lg:mb-40">
       <CenterContent>
@@ -59,7 +68,8 @@ export default async function CheckoutPage() {
         <div className="grid items-start gap-8 lg:grid-cols-[2fr_1fr]">
           <form
             id="checkout-form"
-            action=""
+            // @ts-expect-error NextJS types are wrong
+            action={checkout}
             aria-labelledby="checkout-heading"
             className="flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
           >
