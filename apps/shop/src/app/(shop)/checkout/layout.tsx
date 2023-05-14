@@ -8,9 +8,9 @@ export default function CheckoutLayout({
   modal: ReactNode
 }) {
   return (
-    <div>
+    <>
       {children}
       {modal}
-    </div>
+    </>
   )
 }
