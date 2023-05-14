@@ -49,281 +49,283 @@ export default async function CheckoutPage() {
   const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
 
   return (
-    <div className="mb-32 lg:mb-40">
+    <div className="mb-24 sm:mb-32 lg:mb-40">
       <CenterContent>
         <div className="pb-6 pt-4 sm:pt-8 lg:pb-14 lg:pt-20">
           <BackButton className="font-medium leading-relaxed text-black/50">
             Go Back
           </BackButton>
         </div>
-        <form
-          id="checkout-form"
-          action=""
-          aria-labelledby="checkout-heading"
-          className="mb-8 flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
-        >
-          <h1
-            id="checkout-heading"
-            className="text-[28px] font-bold uppercase leading-snug tracking-[0.035em]"
+        <div className="grid items-start gap-8 lg:grid-cols-[2fr_1fr]">
+          <form
+            id="checkout-form"
+            action=""
+            aria-labelledby="checkout-heading"
+            className="flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
           >
-            Checkout
-          </h1>
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
-              Billing Details
-            </h2>
-            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <TextField>
-                <TextFieldLabel>Name</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  autoComplete="name"
-                  name="name"
-                  placeholder="Alexei Ward"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>Email Address</TextFieldLabel>
-                <TextFieldInput
-                  type="email"
-                  autoComplete="email"
-                  inputMode="email"
-                  name="email"
-                  placeholder="alexei@mail.com"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>Phone Number</TextFieldLabel>
-                <TextFieldInput
-                  type="tel"
-                  autoComplete="tel"
-                  inputMode="tel"
-                  name="phone"
-                  placeholder="+1 202-555-0136"
-                />
-              </TextField>
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
-              Shipping Info
-            </h2>
-            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <TextField colSpan="full">
-                <TextFieldLabel>Your Address</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  autoComplete="street-address"
-                  name="address"
-                  placeholder="1137 Williams Avenue"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>Zip Code</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  autoComplete="postal-code"
-                  name="zip"
-                  placeholder="10001"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>City</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  autoComplete="address-level2"
-                  name="city"
-                  placeholder="New York"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>Country</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  autoComplete="country-name"
-                  name="country"
-                  placeholder="United States"
-                />
-              </TextField>
-            </div>
-          </div>
-          <div className="flex flex-col gap-4">
-            <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
-              Payment Details
-            </h2>
-            <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
-              <fieldset className="col-span-full grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div className="text-xs font-bold leading-snug -tracking-[0.02em]">
-                  Payment Method
-                </div>
-                <label className="flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
-                  <input type="radio" name="payment-method" value="eMoney" />
-                  <span className="-translate-y-[1px]">e-Money</span>
-                </label>
-                <label className="flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
-                  <input type="radio" name="payment-method" value="cash" />
-                  <span>Cash on Delivery</span>
-                </label>
-              </fieldset>
-              <TextField>
-                <TextFieldLabel>e-Money Number</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  inputMode="numeric"
-                  name="eMoney"
-                  placeholder="238521993"
-                />
-              </TextField>
-              <TextField>
-                <TextFieldLabel>e-Money PIN</TextFieldLabel>
-                <TextFieldInput
-                  type="text"
-                  inputMode="numeric"
-                  name="eMoneyPin"
-                  placeholder="6891"
-                />
-              </TextField>
-              <div className="col-span-full flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
-                <CashOnDeliveryIcon className="h-12 w-12 shrink-0 text-orange-500" />
-                <p className="max-w-prose text-[15px] font-medium leading-relaxed text-black/50">
-                  The &lsquo;Cash on Delivery&rsquo; option enables you to pay
-                  in cash when our delivery courier arrives at your residence.
-                  Just make sure your address is correct so that your order will
-                  not be cancelled.
-                </p>
+            <h1
+              id="checkout-heading"
+              className="text-[28px] font-bold uppercase leading-snug tracking-[0.035em]"
+            >
+              Checkout
+            </h1>
+            <div className="flex flex-col gap-4">
+              <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
+                Billing Details
+              </h2>
+              <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <TextField>
+                  <TextFieldLabel>Name</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    autoComplete="name"
+                    name="name"
+                    placeholder="Alexei Ward"
+                  />
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>Email Address</TextFieldLabel>
+                  <TextFieldInput
+                    type="email"
+                    autoComplete="email"
+                    inputMode="email"
+                    name="email"
+                    placeholder="alexei@mail.com"
+                  />
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>Phone Number</TextFieldLabel>
+                  <TextFieldInput
+                    type="tel"
+                    autoComplete="tel"
+                    inputMode="tel"
+                    name="phone"
+                    placeholder="+1 202-555-0136"
+                  />
+                </TextField>
               </div>
             </div>
-          </div>
-        </form>
-        <div className="flex flex-col gap-8 rounded-lg bg-white px-6 py-8">
-          <h2 className="text-lg font-bold uppercase tracking-[0.07em]">
-            Summary
-          </h2>
-          <ul className="flex flex-col gap-6">
-            {products.map((product) => (
-              <li key={product._id} className="flex items-center gap-4">
-                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
-                  <img
-                    srcSet={`
-                            ${urlFor(product.thumbnailImageNew)
-                              .size(40, 40)
-                              .fit('fill')
-                              .bg('f1f1f1')
-                              .ignoreImageParams()
-                              .auto('format')
-                              .sharpen(20)
-                              .url()} 1x,
-                            ${urlFor(product.thumbnailImageNew)
-                              .size(40, 40)
-                              .fit('fill')
-                              .bg('f1f1f1')
-                              .ignoreImageParams()
-                              .auto('format')
-                              .sharpen(20)
-                              .dpr(2)
-                              .url()} 2x
-                          `}
-                    src={urlFor(product.thumbnailImageNew)
-                      .size(40, 40)
-                      .fit('fill')
-                      .bg('f1f1f1')
-                      .ignoreImageParams()
-                      .auto('format')
-                      .sharpen(20)
-                      .url()}
-                    alt=""
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                    decoding="async"
+            <div className="flex flex-col gap-4">
+              <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
+                Shipping Info
+              </h2>
+              <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <TextField colSpan="full">
+                  <TextFieldLabel>Your Address</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    autoComplete="street-address"
+                    name="address"
+                    placeholder="1137 Williams Avenue"
                   />
-                </div>
-                <div className="flex flex-1 items-baseline justify-between">
-                  <div>
-                    <p className="text-[15px] font-bold uppercase leading-relaxed">
-                      {product.shortestTitle ??
-                        product.shortTitle ??
-                        product.title}
-                    </p>
-                    <p className="text-sm font-bold text-black/50">
-                      {formatCurrency({
-                        currencyCode: product.price.currencyCode,
-                        amount: product.price.amount,
-                      })}
-                    </p>
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>Zip Code</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    autoComplete="postal-code"
+                    name="zip"
+                    placeholder="10001"
+                  />
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>City</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    autoComplete="address-level2"
+                    name="city"
+                    placeholder="New York"
+                  />
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>Country</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    autoComplete="country-name"
+                    name="country"
+                    placeholder="United States"
+                  />
+                </TextField>
+              </div>
+            </div>
+            <div className="flex flex-col gap-4">
+              <h2 className="text-[13px] font-bold uppercase leading-[1.9] tracking-[0.06em] text-orange-500">
+                Payment Details
+              </h2>
+              <div className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-2">
+                <fieldset className="col-span-full grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div className="text-xs font-bold leading-snug -tracking-[0.02em]">
+                    Payment Method
                   </div>
-                  <p className="text-[15px] text-black/50">
-                    &times;{cart[product._id]}
+                  <label className="flex cursor-pointer items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
+                    <input type="radio" name="payment-method" value="eMoney" />
+                    <span className="-translate-y-[1px]">e-Money</span>
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
+                    <input type="radio" name="payment-method" value="cash" />
+                    <span>Cash on Delivery</span>
+                  </label>
+                </fieldset>
+                <TextField>
+                  <TextFieldLabel>e-Money Number</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    inputMode="numeric"
+                    name="eMoney"
+                    placeholder="238521993"
+                  />
+                </TextField>
+                <TextField>
+                  <TextFieldLabel>e-Money PIN</TextFieldLabel>
+                  <TextFieldInput
+                    type="text"
+                    inputMode="numeric"
+                    name="eMoneyPin"
+                    placeholder="6891"
+                  />
+                </TextField>
+                <div className="col-span-full flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
+                  <CashOnDeliveryIcon className="h-12 w-12 shrink-0 text-orange-500" />
+                  <p className="max-w-prose text-[15px] font-medium leading-relaxed text-black/50">
+                    The &lsquo;Cash on Delivery&rsquo; option enables you to pay
+                    in cash when our delivery courier arrives at your residence.
+                    Just make sure your address is correct so that your order
+                    will not be cancelled.
                   </p>
                 </div>
-              </li>
-            ))}
-          </ul>
-          <dl className="flex flex-col gap-2">
-            <div
-              className="flex items-center justify-between gap-4"
-              data-testId="cart-summary-item"
-            >
-              <dt className="text-[15px] font-medium uppercase text-black/50">
-                Total
-              </dt>
-              <dd className="text-lg font-bold">
-                {formatCurrency({
-                  currencyCode: cartCurrency,
-                  amount: cartTotal,
-                })}
-              </dd>
+              </div>
             </div>
-            <div
-              className="flex items-center justify-between gap-4"
-              data-testId="cart-summary-item"
+          </form>
+          <div className="sticky top-8 flex flex-col gap-8 rounded-lg bg-white px-6 py-8 sm:px-8">
+            <h2 className="text-lg font-bold uppercase tracking-[0.07em]">
+              Summary
+            </h2>
+            <ul className="flex flex-col gap-6">
+              {products.map((product) => (
+                <li key={product._id} className="flex items-center gap-4">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
+                    <img
+                      srcSet={`
+                              ${urlFor(product.thumbnailImageNew)
+                                .size(40, 40)
+                                .fit('fill')
+                                .bg('f1f1f1')
+                                .ignoreImageParams()
+                                .auto('format')
+                                .sharpen(20)
+                                .url()} 1x,
+                              ${urlFor(product.thumbnailImageNew)
+                                .size(40, 40)
+                                .fit('fill')
+                                .bg('f1f1f1')
+                                .ignoreImageParams()
+                                .auto('format')
+                                .sharpen(20)
+                                .dpr(2)
+                                .url()} 2x
+                            `}
+                      src={urlFor(product.thumbnailImageNew)
+                        .size(40, 40)
+                        .fit('fill')
+                        .bg('f1f1f1')
+                        .ignoreImageParams()
+                        .auto('format')
+                        .sharpen(20)
+                        .url()}
+                      alt=""
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div className="flex flex-1 items-baseline justify-between">
+                    <div>
+                      <p className="text-[15px] font-bold uppercase leading-relaxed">
+                        {product.shortestTitle ??
+                          product.shortTitle ??
+                          product.title}
+                      </p>
+                      <p className="text-sm font-bold text-black/50">
+                        {formatCurrency({
+                          currencyCode: product.price.currencyCode,
+                          amount: product.price.amount,
+                        })}
+                      </p>
+                    </div>
+                    <p className="text-[15px] text-black/50">
+                      &times;{cart[product._id]}
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <dl className="flex flex-col gap-2">
+              <div
+                className="flex items-center justify-between gap-4"
+                data-testId="cart-summary-item"
+              >
+                <dt className="text-[15px] font-medium uppercase text-black/50">
+                  Total
+                </dt>
+                <dd className="text-lg font-bold">
+                  {formatCurrency({
+                    currencyCode: cartCurrency,
+                    amount: cartTotal,
+                  })}
+                </dd>
+              </div>
+              <div
+                className="flex items-center justify-between gap-4"
+                data-testId="cart-summary-item"
+              >
+                <dt className="text-[15px] font-medium uppercase text-black/50">
+                  Shipping
+                </dt>
+                <dd className="text-lg font-bold">
+                  {formatCurrency({
+                    currencyCode: cartCurrency,
+                    amount: shipping,
+                  })}
+                </dd>
+              </div>
+              <div
+                className="flex items-center justify-between gap-4"
+                data-testId="cart-summary-item"
+              >
+                <dt className="text-[15px] font-medium uppercase text-black/50">
+                  VAT (Included)
+                </dt>
+                <dd className="text-lg font-bold">
+                  {formatCurrency({
+                    currencyCode: cartCurrency,
+                    amount: vat,
+                  })}
+                </dd>
+              </div>
+              <div
+                className="mt-4 flex items-center justify-between gap-4"
+                data-testId="cart-summary-item"
+              >
+                <dt className="text-[15px] font-medium uppercase text-black/50">
+                  Grand Total
+                </dt>
+                <dd className="text-lg font-bold text-orange-500">
+                  {formatCurrency({
+                    currencyCode: cartCurrency,
+                    amount: grandTotal,
+                  })}
+                </dd>
+              </div>
+            </dl>
+            <button
+              type="submit"
+              form="checkout-form"
+              className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
             >
-              <dt className="text-[15px] font-medium uppercase text-black/50">
-                Shipping
-              </dt>
-              <dd className="text-lg font-bold">
-                {formatCurrency({
-                  currencyCode: cartCurrency,
-                  amount: shipping,
-                })}
-              </dd>
-            </div>
-            <div
-              className="flex items-center justify-between gap-4"
-              data-testId="cart-summary-item"
-            >
-              <dt className="text-[15px] font-medium uppercase text-black/50">
-                VAT (Included)
-              </dt>
-              <dd className="text-lg font-bold">
-                {formatCurrency({
-                  currencyCode: cartCurrency,
-                  amount: vat,
-                })}
-              </dd>
-            </div>
-            <div
-              className="mt-4 flex items-center justify-between gap-4"
-              data-testId="cart-summary-item"
-            >
-              <dt className="text-[15px] font-medium uppercase text-black/50">
-                Grand Total
-              </dt>
-              <dd className="text-lg font-bold text-orange-500">
-                {formatCurrency({
-                  currencyCode: cartCurrency,
-                  amount: grandTotal,
-                })}
-              </dd>
-            </div>
-          </dl>
-          <button
-            type="submit"
-            form="checkout-form"
-            className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
-          >
-            Continue &amp; Pay
-          </button>
+              Continue &amp; Pay
+            </button>
+          </div>
         </div>
       </CenterContent>
     </div>
