@@ -2,8 +2,52 @@ import { BackButton } from '~/components/BackButton'
 import { CenterContent } from '~/components/CenterContent'
 import { TextField, TextFieldInput, TextFieldLabel } from './TextField'
 import { Svg } from '~/components/Svg'
+import { getCartFromCookies } from '~/cart'
+import { fetchQuery } from '~/contentClient'
+import { productZod } from '@audiophile/content-schema'
+import { z } from 'zod'
+import { formatCurrency } from '~/currency'
+import { urlFor } from '~/sanityClient'
 
-export default function CheckoutPage() {
+export default async function CheckoutPage() {
+  const cart = getCartFromCookies()
+
+  const productIds = Object.keys(cart)
+
+  const { result: products } = await fetchQuery({
+    query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
+        'amount': price.amount,
+        'currencyCode' : price.currency->isoCode
+      },}`,
+    params: { productIds },
+    validationSchema: z.array(
+      productZod
+        .pick({
+          title: true,
+          _id: true,
+          thumbnailImageNew: true,
+          shortTitle: true,
+          shortestTitle: true,
+        })
+        .extend({
+          price: z.object({
+            amount: productZod.shape.price.shape.amount,
+            currencyCode: productZod.shape.price.shape.currency.shape.isoCode,
+          }),
+        })
+    ),
+  })
+
+  const cartTotal = products.reduce(
+    (total, product) => total + product.price.amount * (cart[product._id] ?? 0),
+    0
+  )
+  const shipping = 50
+  const vat = cartTotal * 0.2
+  const grandTotal = cartTotal + shipping
+
+  const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
+
   return (
     <div className="mb-32 lg:mb-40">
       <CenterContent>
@@ -13,9 +57,10 @@ export default function CheckoutPage() {
           </BackButton>
         </div>
         <form
+          id="checkout-form"
           action=""
           aria-labelledby="checkout-heading"
-          className="flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
+          className="mb-8 flex flex-col gap-8 rounded-lg bg-white px-6 pb-8 pt-6"
         >
           <h1
             id="checkout-heading"
@@ -111,11 +156,11 @@ export default function CheckoutPage() {
                 <div className="text-xs font-bold leading-snug -tracking-[0.02em]">
                   Payment Method
                 </div>
-                <label className="col-start-2 flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug">
+                <label className="flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
                   <input type="radio" name="payment-method" value="eMoney" />
                   <span className="-translate-y-[1px]">e-Money</span>
                 </label>
-                <label className="col-start-2 flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug">
+                <label className="flex items-center gap-4 rounded-lg border px-4 py-5 text-sm font-bold leading-snug sm:col-start-2">
                   <input type="radio" name="payment-method" value="cash" />
                   <span>Cash on Delivery</span>
                 </label>
@@ -138,7 +183,7 @@ export default function CheckoutPage() {
                   placeholder="6891"
                 />
               </TextField>
-              <div className="col-span-2 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+              <div className="col-span-full flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6 lg:gap-8">
                 <CashOnDeliveryIcon className="h-12 w-12 shrink-0 text-orange-500" />
                 <p className="max-w-prose text-[15px] font-medium leading-relaxed text-black/50">
                   The &lsquo;Cash on Delivery&rsquo; option enables you to pay
@@ -150,6 +195,110 @@ export default function CheckoutPage() {
             </div>
           </div>
         </form>
+        <div className="rounded-lg bg-white px-6 py-8">
+          <h2>Summary</h2>
+          <ul className="flex flex-col gap-6">
+            {products.map((product) => (
+              <li key={product._id} className="flex items-center gap-4">
+                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
+                  <img
+                    srcSet={`
+                            ${urlFor(product.thumbnailImageNew)
+                              .size(40, 40)
+                              .fit('fill')
+                              .bg('f1f1f1')
+                              .ignoreImageParams()
+                              .auto('format')
+                              .sharpen(20)
+                              .url()} 1x,
+                            ${urlFor(product.thumbnailImageNew)
+                              .size(40, 40)
+                              .fit('fill')
+                              .bg('f1f1f1')
+                              .ignoreImageParams()
+                              .auto('format')
+                              .sharpen(20)
+                              .dpr(2)
+                              .url()} 2x
+                          `}
+                    src={urlFor(product.thumbnailImageNew)
+                      .size(40, 40)
+                      .fit('fill')
+                      .bg('f1f1f1')
+                      .ignoreImageParams()
+                      .auto('format')
+                      .sharpen(20)
+                      .url()}
+                    alt=""
+                    width={40}
+                    height={40}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <div>
+                  <p className="text-[15px] font-bold uppercase leading-relaxed">
+                    {product.shortestTitle ??
+                      product.shortTitle ??
+                      product.title}
+                  </p>
+                  <p className="text-sm font-bold text-black/50">
+                    {formatCurrency({
+                      currencyCode: product.price.currencyCode,
+                      amount: product.price.amount,
+                    })}
+                  </p>
+                </div>
+                <p>{cart[product._id]}x</p>
+              </li>
+            ))}
+          </ul>
+          <dl>
+            <div data-testId="cart-summary-item">
+              <dt>Total</dt>
+              <dd>
+                {formatCurrency({
+                  currencyCode: cartCurrency,
+                  amount: cartTotal,
+                })}
+              </dd>
+            </div>
+            <div data-testId="cart-summary-item">
+              <dt>Shipping</dt>
+              <dd>
+                {formatCurrency({
+                  currencyCode: cartCurrency,
+                  amount: shipping,
+                })}
+              </dd>
+            </div>
+            <div data-testId="cart-summary-item">
+              <dt>VAT (included)</dt>
+              <dd>
+                {formatCurrency({
+                  currencyCode: cartCurrency,
+                  amount: vat,
+                })}
+              </dd>
+            </div>
+            <div data-testId="cart-summary-item">
+              <dt>Grand Total</dt>
+              <dd>
+                {formatCurrency({
+                  currencyCode: cartCurrency,
+                  amount: grandTotal,
+                })}
+              </dd>
+            </div>
+          </dl>
+          <button
+            type="submit"
+            form='"checkout-form"'
+            className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
+          >
+            Continue &amp; Pay
+          </button>
+        </div>
       </CenterContent>
     </div>
   )
