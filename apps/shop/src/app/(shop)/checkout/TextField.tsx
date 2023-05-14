@@ -1,4 +1,5 @@
 'use client'
+import clsx from 'clsx'
 import {
   type LabelHTMLAttributes,
   type ReactNode,
@@ -23,12 +24,22 @@ function useTextFieldContext() {
   return context
 }
 
-export function TextField({ children }: { children: ReactNode }) {
+type TextFieldProps = {
+  children: ReactNode
+  colSpan?: 'full'
+}
+export function TextField({ children, colSpan }: TextFieldProps) {
   const controlId = useId()
 
   return (
     <TextFieldContext.Provider value={{ controlId }}>
-      <div className="flex flex-col gap-2">{children}</div>
+      <div
+        className={clsx('flex flex-col gap-2', {
+          'col-span-full': colSpan === 'full',
+        })}
+      >
+        {children}
+      </div>
     </TextFieldContext.Provider>
   )
 }
