@@ -195,8 +195,10 @@ export default async function CheckoutPage() {
             </div>
           </div>
         </form>
-        <div className="rounded-lg bg-white px-6 py-8">
-          <h2>Summary</h2>
+        <div className="flex flex-col gap-8 rounded-lg bg-white px-6 py-8">
+          <h2 className="text-lg font-bold uppercase tracking-[0.07em]">
+            Summary
+          </h2>
           <ul className="flex flex-col gap-6">
             {products.map((product) => (
               <li key={product._id} className="flex items-center gap-4">
@@ -236,54 +238,78 @@ export default async function CheckoutPage() {
                     decoding="async"
                   />
                 </div>
-                <div>
-                  <p className="text-[15px] font-bold uppercase leading-relaxed">
-                    {product.shortestTitle ??
-                      product.shortTitle ??
-                      product.title}
-                  </p>
-                  <p className="text-sm font-bold text-black/50">
-                    {formatCurrency({
-                      currencyCode: product.price.currencyCode,
-                      amount: product.price.amount,
-                    })}
+                <div className="flex flex-1 items-baseline justify-between">
+                  <div>
+                    <p className="text-[15px] font-bold uppercase leading-relaxed">
+                      {product.shortestTitle ??
+                        product.shortTitle ??
+                        product.title}
+                    </p>
+                    <p className="text-sm font-bold text-black/50">
+                      {formatCurrency({
+                        currencyCode: product.price.currencyCode,
+                        amount: product.price.amount,
+                      })}
+                    </p>
+                  </div>
+                  <p className="text-[15px] text-black/50">
+                    &times;{cart[product._id]}
                   </p>
                 </div>
-                <p>{cart[product._id]}x</p>
               </li>
             ))}
           </ul>
-          <dl>
-            <div data-testId="cart-summary-item">
-              <dt>Total</dt>
-              <dd>
+          <dl className="flex flex-col gap-2">
+            <div
+              className="flex items-center justify-between gap-4"
+              data-testId="cart-summary-item"
+            >
+              <dt className="text-[15px] font-medium uppercase text-black/50">
+                Total
+              </dt>
+              <dd className="text-lg font-bold">
                 {formatCurrency({
                   currencyCode: cartCurrency,
                   amount: cartTotal,
                 })}
               </dd>
             </div>
-            <div data-testId="cart-summary-item">
-              <dt>Shipping</dt>
-              <dd>
+            <div
+              className="flex items-center justify-between gap-4"
+              data-testId="cart-summary-item"
+            >
+              <dt className="text-[15px] font-medium uppercase text-black/50">
+                Shipping
+              </dt>
+              <dd className="text-lg font-bold">
                 {formatCurrency({
                   currencyCode: cartCurrency,
                   amount: shipping,
                 })}
               </dd>
             </div>
-            <div data-testId="cart-summary-item">
-              <dt>VAT (included)</dt>
-              <dd>
+            <div
+              className="flex items-center justify-between gap-4"
+              data-testId="cart-summary-item"
+            >
+              <dt className="text-[15px] font-medium uppercase text-black/50">
+                VAT (Included)
+              </dt>
+              <dd className="text-lg font-bold">
                 {formatCurrency({
                   currencyCode: cartCurrency,
                   amount: vat,
                 })}
               </dd>
             </div>
-            <div data-testId="cart-summary-item">
-              <dt>Grand Total</dt>
-              <dd>
+            <div
+              className="mt-4 flex items-center justify-between gap-4"
+              data-testId="cart-summary-item"
+            >
+              <dt className="text-[15px] font-medium uppercase text-black/50">
+                Grand Total
+              </dt>
+              <dd className="text-lg font-bold text-orange-500">
                 {formatCurrency({
                   currencyCode: cartCurrency,
                   amount: grandTotal,
@@ -293,7 +319,7 @@ export default async function CheckoutPage() {
           </dl>
           <button
             type="submit"
-            form='"checkout-form"'
+            form="checkout-form"
             className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
           >
             Continue &amp; Pay
