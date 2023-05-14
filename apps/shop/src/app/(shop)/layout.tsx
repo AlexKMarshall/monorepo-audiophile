@@ -48,7 +48,7 @@ export default async function RootLayout({
     <html lang="en">
       <body
         className={clsx(
-          'flex min-h-screen flex-col bg-gray-50',
+          'flex min-h-screen flex-col bg-gray-50 accent-orange-500',
           manrope.className
         )}
       >
