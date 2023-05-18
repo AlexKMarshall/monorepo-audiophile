@@ -3,17 +3,24 @@ import { BackButton } from '~/components/BackButton'
 import { CenterContent } from '~/components/CenterContent'
 import { TextField, TextFieldInput, TextFieldLabel } from './TextField'
 import { Svg } from '~/components/Svg'
-import { getCart, getUserId } from '~/cart'
+import { getCart, getUserId, saveOrder, type Order, removeCart } from '~/cart'
 import { fetchQuery } from '~/contentClient'
 import { productZod } from '@audiophile/content-schema'
 import { z } from 'zod'
 import { formatCurrency } from '~/currency'
 import { urlFor } from '~/sanityClient'
 import { redirect } from 'next/navigation'
+import { kv } from '@vercel/kv'
+import { randomUUID } from 'crypto'
+import { revalidatePath } from 'next/cache'
 
 export default async function CheckoutPage() {
   const userId = await getUserId()
   const cart = await getCart(userId)
+
+  if (cart.items.length === 0) {
+    redirect('/cart')
+  }
 
   const productIds = cart.items.map((item) => item.productId)
 
@@ -53,13 +60,31 @@ export default async function CheckoutPage() {
   const vat = cartTotal * 0.2
   const grandTotal = cartTotal + shipping
 
-  const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
-
-  // eslint-disable-next-line @typescript-eslint/require-await
   async function checkout() {
     'use server'
-    console.log('checkout')
-    redirect('/confirmation/abc')
+    const userId = await getUserId()
+    const cart = await getCart(userId)
+    const order = {
+      id: randomUUID(),
+      currency: 'USD',
+      items: cart.items.map((item) => {
+        const product = products.find(
+          (product) => product._id === item.productId
+        )
+        if (!product) throw new Error(`Product not found: ${item.productId}`)
+        return {
+          productId: item.productId,
+          quantity: item.quantity,
+          price: product.price.amount,
+        }
+      }),
+    } satisfies Order
+
+    await saveOrder({ userId, order })
+    await removeCart(userId)
+
+    revalidatePath('/')
+    redirect(`/confirmation/${order.id}`)
   }
 
   return (
@@ -290,7 +315,7 @@ export default async function CheckoutPage() {
                 </dt>
                 <dd className="text-lg font-bold">
                   {formatCurrency({
-                    currencyCode: cartCurrency,
+                    currencyCode: cart.currency,
                     amount: cartTotal,
                   })}
                 </dd>
@@ -304,7 +329,7 @@ export default async function CheckoutPage() {
                 </dt>
                 <dd className="text-lg font-bold">
                   {formatCurrency({
-                    currencyCode: cartCurrency,
+                    currencyCode: cart.currency,
                     amount: shipping,
                   })}
                 </dd>
@@ -318,7 +343,7 @@ export default async function CheckoutPage() {
                 </dt>
                 <dd className="text-lg font-bold">
                   {formatCurrency({
-                    currencyCode: cartCurrency,
+                    currencyCode: cart.currency,
                     amount: vat,
                   })}
                 </dd>
@@ -332,7 +357,7 @@ export default async function CheckoutPage() {
                 </dt>
                 <dd className="text-lg font-bold text-orange-500">
                   {formatCurrency({
-                    currencyCode: cartCurrency,
+                    currencyCode: cart.currency,
                     amount: grandTotal,
                   })}
                 </dd>
@@ -341,7 +366,7 @@ export default async function CheckoutPage() {
             <button
               type="submit"
               form="checkout-form"
-              className="bg-orange-500 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
+              className="bg-orange-500 px-6 py-4 text-[13px] font-bold uppercase tracking-[0.07em] text-white"
             >
               Continue &amp; Pay
             </button>

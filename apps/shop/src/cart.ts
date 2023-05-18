@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 export const cartSchema = z.object({
   id: z.string(),
+  currency: z.literal('USD'),
   items: z.array(
     z.object({
       productId: z.string(),
@@ -19,6 +20,7 @@ export type Cart = z.infer<typeof cartSchema>
 export function getNewCart(): Cart {
   return {
     id: randomUUID(),
+    currency: 'USD',
     items: [],
   }
 }
@@ -84,21 +86,6 @@ export function cartReducer(cart: Cart, action: CartAction): Cart {
   }
 }
 
-const cartCookieName = 'audiophile-cart'
-
-export function getCartFromCookies() {
-  const cartCookie = cookies().get(cartCookieName)?.value
-  const rawCart: unknown = cartCookie ? JSON.parse(cartCookie) : {}
-
-  return cartSchema.parse(rawCart)
-}
-
-export function updateCartCookie(cart: Cart) {
-  // @ts-expect-error - nextjs types are wrong
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  cookies().set(cartCookieName, JSON.stringify(cart))
-}
-
 function getNewUserId() {
   return randomUUID()
 }
@@ -148,4 +135,53 @@ export async function getCart(userId: string) {
 
 export function saveCart(userId: string, cart: Cart) {
   return kv.hset(userId, { cart })
+}
+
+export function removeCart(userId: string) {
+  return kv.hdel(userId, 'cart')
+}
+
+const orderSchema = z.object({
+  id: z.string(),
+  currency: z.literal('USD'),
+  items: z.array(
+    z.object({
+      productId: z.string(),
+      quantity: z.number().min(1),
+      price: z.number().min(0),
+    })
+  ),
+})
+
+export type Order = z.infer<typeof orderSchema>
+
+/**
+ * @returns The user's order if it exists, otherwise null
+ */
+export async function getOrder({
+  userId,
+  orderId,
+}: {
+  userId: string
+  orderId: string
+}) {
+  const order = await kv.hget(userId, orderId)
+  if (!order) {
+    return null
+  }
+
+  return orderSchema.parse(order)
+}
+
+/**
+ * Saves the order to the user's session
+ */
+export async function saveOrder({
+  userId,
+  order,
+}: {
+  userId: string
+  order: Order
+}) {
+  return kv.hset(userId, { [order.id]: order })
 }
