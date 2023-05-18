@@ -1,11 +1,4 @@
-import {
-  cartReducer,
-  cartSchema,
-  getCart,
-  getUserId,
-  getCartFromCookies,
-  updateCartCookie,
-} from '~/cart'
+import { cartReducer, getCart, getUserId } from '~/cart'
 import { fetchQuery } from '~/contentClient'
 import { z } from 'zod'
 import { productZod } from '@audiophile/content-schema'
@@ -16,7 +9,6 @@ import { redirect } from 'next/navigation'
 import { QuantityInput } from './QuantityInput'
 import { BackButton } from '~/components/BackButton'
 import { formatCurrency } from '~/currency'
-import { Cart } from '~/cart'
 import { saveCart } from '~/cart'
 
 export default async function CartPage() {
