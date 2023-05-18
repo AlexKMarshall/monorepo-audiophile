@@ -1,9 +1,4 @@
-import {
-  cartReducer,
-  cartSchema,
-  getCartFromCookies,
-  updateCartCookie,
-} from '~/cart'
+import { cartReducer, getCart, getUserId } from '~/cart'
 import { fetchQuery } from '~/contentClient'
 import { z } from 'zod'
 import { productZod } from '@audiophile/content-schema'
@@ -14,11 +9,13 @@ import { redirect } from 'next/navigation'
 import { QuantityInput } from './QuantityInput'
 import { BackButton } from '~/components/BackButton'
 import { formatCurrency } from '~/currency'
+import { saveCart } from '~/cart'
 
 export default async function CartPage() {
-  const cart = getCartFromCookies()
+  const userId = await getUserId()
+  const cart = await getCart(userId)
 
-  const productIds = Object.keys(cart)
+  const productIds = cart.items.map((item) => item.productId)
 
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
@@ -45,7 +42,11 @@ export default async function CartPage() {
   })
 
   const cartTotal = products.reduce(
-    (total, product) => total + product.price.amount * (cart[product._id] ?? 0),
+    (total, product) =>
+      total +
+      product.price.amount *
+        (cart.items.find(({ productId }) => productId === product._id)
+          ?.quantity ?? 0),
     0
   )
 
@@ -55,26 +56,51 @@ export default async function CartPage() {
   async function checkout(data: FormData) {
     'use server'
 
-    const cart = getCartFromCookies()
+    const cart = await getCart(userId)
 
-    const cartRequest = cartSchema.parse(Object.fromEntries(data.entries()))
+    const cartUpdateDataPipeline = z.instanceof(FormData).transform((data) =>
+      [...data.entries()]
+        .filter(([key]) => key.startsWith('items'))
+        .map(([key, value]) => {
+          const [, productId, field] = key.split('.')
+          return [productId, field, value]
+        })
+        .map(([productId, field, value]) =>
+          z
+            .tuple([
+              z.string(),
+              z.literal('quantity'),
+              z.coerce.number().min(0),
+            ])
+            .parse([productId, field, value])
+        )
+        .map(([productId, field, value]) => ({ productId, [field]: value }))
+    )
+
+    const cartReplaceData = cartUpdateDataPipeline.parse(data)
+
     const updatedCart = cartReducer(cart, {
       type: 'replace',
-      cart: cartRequest,
+      items: cartReplaceData,
     })
 
-    updateCartCookie(updatedCart)
+    await saveCart(userId, updatedCart)
 
     revalidatePath('/')
     revalidatePath('/cart')
     return redirect('/checkout')
   }
 
-  // eslint-disable-next-line @typescript-eslint/require-await
   async function removeAll() {
     'use server'
+    const userId = await getUserId()
+    const cart = await getCart(userId)
 
-    updateCartCookie({})
+    const updatedCart = cartReducer(cart, {
+      type: 'removeAll',
+    })
+
+    await saveCart(userId, updatedCart)
 
     revalidatePath('/')
     revalidatePath('/cart')
@@ -120,11 +146,16 @@ export default async function CartPage() {
             </button>
           </div>
           <ul className="flex flex-col gap-6">
-            {products.map((product) => (
-              <li key={product._id} className="flex items-center gap-4">
-                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
-                  <img
-                    srcSet={`
+            {cart.items.map((cartItem) => {
+              const product = products.find(
+                (product) => product._id === cartItem.productId
+              )
+              if (!product) return null
+              return (
+                <li key={product._id} className="flex items-center gap-4">
+                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
+                    <img
+                      srcSet={`
                             ${urlFor(product.thumbnailImageNew)
                               .size(40, 40)
                               .fit('fill')
@@ -143,48 +174,49 @@ export default async function CartPage() {
                               .dpr(2)
                               .url()} 2x
                           `}
-                    src={urlFor(product.thumbnailImageNew)
-                      .size(40, 40)
-                      .fit('fill')
-                      .bg('f1f1f1')
-                      .ignoreImageParams()
-                      .auto('format')
-                      .sharpen(20)
-                      .url()}
-                    alt=""
-                    width={40}
-                    height={40}
-                    loading="lazy"
-                    decoding="async"
+                      src={urlFor(product.thumbnailImageNew)
+                        .size(40, 40)
+                        .fit('fill')
+                        .bg('f1f1f1')
+                        .ignoreImageParams()
+                        .auto('format')
+                        .sharpen(20)
+                        .url()}
+                      alt=""
+                      width={40}
+                      height={40}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-[15px] font-bold uppercase leading-relaxed">
+                      {product.shortestTitle ??
+                        product.shortTitle ??
+                        product.title}
+                    </p>
+                    <p className="text-sm font-bold text-black/50">
+                      {formatCurrency({
+                        currencyCode: product.price.currencyCode,
+                        amount: product.price.amount,
+                      })}
+                    </p>
+                  </div>
+                  <QuantityInput
+                    className="ml-auto w-0 basis-24 bg-gray-100 py-2 text-center"
+                    defaultValue={cartItem.quantity}
+                    name={`items.${cartItem.productId}.quantity`}
+                    aria-label="Quantity"
                   />
-                </div>
-                <div>
-                  <p className="text-[15px] font-bold uppercase leading-relaxed">
-                    {product.shortestTitle ??
-                      product.shortTitle ??
-                      product.title}
-                  </p>
-                  <p className="text-sm font-bold text-black/50">
-                    {formatCurrency({
-                      currencyCode: product.price.currencyCode,
-                      amount: product.price.amount,
-                    })}
-                  </p>
-                </div>
-                <QuantityInput
-                  className="ml-auto w-0 basis-24 bg-gray-100 py-2 text-center"
-                  defaultValue={cart[product._id]}
-                  name={product._id}
-                  aria-label="Quantity"
-                />
-              </li>
-            ))}
+                </li>
+              )
+            })}
           </ul>
           <div className="flex flex-col gap-6">
             <dl>
               <div
                 className="flex items-center justify-between"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   Total

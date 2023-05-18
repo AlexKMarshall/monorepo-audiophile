@@ -2,7 +2,7 @@
 'use server'
 
 import { revalidatePath } from 'next/cache'
-import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
+import { cartReducer, getCart, getUserId, saveCart } from '~/cart'
 
 export async function updateCartLine({
   productId,
@@ -11,7 +11,8 @@ export async function updateCartLine({
   productId: string
   quantity: number
 }) {
-  const cart = getCartFromCookies()
+  const userId = await getUserId()
+  const cart = await getCart(userId)
 
   const updatedCart = cartReducer(cart, {
     type: 'update',
@@ -19,7 +20,7 @@ export async function updateCartLine({
     quantity,
   })
 
-  updateCartCookie(updatedCart)
+  await saveCart(userId, updatedCart)
 
-  revalidatePath('/')
+  revalidatePath('/cart')
 }

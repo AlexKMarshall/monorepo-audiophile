@@ -19,7 +19,9 @@ export function QuantityInput(props: QuantityInputProps) {
         const quantity = Number(event.target.value)
         if (quantity === defaultValue) return
 
-        const productId = event.target.name
+        const [, productId] = event.target.name.split('.')
+        if (!productId)
+          throw new Error('productId is missing from input field name')
 
         startTransition(() => updateCartLine({ productId, quantity }))
       }}

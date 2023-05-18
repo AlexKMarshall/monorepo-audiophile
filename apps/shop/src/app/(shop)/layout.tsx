@@ -18,7 +18,7 @@ import { z } from 'zod'
 import { productCategoryZod } from '@audiophile/content-schema'
 import { ChevronRightIcon } from '~/components/icons'
 import { fetchQuery } from '~/contentClient'
-import { getCartFromCookies } from '~/cart'
+import { getCart, getUserId } from '~/cart'
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -40,9 +40,10 @@ export default async function RootLayout({
     ),
   })
 
-  const cart = getCartFromCookies()
+  const userId = await getUserId()
+  const cart = await getCart(userId)
 
-  const cartLinesCount = Object.keys(cart).length
+  const cartLinesCount = cart?.items.length ?? 0
 
   return (
     <html lang="en">
