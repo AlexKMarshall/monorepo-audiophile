@@ -283,7 +283,7 @@ export default async function CheckoutPage() {
             <dl className="flex flex-col gap-2">
               <div
                 className="flex items-center justify-between gap-4"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   Total
@@ -297,7 +297,7 @@ export default async function CheckoutPage() {
               </div>
               <div
                 className="flex items-center justify-between gap-4"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   Shipping
@@ -311,7 +311,7 @@ export default async function CheckoutPage() {
               </div>
               <div
                 className="flex items-center justify-between gap-4"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   VAT (Included)
@@ -325,7 +325,7 @@ export default async function CheckoutPage() {
               </div>
               <div
                 className="mt-4 flex items-center justify-between gap-4"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   Grand Total

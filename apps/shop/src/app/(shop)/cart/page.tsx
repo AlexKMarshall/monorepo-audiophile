@@ -216,7 +216,7 @@ export default async function CartPage() {
             <dl>
               <div
                 className="flex items-center justify-between"
-                data-testId="cart-summary-item"
+                data-testid="cart-summary-item"
               >
                 <dt className="text-[15px] font-medium uppercase text-black/50">
                   Total
