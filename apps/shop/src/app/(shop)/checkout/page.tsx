@@ -3,7 +3,7 @@ import { BackButton } from '~/components/BackButton'
 import { CenterContent } from '~/components/CenterContent'
 import { TextField, TextFieldInput, TextFieldLabel } from './TextField'
 import { Svg } from '~/components/Svg'
-import { getCartFromCookies } from '~/cart'
+import { getCart, getCartFromCookies, getUserId } from '~/cart'
 import { fetchQuery } from '~/contentClient'
 import { productZod } from '@audiophile/content-schema'
 import { z } from 'zod'
@@ -12,9 +12,10 @@ import { urlFor } from '~/sanityClient'
 import { redirect } from 'next/navigation'
 
 export default async function CheckoutPage() {
-  const cart = getCartFromCookies()
+  const userId = await getUserId()
+  const cart = await getCart(userId)
 
-  const productIds = Object.keys(cart)
+  const productIds = cart.items.map((item) => item.productId)
 
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
@@ -41,7 +42,11 @@ export default async function CheckoutPage() {
   })
 
   const cartTotal = products.reduce(
-    (total, product) => total + product.price.amount * (cart[product._id] ?? 0),
+    (total, product) =>
+      total +
+      product.price.amount *
+        (cart.items.find(({ productId }) => productId === product._id)
+          ?.quantity ?? 0),
     0
   )
   const shipping = 50
@@ -210,11 +215,16 @@ export default async function CheckoutPage() {
               Summary
             </h2>
             <ul className="flex flex-col gap-6">
-              {products.map((product) => (
-                <li key={product._id} className="flex items-center gap-4">
-                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
-                    <img
-                      srcSet={`
+              {cart.items.map((cartItem) => {
+                const product = products.find(
+                  (product) => product._id === cartItem.productId
+                )
+                if (!product) return null
+                return (
+                  <li key={product._id} className="flex items-center gap-4">
+                    <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
+                      <img
+                        srcSet={`
                               ${urlFor(product.thumbnailImageNew)
                                 .size(40, 40)
                                 .fit('fill')
@@ -233,41 +243,42 @@ export default async function CheckoutPage() {
                                 .dpr(2)
                                 .url()} 2x
                             `}
-                      src={urlFor(product.thumbnailImageNew)
-                        .size(40, 40)
-                        .fit('fill')
-                        .bg('f1f1f1')
-                        .ignoreImageParams()
-                        .auto('format')
-                        .sharpen(20)
-                        .url()}
-                      alt=""
-                      width={40}
-                      height={40}
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </div>
-                  <div className="flex flex-1 items-baseline justify-between">
-                    <div>
-                      <p className="text-[15px] font-bold uppercase leading-relaxed">
-                        {product.shortestTitle ??
-                          product.shortTitle ??
-                          product.title}
-                      </p>
-                      <p className="text-sm font-bold text-black/50">
-                        {formatCurrency({
-                          currencyCode: product.price.currencyCode,
-                          amount: product.price.amount,
-                        })}
+                        src={urlFor(product.thumbnailImageNew)
+                          .size(40, 40)
+                          .fit('fill')
+                          .bg('f1f1f1')
+                          .ignoreImageParams()
+                          .auto('format')
+                          .sharpen(20)
+                          .url()}
+                        alt=""
+                        width={40}
+                        height={40}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </div>
+                    <div className="flex flex-1 items-baseline justify-between">
+                      <div>
+                        <p className="text-[15px] font-bold uppercase leading-relaxed">
+                          {product.shortestTitle ??
+                            product.shortTitle ??
+                            product.title}
+                        </p>
+                        <p className="text-sm font-bold text-black/50">
+                          {formatCurrency({
+                            currencyCode: product.price.currencyCode,
+                            amount: product.price.amount,
+                          })}
+                        </p>
+                      </div>
+                      <p className="text-[15px] text-black/50">
+                        &times;{cartItem.quantity}
                       </p>
                     </div>
-                    <p className="text-[15px] text-black/50">
-                      &times;{cart[product._id]}
-                    </p>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                )
+              })}
             </ul>
             <dl className="flex flex-col gap-2">
               <div
