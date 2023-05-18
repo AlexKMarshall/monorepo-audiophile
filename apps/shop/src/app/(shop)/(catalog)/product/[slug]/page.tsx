@@ -1,7 +1,6 @@
 import { productZod, productCategoryZod } from '@audiophile/content-schema'
 import { BackButton } from '~/components/BackButton'
 import { urlFor } from '~/sanityClient'
-import { z } from 'zod'
 import { PortableText } from '@portabletext/react'
 import Link from 'next/link'
 import { CenterContent } from '~/components/CenterContent'
@@ -14,24 +13,10 @@ import {
   sanityImageSourceZodSchema,
 } from '@audiophile/content-schema/image'
 import { fetchQuery } from '~/contentClient'
-import { cartReducer, getCartFromCookies, updateCartCookie } from '~/cart'
+import { cartReducer, getCart, getUserId, saveCart, saveUserId } from '~/cart'
 import { revalidatePath } from 'next/cache'
-import { cookies } from 'next/headers'
-import { randomUUID } from 'crypto'
 import { formatCurrency } from '~/currency'
-
-const userIdCookieName = 'audiophile-user-id'
-
-function getOrCreateUserId() {
-  const existingUserId = cookies().get(userIdCookieName)?.value
-  if (existingUserId) return existingUserId
-
-  const newUserId = randomUUID()
-  // @ts-expect-error - NextJS types are wrong
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  cookies().set(userIdCookieName, newUserId)
-  return newUserId
-}
+import { z } from 'zod'
 
 export default async function ProductPage({
   params,
@@ -114,22 +99,26 @@ export default async function ProductPage({
   const [{ result: product }, { result: productCategories }] =
     await Promise.all([productPromise, productCategoriesPromise])
 
-  // server actions have to be async
-  // eslint-disable-next-line @typescript-eslint/require-await
   async function addToCart(data: FormData) {
     'use server'
-
-    const userId = getOrCreateUserId()
-
-    const cart = getCartFromCookies()
     const productId = product._id
     const quantity = z
-      .preprocess((val) => Number(val), z.number().min(1))
+      .preprocess(Number, z.number().min(1))
       .parse(data.get('quantity'))
 
-    const updatedCart = cartReducer(cart, { type: 'add', productId, quantity })
+    const userId = await getUserId()
 
-    updateCartCookie(updatedCart)
+    const cart = await getCart(userId)
+
+    const updatedCart = cartReducer(cart, {
+      type: 'add',
+      productId,
+      quantity,
+    })
+
+    await saveCart(userId, updatedCart)
+    saveUserId(userId)
+
     revalidatePath('/')
     revalidatePath('/cart')
   }
