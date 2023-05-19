@@ -144,13 +144,15 @@ export function removeCart(userId: string) {
 const orderSchema = z.object({
   id: z.string(),
   currency: z.literal('USD'),
-  items: z.array(
-    z.object({
-      productId: z.string(),
-      quantity: z.number().min(1),
-      price: z.number().min(0),
-    })
-  ),
+  items: z
+    .array(
+      z.object({
+        productId: z.string(),
+        quantity: z.number().min(1),
+        price: z.number().min(0),
+      })
+    )
+    .min(1),
 })
 
 export type Order = z.infer<typeof orderSchema>

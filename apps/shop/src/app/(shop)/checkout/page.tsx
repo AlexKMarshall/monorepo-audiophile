@@ -10,20 +10,10 @@ import { z } from 'zod'
 import { formatCurrency } from '~/currency'
 import { urlFor } from '~/sanityClient'
 import { redirect } from 'next/navigation'
-import { kv } from '@vercel/kv'
 import { randomUUID } from 'crypto'
 import { revalidatePath } from 'next/cache'
 
-export default async function CheckoutPage() {
-  const userId = await getUserId()
-  const cart = await getCart(userId)
-
-  if (cart.items.length === 0) {
-    redirect('/cart')
-  }
-
-  const productIds = cart.items.map((item) => item.productId)
-
+async function fetchProducts(productIds: string[]) {
   const { result: products } = await fetchQuery({
     query: `*[_type == "product" && _id in $productIds]{title, _id, shortTitle, shortestTitle, thumbnailImageNew, 'price': {
         'amount': price.amount,
@@ -47,6 +37,20 @@ export default async function CheckoutPage() {
         })
     ),
   })
+  return products
+}
+
+export default async function CheckoutPage() {
+  const userId = await getUserId()
+  const cart = await getCart(userId)
+
+  if (cart.items.length === 0) {
+    redirect('/cart')
+  }
+
+  const productIds = cart.items.map((item) => item.productId)
+
+  const products = await fetchProducts(productIds)
 
   const cartTotal = products.reduce(
     (total, product) =>
@@ -64,6 +68,9 @@ export default async function CheckoutPage() {
     'use server'
     const userId = await getUserId()
     const cart = await getCart(userId)
+    const products = await fetchProducts(
+      cart.items.map((item) => item.productId)
+    )
     const order = {
       id: randomUUID(),
       currency: 'USD',
