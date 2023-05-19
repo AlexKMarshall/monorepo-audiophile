@@ -46,6 +46,14 @@ export const getPageObjectModel = ({
       .filter({ has: page.getByText(name) })
       .getByRole('definition')
 
+  /** Add a quantity to the cart - can be run on a product page */
+  const addToCart = async (quantity: number) => {
+    await page
+      .getByRole('spinbutton', { name: /quantity/i })
+      .fill(String(quantity))
+    await page.getByRole('button', { name: /add to cart/i }).click()
+  }
+
   return {
     getPrimaryNavLink,
     getProductLink,
@@ -53,5 +61,6 @@ export const getPageObjectModel = ({
     getCartLines,
     getCartLine,
     getCartSummaryValue,
+    addToCart,
   }
 }
