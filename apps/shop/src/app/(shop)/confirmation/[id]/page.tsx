@@ -72,7 +72,7 @@ export default async function ConfirmationPage({
   return (
     <div className="mb-24 mt-16 sm:mb-28 lg:mb-36">
       <CenterContent>
-        <div className="flex flex-col gap-6 rounded-lg bg-white p-8 sm:gap-8 sm:p-12">
+        <div className="mx-auto flex max-w-xl flex-col gap-6 rounded-lg bg-white p-8 sm:gap-8 sm:p-12">
           <CheckMarkIcon className="h-16 w-16 text-orange-500" />
           <div className="flex flex-col gap-4 sm:gap-6">
             <h1 className="text-2xl font-bold uppercase leading-7 tracking-[0.04em] sm:text-[32px] sm:leading-9">
