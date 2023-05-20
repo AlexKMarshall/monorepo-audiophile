@@ -72,18 +72,19 @@ export default async function ConfirmationPage({
   return (
     <div className="mb-24 mt-16 sm:mb-28 lg:mb-36">
       <CenterContent>
-        <div className="flex flex-col gap-6 rounded-lg bg-white p-8">
+        <div className="flex flex-col gap-6 rounded-lg bg-white p-8 sm:gap-8 sm:p-12">
           <CheckMarkIcon className="h-16 w-16 text-orange-500" />
-          <div className="flex flex-col gap-4">
-            <h1 className="text-2xl font-bold uppercase leading-7 tracking-[0.04em]">
-              Thank you for your order
+          <div className="flex flex-col gap-4 sm:gap-6">
+            <h1 className="text-2xl font-bold uppercase leading-7 tracking-[0.04em] sm:text-[32px] sm:leading-9">
+              Thank you
+              <br /> for your order
             </h1>
             <p className="text-[15px] font-medium leading-relaxed text-black/50">
               You will receive an email confirmation shortly.
             </p>
           </div>
-          <div className="overflow-hidden rounded-lg">
-            <div className="flex flex-col gap-3 bg-gray-100 p-6">
+          <div className="flex flex-col overflow-hidden rounded-lg sm:flex-row">
+            <div className="flex flex-1 flex-col gap-3 bg-gray-100 p-6">
               <div className="flex items-center gap-4">
                 <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg bg-gray-100">
                   <img
@@ -147,7 +148,7 @@ export default async function ConfirmationPage({
                 </>
               )}
             </div>
-            <div className="flex flex-col gap-2 bg-black px-6 pb-5 pt-4">
+            <div className="flex flex-1 flex-col justify-center gap-2 bg-black px-6 pb-5 pt-4">
               <h2 className="text-[15px] font-medium uppercase leading-relaxed text-white/50">
                 Grand total
               </h2>
@@ -161,7 +162,7 @@ export default async function ConfirmationPage({
           </div>
           <Link
             href="/"
-            className="inline-block bg-orange-500 px-6 py-4 text-center text-[13px] font-bold uppercase tracking-[0.07em] text-white"
+            className="inline-block bg-orange-500 px-6 py-4 text-center text-[13px] font-bold uppercase tracking-[0.07em] text-white sm:mt-4"
           >
             Back to home
           </Link>
