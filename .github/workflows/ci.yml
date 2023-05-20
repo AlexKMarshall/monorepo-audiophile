@@ -48,10 +48,7 @@ jobs:
         run: pnpm install
 
       - name: Install Playwright Browsers
-        run: pnpm dlx playwright install --with-deps
-
-      - name: Install Playwright Browsers again
-        run: pnpm dlx playwright install
+        run: pnpm exec playwright install --with-deps
 
       - name: Run Turbo CI
         run: pnpm run ci
