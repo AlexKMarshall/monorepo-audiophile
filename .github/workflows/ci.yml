@@ -50,6 +50,9 @@ jobs:
       - name: Install Playwright Browsers
         run: pnpm dlx playwright install --with-deps
 
+      - name: Install Playwright Browsers again
+        run: npx playwright install
+
       - name: Run Turbo CI
         run: pnpm run ci
       - uses: actions/upload-artifact@v3
