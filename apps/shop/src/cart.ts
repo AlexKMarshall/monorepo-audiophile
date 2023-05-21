@@ -116,8 +116,6 @@ export async function getUserId() {
  * Sets the userId cookie. Can only be called inside a server action
  */
 export function saveUserId(userId: string) {
-  // @ts-expect-error - nextjs types are wrong
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   cookies().set(userIdCookieName, userId)
 }
 

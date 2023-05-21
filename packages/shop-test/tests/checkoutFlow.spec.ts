@@ -3,7 +3,7 @@ import { getPageObjectModel } from './pageObjectModel'
 
 // Skipping this test because it fails on CI. The cache doesn't update properly
 // Wait for NextJs to sort out server actions and revalidation properly.
-test.skip('add to cart', async ({ page, viewport }) => {
+test('add to cart', async ({ page, viewport }) => {
   const pageObjectModel = getPageObjectModel({ page, viewport })
 
   await page.goto('/product/xx99-mark-ii-headphones')
