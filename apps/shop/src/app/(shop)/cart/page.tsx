@@ -50,8 +50,6 @@ export default async function CartPage() {
     0
   )
 
-  const cartCurrency = products[0]?.price.currencyCode ?? 'USD'
-
   // eslint-disable-next-line @typescript-eslint/require-await
   async function checkout(data: FormData) {
     'use server'
@@ -223,7 +221,7 @@ export default async function CartPage() {
                 </dt>
                 <dd className="text-lg font-bold">
                   {formatCurrency({
-                    currencyCode: cartCurrency,
+                    currencyCode: cart.currency,
                     amount: cartTotal,
                   })}
                 </dd>

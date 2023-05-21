@@ -1,4 +1,4 @@
-import { type Page, type ViewportSize } from '@playwright/test'
+import { type Page, type ViewportSize, expect } from '@playwright/test'
 import { screens } from '../../../apps/shop/tailwind.config'
 
 export const getPageObjectModel = ({
@@ -33,6 +33,16 @@ export const getPageObjectModel = ({
   }
 
   const getCartLink = () => page.getByRole('link', { name: /cart/i })
+  const gotoCart = async () => {
+    await getCartLink().click()
+    await expect(
+      page.getByRole('heading', { name: /cart/i, level: 1 })
+    ).toBeVisible()
+    await page.reload()
+    await expect(
+      page.getByRole('heading', { name: /cart/i, level: 1 })
+    ).toBeVisible()
+  }
 
   const getCartLines = () =>
     page.getByRole('form', { name: /cart/i }).getByRole('listitem')
@@ -46,12 +56,22 @@ export const getPageObjectModel = ({
       .filter({ has: page.getByText(name) })
       .getByRole('definition')
 
+  /** Add a quantity to the cart - can be run on a product page */
+  const addToCart = async (quantity: number) => {
+    await page
+      .getByRole('spinbutton', { name: /quantity/i })
+      .fill(String(quantity))
+    await page.getByRole('button', { name: /add to cart/i }).click()
+  }
+
   return {
     getPrimaryNavLink,
     getProductLink,
     getCartLink,
+    gotoCart,
     getCartLines,
     getCartLine,
     getCartSummaryValue,
+    addToCart,
   }
 }
