@@ -11,7 +11,7 @@ test('add to cart', async ({ page, viewport }) => {
   await pageObjectModel.addToCart(3)
 
   // Go to cart
-  await pageObjectModel.getCartLink().click()
+  await pageObjectModel.gotoCart()
 
   await expect(page.getByRole('form').getByRole('listitem')).toHaveCount(2)
 
