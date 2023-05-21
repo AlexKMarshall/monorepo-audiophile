@@ -101,10 +101,12 @@ export default async function ProductPage({
 
   async function addToCart(data: FormData) {
     'use server'
-    const productId = product._id
+
     const quantity = z
       .preprocess(Number, z.number().min(1))
       .parse(data.get('quantity'))
+
+    const productId = z.string().uuid().parse(data.get('productId'))
 
     const userId = await getUserId()
 
@@ -197,6 +199,7 @@ export default async function ProductPage({
                     aria-label="quantity"
                     className="w-0 basis-32 bg-gray-100"
                   />
+                  <input type="hidden" name="productId" value={product._id} />
                   <button
                     type="submit"
                     className="whitespace-nowrap bg-orange-500 px-8 py-4 text-sm font-bold uppercase tracking-[0.08em] text-white"
