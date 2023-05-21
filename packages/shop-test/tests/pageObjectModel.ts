@@ -35,8 +35,13 @@ export const getPageObjectModel = ({
   const getCartLink = () => page.getByRole('link', { name: /cart/i })
   const gotoCart = async () => {
     await getCartLink().click()
-    await expect(page).toHaveURL(/\/cart$/i)
+    await expect(
+      page.getByRole('heading', { name: /cart/i, level: 1 })
+    ).toBeVisible()
     await page.reload()
+    await expect(
+      page.getByRole('heading', { name: /cart/i, level: 1 })
+    ).toBeVisible()
   }
 
   const getCartLines = () =>
