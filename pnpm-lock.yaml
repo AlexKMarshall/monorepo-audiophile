@@ -72,8 +72,8 @@ importers:
         specifier: 1.0.3
         version: 1.0.3(@types/react@18.2.6)(react-dom@18.2.0)(react@18.2.0)
       '@sanity/client':
-        specifier: 6.0.1
-        version: 6.0.1
+        specifier: 6.1.0
+        version: 6.1.0
       '@sanity/image-url':
         specifier: 1.0.2
         version: 1.0.2
@@ -2770,8 +2770,8 @@ packages:
       - supports-color
     dev: false
 
-  /@sanity/client@6.0.1:
-    resolution: {integrity: sha512-q2Mi79ttJxoUjZG3LGlfIFoYfMUxra9tRaPbfmQRVJQ2I/TiVGvuE6yt38fgox796wpeZvYeuYH8L7Ms79IXYg==}
+  /@sanity/client@6.1.0:
+    resolution: {integrity: sha512-l+cyCG7HhJJC2IgpFeIkF0e+gbtDqRn8n/K8xVs9x1VYcZu6M7651FE3dAxSYsOlQkYetgxXzWW5Y0BvQMXoyQ==}
     engines: {node: '>=14.18'}
     dependencies:
       '@sanity/eventsource': 5.0.0
@@ -2973,7 +2973,7 @@ packages:
     peerDependencies:
       react: ^18.0.0
     dependencies:
-      '@sanity/client': 6.0.1
+      '@sanity/client': 6.1.0
       '@sanity/eventsource': 5.0.0
       '@sanity/groq-store': 2.1.0
       '@vercel/stega': 0.0.4
@@ -7203,7 +7203,7 @@ packages:
       sanity: ^3.0.0
       styled-components: ^5.2.0
     dependencies:
-      '@sanity/client': 6.0.1
+      '@sanity/client': 6.1.0
       '@sanity/icons': 2.3.1(react@18.2.0)
       '@sanity/preview-kit': 1.5.2(react@18.2.0)
       '@sanity/types': 3.10.3
